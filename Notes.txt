@@ -1,0 +1,11 @@
+- @RequiredArgsConstructor (Lombok) injects the service automatically.
+- DTO mapping is manual here; later you can use MapStruct to reduce boilerplate.
+- Exception handling can be centralized with a @ControllerAdvice for cleaner error responses.
+- Endpoints now match the API contracts we outlined earlier (/api/students/...).
+
+public List<StudentDTO> getAllStudents() { return }
+
+public StudentDTO getStudentById(Long id) {	return }
+
+public StudentDTO updateStudent(Long id, StudentDTO dto) {}
+public void deleteStudent(Long id) {}
