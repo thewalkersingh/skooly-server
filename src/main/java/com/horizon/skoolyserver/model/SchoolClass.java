@@ -1,7 +1,9 @@
 package com.horizon.skoolyserver.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -9,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "schoolclass")
+@Table(name = "school_class")
 public class SchoolClass {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +21,10 @@ public class SchoolClass {
 	
 	@ManyToOne
 	@JoinColumn(name = "teacher_id")
+	@JsonBackReference
 	private Teacher teacher;
 	
 	@OneToMany(mappedBy = "schoolClass")
-	private List<Student> students;
+	@JsonBackReference
+	private List<Student> students = new ArrayList<>();
 }

@@ -1,7 +1,9 @@
 package com.horizon.skoolyserver.controller;
 import com.horizon.skoolyserver.dto.ParentDTO;
 import com.horizon.skoolyserver.service.ParentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +16,9 @@ public class ParentController {
 	private final ParentService parentService;
 	
 	@PostMapping
-	public ResponseEntity<ParentDTO> createParent(@RequestBody ParentDTO parentDTO) {
-		return ResponseEntity.ok(parentService.createParent(parentDTO));
+	public ResponseEntity<ParentDTO> createParent(@Valid @RequestBody ParentDTO parentDTO) {
+		ParentDTO created = parentService.createParent(parentDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
 	
 	@GetMapping
@@ -29,7 +32,7 @@ public class ParentController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<ParentDTO> updateParentById(@PathVariable Long id, @RequestBody ParentDTO parentDTO) {
+	public ResponseEntity<ParentDTO> updateParentById(@PathVariable Long id, @Valid @RequestBody ParentDTO parentDTO) {
 		return ResponseEntity.ok(parentService.updateParent(id, parentDTO));
 	}
 	

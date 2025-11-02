@@ -1,4 +1,5 @@
 package com.horizon.skoolyserver.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,11 +11,14 @@ import lombok.*;
 @Table(name = "students")
 public class Student {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long id;
+	
+	@Column(name = "admission_number")
 	private String admissionNumber;
 	private String firstName;
 	private String lastName;
+	private Long age;
 	private String email;
 	private String phone;
 	private String address;
@@ -25,9 +29,11 @@ public class Student {
 	
 	@ManyToOne
 	@JoinColumn(name = "class_id")
+	@JsonBackReference
 	private SchoolClass schoolClass;
 	
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
+	@JsonBackReference
 	private Parent parent;
 }

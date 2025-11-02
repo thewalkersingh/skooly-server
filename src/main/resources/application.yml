@@ -2,32 +2,70 @@
 spring:
   profiles:
     active: dev
+
+
+
+# h2 profile
 ---
 spring:
   config:
     activate:
       on-profile: dev
   datasource:
-    url: jdbc:h2:mem:skoolydb
+    url: jdbc:h2:mem:skoolydb;DB_CLOSE_DELAY=-1
     driverClassName: org.h2.Driver
     username: sa
     password:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:data.sql
+
+  h2:
+    console:
+      path: /h2-console
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
+
+# Mysql profile
 ---
 spring:
   config:
     activate:
       on-profile: prod
+
   datasource:
     url: jdbc:mysql://localhost:3306/skoolydb?createDatabaseIfNotExist=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: admin
+
   jpa:
     hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+      format_sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+      platform: mysql
+
+logging:
+  level:
+    org.hibernate.SQL: debug

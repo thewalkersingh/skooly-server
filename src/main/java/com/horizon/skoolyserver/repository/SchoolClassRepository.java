@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface SchoolClassRepository extends JpaRepository<SchoolClass, Long> {
 	List<SchoolClass> findByGrade(String grade);
+	
+	List<SchoolClass> findBySection(String section);
 }

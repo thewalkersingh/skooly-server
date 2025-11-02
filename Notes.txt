@@ -3,9 +3,44 @@
 - Exception handling can be centralized with a @ControllerAdvice for cleaner error responses.
 - Endpoints now match the API contracts we outlined earlier (/api/students/...).
 
+
+private StudentDTO mapToDTO(Student student) { }
+
+private Student mapToEntity(StudentDTO dto) { }
+
+public StudentDTO createStudent(StudentDTO dto) { }
+
 public List<StudentDTO> getAllStudents() { return }
 
 public StudentDTO getStudentById(Long id) {	return }
 
 public StudentDTO updateStudent(Long id, StudentDTO dto) {}
+
 public void deleteStudent(Long id) {}
+
+
+    @GetMapping
+	public ResponseEntity<List<StudentDTO>> getAllStudents() {
+		return ResponseEntity.ok(studentService.getAllStudents());
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<StudentDTO> getStudentById(@PathVariable Long id) {
+		return ResponseEntity.ok(studentService.getStudentById(id));
+	}
+
+	@PostMapping
+    public ResponseEntity<StudentDTO> createStudent(@RequestBody StudentDTO dto) {
+    	return ResponseEntity.ok(studentService.createStudent(dto));
+    }
+
+	@PutMapping("/{id}")
+	public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long id, @RequestBody StudentDTO dto) {
+		return ResponseEntity.ok(studentService.updateStudent(id, dto));
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+		studentService.deleteStudent(id);
+		return ResponseEntity.noContent().build();
+	}
