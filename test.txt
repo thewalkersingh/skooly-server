@@ -1,0 +1,179 @@
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(name = "teachers")
+public class Teacher {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String employeeCode;
+    private String name;
+    private String email;
+    private String phone;
+
+    @ElementCollection(targetClass = Subject.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "teacher_subjects", joinColumns = @JoinColumn(name = "teacher_id"))
+    @Column(name = "subject")
+    private Set<Subject> subjects = new HashSet<>();
+
+    @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference
+    private List<SchoolClass> classes = new ArrayList<>();
+}
+
+@Data
+public class TeacherDTO {
+
+    private Long id; // no @NotBlank on Long
+
+    @NotBlank
+    private String employeeCode;
+
+    @NotBlank
+    private String name;
+
+    @Email
+    private String email;
+
+    private String phone;
+
+    private Set<Subject> subjects; // expose if needed
+}
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class ResourceNotFoundException extends RuntimeException {
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+}
+
+@Service
+@RequiredArgsConstructor
+public class TeacherService {
+
+    private final TeacherRepository teacherRepository;
+
+    public TeacherDTO createTeacher(TeacherDTO dto) {
+        Teacher teacher = mapToEntity(dto);
+        teacher.setId(null); // ensure new entity
+        Teacher saved = teacherRepository.save(teacher);
+        return mapToDTO(saved);
+    }
+
+    public List<TeacherDTO> getAllTeachers() {
+        return teacherRepository.findAll()
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public TeacherDTO getTeacherById(Long id) {
+        return teacherRepository.findById(id)
+                .map(this::mapToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("No teacher with id " + id + " found"));
+    }
+
+    public TeacherDTO getTeacherByEmployeeCode(String empCode) {
+        return teacherRepository.findByEmployeeCode(empCode)
+                .map(this::mapToDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("No teacher with code " + empCode + " found"));
+    }
+
+    public TeacherDTO updateTeacher(Long id, TeacherDTO dto) {
+        Teacher teacher = teacherRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No teacher with id " + id + " found"));
+
+        teacher.setName(dto.getName());
+        teacher.setEmployeeCode(dto.getEmployeeCode());
+        teacher.setEmail(dto.getEmail());
+        teacher.setPhone(dto.getPhone());
+        teacher.setSubjects(dto.getSubjects());
+
+        Teacher updated = teacherRepository.save(teacher);
+        return mapToDTO(updated);
+    }
+
+    public void deleteTeacher(Long id) {
+        if (!teacherRepository.existsById(id)) {
+            throw new ResourceNotFoundException("No teacher with id " + id + " found");
+        }
+        teacherRepository.deleteById(id);
+    }
+
+    // Mapping helpers
+    private TeacherDTO mapToDTO(Teacher teacher) {
+        TeacherDTO dto = new TeacherDTO();
+        dto.setId(teacher.getId());
+        dto.setEmployeeCode(teacher.getEmployeeCode());
+        dto.setName(teacher.getName());
+        dto.setEmail(teacher.getEmail());
+        dto.setPhone(teacher.getPhone());
+        dto.setSubjects(teacher.getSubjects());
+        return dto;
+    }
+
+    private Teacher mapToEntity(TeacherDTO dto) {
+        Teacher teacher = new Teacher();
+        teacher.setId(dto.getId());
+        teacher.setEmployeeCode(dto.getEmployeeCode());
+        teacher.setName(dto.getName());
+        teacher.setEmail(dto.getEmail());
+        teacher.setPhone(dto.getPhone());
+        teacher.setSubjects(dto.getSubjects());
+        return teacher;
+    }
+}
+
+@RestController
+@RequestMapping("/api/teachers")
+@RequiredArgsConstructor
+public class TeacherController {
+
+    private final TeacherService teacherService;
+
+    @PostMapping
+    public ResponseEntity<TeacherDTO> createTeacher(@Valid @RequestBody TeacherDTO teacherDTO) {
+        TeacherDTO created = teacherService.createTeacher(teacherDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TeacherDTO>> getAllTeachers() {
+        return ResponseEntity.ok(teacherService.getAllTeachers());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TeacherDTO> getTeacherById(@PathVariable Long id) {
+        return ResponseEntity.ok(teacherService.getTeacherById(id));
+    }
+
+    @GetMapping("/code/{empCode}")
+    public ResponseEntity<TeacherDTO> getTeacherByEmployeeCode(@PathVariable String empCode) {
+        return ResponseEntity.ok(teacherService.getTeacherByEmployeeCode(empCode));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TeacherDTO> updateTeacherById(@PathVariable Long id, @Valid @RequestBody TeacherDTO teacherDTO) {
+        return ResponseEntity.ok(teacherService.updateTeacher(id, teacherDTO));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTeacherById(@PathVariable Long id) {
+        teacherService.deleteTeacher(id);
+        return ResponseEntity.noContent().build();
+    }
+}
