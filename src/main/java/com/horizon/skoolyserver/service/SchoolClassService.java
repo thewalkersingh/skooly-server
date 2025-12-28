@@ -1,5 +1,5 @@
 package com.horizon.skoolyserver.service;
-import com.horizon.skoolyserver.dto.SchoolClassDTO;
+import com.horizon.skoolyserver.dto.school.SchoolClassDTO;
 import com.horizon.skoolyserver.model.SchoolClass;
 import com.horizon.skoolyserver.repository.SchoolClassRepository;
 import lombok.AllArgsConstructor;

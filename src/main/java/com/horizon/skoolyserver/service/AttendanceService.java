@@ -1,5 +1,5 @@
 package com.horizon.skoolyserver.service;
-import com.horizon.skoolyserver.dto.AttendanceDTO;
+import com.horizon.skoolyserver.dto.attendance.AttendanceDTO;
 import com.horizon.skoolyserver.exception.ResourceNotFoundException;
 import com.horizon.skoolyserver.model.Attendance;
 import com.horizon.skoolyserver.model.Student;

@@ -1,5 +1,5 @@
 package com.horizon.skoolyserver.service;
-import com.horizon.skoolyserver.dto.TeacherDTO;
+import com.horizon.skoolyserver.dto.teacher.TeacherDTO;
 import com.horizon.skoolyserver.exception.ResourceNotFoundException;
 import com.horizon.skoolyserver.model.Teacher;
 import com.horizon.skoolyserver.repository.TeacherRepository;

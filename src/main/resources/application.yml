@@ -1,7 +1,7 @@
 # application.yml
 spring:
   profiles:
-    active: prod
+    active: dev
 
 
 
@@ -38,13 +38,19 @@ logging:
   level:
     org.hibernate.SQL: debug
 
+app:
+  jwt:
+    secret: yourSecretKeyHere
+    expirationMs: 86400000 # 1 day
+
+
 
 # Mysql profile
 ---
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: local
 
   datasource:
     url: jdbc:mysql://localhost:3306/skoolydb?createDatabaseIfNotExist=true
@@ -69,3 +75,26 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
+
+
+# Production profile
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/skoolydb?createDatabaseIfNotExist=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+      format_sql: true
+    defer-datasource-initialization: true

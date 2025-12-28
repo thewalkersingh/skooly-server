@@ -1,5 +1,6 @@
 package com.horizon.skoolyserver.controller;
-import com.horizon.skoolyserver.dto.StudentDTO;
+import com.horizon.skoolyserver.dto.student.StudentCreateDTO;
+import com.horizon.skoolyserver.dto.student.StudentResponseDTO;
 import com.horizon.skoolyserver.service.StudentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,23 +17,24 @@ public class StudentController {
 	private final StudentService studentService;
 	
 	@PostMapping
-	public ResponseEntity<StudentDTO> createStudent(@Valid @RequestBody StudentDTO dto) {
-		StudentDTO created = studentService.createStudent(dto);
+	public ResponseEntity<StudentResponseDTO> createStudent(@Valid @RequestBody StudentCreateDTO  dto) {
+	   StudentResponseDTO created = studentService.createStudent(dto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<StudentDTO>> getAllStudents() {
+	public ResponseEntity<List<StudentResponseDTO>> getAllStudents() {
 		return ResponseEntity.ok(studentService.getAllStudents());
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<StudentDTO> getStudentById(@PathVariable Long id) {
+	public ResponseEntity<StudentResponseDTO> getStudentById(@PathVariable Long id) {
 		return ResponseEntity.ok(studentService.getStudentById(id));
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long id,@Valid @RequestBody StudentDTO dto) {
+	public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable Long id,
+			@Valid @RequestBody StudentCreateDTO dto) {
 		return ResponseEntity.ok(studentService.updateStudent(id, dto));
 	}
 	

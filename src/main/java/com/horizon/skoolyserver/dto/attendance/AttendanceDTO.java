@@ -1,4 +1,4 @@
-package com.horizon.skoolyserver.dto;
+package com.horizon.skoolyserver.dto.attendance;
 import com.horizon.skoolyserver.constants.AttendanceStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

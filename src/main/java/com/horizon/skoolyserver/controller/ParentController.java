@@ -1,5 +1,5 @@
 package com.horizon.skoolyserver.controller;
-import com.horizon.skoolyserver.dto.ParentDTO;
+import com.horizon.skoolyserver.dto.parent.ParentDTO;
 import com.horizon.skoolyserver.service.ParentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

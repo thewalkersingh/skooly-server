@@ -1,5 +1,5 @@
 package com.horizon.skoolyserver.controller;
-import com.horizon.skoolyserver.dto.SchoolClassDTO;
+import com.horizon.skoolyserver.dto.school.SchoolClassDTO;
 import com.horizon.skoolyserver.service.SchoolClassService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

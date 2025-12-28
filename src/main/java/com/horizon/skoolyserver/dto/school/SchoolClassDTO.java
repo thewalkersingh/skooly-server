@@ -1,4 +1,4 @@
-package com.horizon.skoolyserver.dto;
+package com.horizon.skoolyserver.dto.school;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 

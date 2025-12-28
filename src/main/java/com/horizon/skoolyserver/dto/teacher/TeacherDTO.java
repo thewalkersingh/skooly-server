@@ -1,4 +1,4 @@
-package com.horizon.skoolyserver.dto;
+package com.horizon.skoolyserver.dto.teacher;
 import com.horizon.skoolyserver.constants.Subject;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
