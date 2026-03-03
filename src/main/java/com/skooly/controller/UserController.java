@@ -1,3 +1,3 @@
-package org.thewa.skooly.controller;
+package com.skooly.controller;
 public class UserController {
 }
