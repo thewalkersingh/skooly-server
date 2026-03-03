@@ -11,6 +11,7 @@ import com.skooly.mapper.TeacherMapper;
 import com.skooly.model.Subject;
 import com.skooly.model.Teacher;
 import com.skooly.model.User;
+import com.skooly.repository.SubjectRepository;
 import com.skooly.repository.TeacherRepository;
 import com.skooly.repository.UserRepository;
 import com.skooly.service.TeacherService;
