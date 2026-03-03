@@ -1,0 +1,284 @@
+educore/
+├── 📁 server/                  (Spring Boot)
+│   ├── src/main/java/com/educore/
+│   │   ├── config/             (Security, CORS, DB config)
+│   │   ├── controller/         (REST Controllers)
+│   │   ├── service/            (Business Logic)
+│   │   ├── repository/         (JPA Repositories)
+│   │   ├── model/              (Entity classes)
+│   │   ├── dto/                (Data Transfer Objects)
+│   │   ├── exception/          (Custom Exceptions)
+│   │   └── utils/              (Helper classes)
+│   ├── src/main/resources/
+│   │   ├── application.yml
+│   │   └── db/migration/       (Flyway SQL scripts)
+│   └── pom.xml
+│
+├── 📁 client/                  (React)
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/             (Images, icons, fonts)
+│   │   ├── components/         (Reusable UI components)
+│   │   ├── pages/              (One folder per module)
+│   │   │   ├── students/
+│   │   │   ├── teachers/
+│   │   │   ├── attendance/
+│   │   │   ├── fees/
+│   │   │   ├── exams/
+│   │   │   ├── library/
+│   │   │   ├── timetable/
+│   │   │   ├── facilities/
+│   │   │   ├── hr/
+│   │   │   └── parents/
+│   │   ├── services/           (API calls / Axios)
+│   │   ├── store/              (Redux / Zustand)
+│   │   ├── hooks/              (Custom React hooks)
+│   │   ├── utils/              (Helper functions)
+│   │   ├── routes/             (React Router config)
+│   │   └── App.jsx
+│   └── package.json
+│
+├── 📁 mobile/                  (TBD)
+│
+└── README.md
+-----------------------------------------------------------------------------------
+
+#### 📁 Full Project Structure
+```
+src/main/java/com/educore/
+│
+├── EduCoreApplication.java
+│
+├── config/
+│   ├── SecurityConfig.java
+│   ├── JwtConfig.java
+│   ├── CorsConfig.java
+│   ├── OpenApiConfig.java
+│   └── AuditConfig.java
+│
+├── controller/
+│   ├── AuthController.java
+│   ├── UserController.java
+│   ├── StudentController.java
+│   ├── TeacherController.java
+│   ├── ClassController.java
+│   ├── SectionController.java
+│   ├── SubjectController.java
+│   ├── TimetableController.java
+│   ├── AttendanceController.java
+│   ├── FeeController.java
+│   ├── LibraryController.java
+│   ├── FacilityController.java
+│   ├── RoomController.java
+│   ├── MaintenanceController.java
+│   ├── ExamController.java
+│   ├── ResultController.java
+│   ├── StaffController.java
+│   ├── DepartmentController.java
+│   ├── LeaveController.java
+│   ├── PayrollController.java
+│   ├── ParentController.java
+│   ├── NotificationController.java
+│   └── ActivityLogController.java
+│
+├── service/
+│   ├── impl/
+│   │   ├── AuthServiceImpl.java
+│   │   ├── UserServiceImpl.java
+│   │   ├── StudentServiceImpl.java
+│   │   └── ... (one per controller)
+│   ├── AuthService.java
+│   ├── UserService.java
+│   ├── StudentService.java
+│   └── ... (interfaces)
+│
+├── repository/
+│   ├── UserRepository.java
+│   ├── StudentRepository.java
+│   ├── TeacherRepository.java
+│   ├── ClassRepository.java
+│   ├── SectionRepository.java
+│   ├── SubjectRepository.java
+│   ├── TimetableRepository.java
+│   ├── AttendanceRepository.java
+│   ├── FeePaymentRepository.java
+│   ├── BookRepository.java
+│   ├── BookIssueRepository.java
+│   ├── RoomRepository.java
+│   ├── FacilityRepository.java
+│   ├── MaintenanceRepository.java
+│   ├── ExamRepository.java
+│   ├── ResultRepository.java
+│   ├── StaffRepository.java
+│   ├── DepartmentRepository.java
+│   ├── LeaveRepository.java
+│   ├── PayrollRepository.java
+│   ├── ParentRepository.java
+│   ├── NotificationRepository.java
+│   └── ActivityLogRepository.java
+│
+├── model/
+│   ├── User.java
+│   ├── Role.java
+│   ├── Student.java
+│   ├── Teacher.java
+│   ├── Class.java
+│   ├── Section.java
+│   ├── Subject.java
+│   ├── Timetable.java
+│   ├── Attendance.java
+│   ├── TeacherAttendance.java
+│   ├── FeeCategory.java
+│   ├── FeeStructure.java
+│   ├── FeePayment.java
+│   ├── Book.java
+│   ├── BookIssue.java
+│   ├── Room.java
+│   ├── Facility.java
+│   ├── MaintenanceLog.java
+│   ├── Exam.java
+│   ├── Result.java
+│   ├── GradeScale.java
+│   ├── Staff.java
+│   ├── Department.java
+│   ├── LeaveRequest.java
+│   ├── Payroll.java
+│   ├── Parent.java
+│   ├── Notification.java
+│   └── ActivityLog.java
+│
+├── dto/
+│   ├── request/
+│   │   ├── LoginRequest.java
+│   │   ├── CreateStudentRequest.java
+│   │   └── ... (one per POST/PUT)
+│   ├── response/
+│   │   ├── AuthResponse.java
+│   │   ├── StudentResponse.java
+│   │   └── ... (one per GET response)
+│   └── common/
+│       ├── PageResponse.java
+│       └── ApiResponse.java
+│
+├── mapper/
+│   ├── StudentMapper.java
+│   ├── TeacherMapper.java
+│   └── ... (MapStruct mappers)
+│
+├── exception/
+│   ├── GlobalExceptionHandler.java
+│   ├── ResourceNotFoundException.java
+│   ├── BadRequestException.java
+│   ├── UnauthorizedException.java
+│   └── ConflictException.java
+│
+├── security/
+│   ├── JwtTokenProvider.java
+│   ├── JwtAuthenticationFilter.java
+│   ├── CustomUserDetailsService.java
+│   └── UserPrincipal.java
+│
+└── utils/
+    ├── PaginationUtils.java
+    ├── DateUtils.java
+    ├── FileUploadUtils.java
+    └── GradeCalculator.java
+
+------------------------------------------------------------------------------------
+src/main/resources/
+├── application.yml
+└── db/
+    └── migration/
+        ├── V1__create_users_roles.sql
+        ├── V2__create_students.sql
+        ├── V3__create_teachers.sql
+        ├── V4__create_classes_sections_subjects.sql
+        ├── V5__create_timetable.sql
+        ├── V6__create_attendance.sql
+        ├── V7__create_fees.sql
+        ├── V8__create_library.sql
+        ├── V9__create_facilities.sql
+        ├── V10__create_exams_results.sql
+        ├── V11__create_staff_hr.sql
+        ├── V12__create_parents.sql
+        ├── V13__create_notifications.sql
+        └── V14__create_activity_logs.sql
+
+------------------------------------------------------------------------------------
+
+
+📊 EduCore — Database Schema
+
+👤 Users & Auth
+users (id, username, password, role, is_active, created_at)
+roles (id, name)  -- ADMIN, TEACHER, STUDENT, PARENT, STAFF
+
+🧑‍🎓 Students Module
+students (id, user_id, first_name, last_name, dob, gender, 
+          address, phone, email, admission_date, class_id, 
+          section_id, parent_id, photo, status)
+
+👨‍🏫 Teachers Module
+teachers (id, user_id, first_name, last_name, dob, gender,
+          address, phone, email, joining_date, subject_id,
+          qualification, experience, photo, status)
+
+🗓️ Classes & Timetable
+classes (id, name, grade_level)
+sections (id, class_id, name, teacher_id)  -- class teacher
+subjects (id, name, code, description)
+timetable (id, class_id, section_id, subject_id, teacher_id, 
+           day_of_week, start_time, end_time, room_id)
+
+✅ Attendance
+attendance (id, student_id, class_id, date, status, 
+            marked_by, remarks)  -- status: PRESENT/ABSENT/LATE
+teacher_attendance (id, teacher_id, date, status, remarks)
+
+💰 Fees & Finance
+fee_categories (id, name, amount, description)
+fee_structures (id, class_id, fee_category_id, academic_year, due_date)
+fee_payments (id, student_id, fee_structure_id, amount_paid, 
+              payment_date, payment_mode, transaction_id, status)
+
+📚 Library
+books (id, title, author, isbn, category, total_copies, 
+       available_copies, publisher, published_year)
+book_issues (id, book_id, student_id, issue_date, 
+             due_date, return_date, fine, status)
+
+🏫 Facilities / Infrastructure
+rooms (id, name, type, capacity, floor, building, status)
+-- type: CLASSROOM, LAB, LIBRARY, OFFICE, SPORTS
+facilities (id, name, description, location, status)
+maintenance_logs (id, facility_id, reported_by, issue, 
+                  reported_date, resolved_date, status)
+
+📝 Exams & Results
+exams (id, name, class_id, subject_id, exam_date, 
+       total_marks, passing_marks, academic_year)
+results (id, exam_id, student_id, marks_obtained, 
+         grade, remarks, status)  -- status: PASS/FAIL
+grade_scale (id, grade, min_marks, max_marks, gpa)
+
+👥 Staff / HR
+staff (id, user_id, first_name, last_name, dob, gender,
+       address, phone, email, department, designation,
+       joining_date, salary, photo, status)
+departments (id, name, head_id, description)
+leave_requests (id, staff_id, leave_type, from_date, 
+                to_date, reason, status, approved_by)
+payroll (id, staff_id, month, year, basic_salary, 
+         allowances, deductions, net_salary, paid_date)
+
+👨‍👩‍👧 Parents Portal
+parents (id, user_id, first_name, last_name, phone, 
+         email, address, occupation, relation)
+-- parent linked to student via students.parent_id
+notifications (id, user_id, title, message, 
+               is_read, created_at)
+			   
+activity_logs (id, user_id, action, module, description, 
+               ip_address, created_at)
+-- e.g. action: CREATE, UPDATE, DELETE, LOGIN, LOGOUT
+-- module: STUDENT, TEACHER, FEES, EXAM, etc.			   
