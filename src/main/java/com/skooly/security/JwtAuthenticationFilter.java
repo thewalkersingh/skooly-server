@@ -1,3 +1,3 @@
-package org.thewa.skooly.security;
+package com.skooly.security;
 public class JwtAuthenticationFilter {
 }
