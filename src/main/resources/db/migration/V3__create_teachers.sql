@@ -1,0 +1,20 @@
+CREATE TABLE teachers (
+    id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id         BIGINT UNIQUE,
+    first_name      VARCHAR(100) NOT NULL,
+    last_name       VARCHAR(100) NOT NULL,
+    dob             DATE,
+    gender          ENUM('MALE', 'FEMALE', 'OTHER'),
+    address         TEXT,
+    phone           VARCHAR(20),
+    email           VARCHAR(150),
+    joining_date    DATE,
+    subject_id      BIGINT,
+    qualification   VARCHAR(255),
+    experience      INT DEFAULT 0,
+    photo           VARCHAR(255),
+    status          ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
+    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
