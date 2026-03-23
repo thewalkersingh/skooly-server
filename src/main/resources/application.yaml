@@ -2,6 +2,7 @@ server:
   port: 8080
   servlet:
     context-path: /
+  address: 0.0.0.0 #this enables other device access on same network
 
 spring:
   application:
@@ -42,3 +43,6 @@ springdoc:
 logging:
   level:
     com.skooly: DEBUG
+
+# 172.24.176.1:8080
+# http://172.24.176.1:8080/api/v1/schools

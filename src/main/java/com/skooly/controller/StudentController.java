@@ -22,8 +22,7 @@ public class StudentController {
 	
 	@GetMapping
 	@Operation(summary = "Get all students for a school")
-	public ResponseEntity<List<StudentResponse>> getAllStudents(
-			@PathVariable Long schoolId,
+	public ResponseEntity<List<StudentResponse>> getAllStudents(@PathVariable Long schoolId,
 			@RequestParam(required = false) String search) {
 		
 		if(search != null && !search.isBlank()){
@@ -34,9 +33,7 @@ public class StudentController {
 	
 	@GetMapping("/{studentId}")
 	@Operation(summary = "Get student by ID")
-	public ResponseEntity<StudentResponse> getStudentById(
-			@PathVariable Long schoolId,
-			@PathVariable Long studentId) {
+	public ResponseEntity<StudentResponse> getStudentById(@PathVariable Long schoolId, @PathVariable Long studentId) {
 		return ResponseEntity.ok(studentService.getStudentById(schoolId, studentId));
 	}
 	
