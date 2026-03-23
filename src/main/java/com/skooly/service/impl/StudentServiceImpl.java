@@ -1,178 +1,150 @@
 package com.skooly.service.impl;
-import com.skooly.dto.common.PageResponse;
-import com.skooly.dto.request.CreateStudentRequest;
-import com.skooly.dto.request.UpdateStudentRequest;
+import com.skooly.constant.Gender;
+import com.skooly.constant.Status;
+import com.skooly.dto.request.StudentRequest;
 import com.skooly.dto.response.StudentResponse;
-import com.skooly.dto.response.StudentSummaryResponse;
 import com.skooly.exception.BadRequestException;
 import com.skooly.exception.ResourceNotFoundException;
-import com.skooly.mapper.StudentMapper;
 import com.skooly.model.*;
 import com.skooly.repository.*;
 import com.skooly.service.StudentService;
-import com.skooly.utils.FileUploadUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class StudentServiceImpl implements StudentService {
 	private final StudentRepository studentRepository;
+	private final UserRepository userRepository;
+	private final SchoolRepository schoolRepository;
 	private final SchoolClassRepository classRepository;
 	private final SectionRepository sectionRepository;
 	private final ParentRepository parentRepository;
-	private final StudentMapper studentMapper;
-	private final FileUploadUtils fileUploadUtils;
 	
-	@Override
-	@Transactional(readOnly = true)
-	public PageResponse<StudentSummaryResponse> getAllStudents(
-			int page, int size, String search,
-			Long classId, Long sectionId,
-			Student.Status status, Student.Gender gender) {
-		
-		Pageable pageable = PageRequest.of(page-1, size, Sort.by("firstName").ascending());
-		
-		Page<Student> students = studentRepository.findWithFilters(
-				classId, sectionId, status, gender, search, pageable
-		                                                          );
-		
-		List<StudentSummaryResponse> data = students.getContent()
-				                                    .stream()
-				                                    .map(studentMapper::toSummaryResponse)
-				                                    .toList();
-		
-		return new PageResponse<>(data, page, size, students.getTotalElements(), students.getTotalPages());
+	public List<StudentResponse> getAllStudents(Long schoolId) {
+		return studentRepository.findBySchoolId(schoolId)
+				       .stream().map(StudentResponse::from).toList();
 	}
 	
-	@Override
-	@Transactional(readOnly = true)
-	public StudentResponse getStudentById(Long id) {
-		return studentMapper.toResponse(findStudentById(id));
+	public StudentResponse getStudentById(Long schoolId, Long studentId) {
+		Student student = studentRepository.findByIdAndSchoolId(studentId, schoolId)
+				                  .orElseThrow(() -> new ResourceNotFoundException("Student", studentId));
+		return StudentResponse.from(student);
 	}
 	
-	@Override
-	@Transactional(readOnly = true)
-	public StudentResponse getMyProfile(Long userId) {
-		Student student = studentRepository
-				                  .findByUserId(userId)
-				                  .orElseThrow(() -> new ResourceNotFoundException("Student profile not found"));
-		return studentMapper.toResponse(student);
+	public List<StudentResponse> searchStudents(Long schoolId, String query) {
+		return studentRepository.searchBySchoolId(schoolId, query)
+				       .stream().map(StudentResponse::from).toList();
 	}
 	
-	@Override
-	public StudentResponse createStudent(CreateStudentRequest request) {
-		if(request.getEmail() != null && studentRepository.existsByEmail(request.getEmail())){
-			throw new BadRequestException("Email already in use");
+	public long countStudents(Long schoolId) {
+		return studentRepository.countBySchoolId(schoolId);
+	}
+	
+	@Transactional
+	public StudentResponse createStudent(Long schoolId, StudentRequest request) {
+		School school = schoolRepository.findById(schoolId)
+				                .orElseThrow(() -> new ResourceNotFoundException("School", schoolId));
+		
+		// Check username uniqueness
+		if(userRepository.existsBySchoolIdAndUsername(schoolId, request.getUsername())){
+			throw new BadRequestException("Username '"+request.getUsername()+"' already exists");
 		}
 		
-		Student student = studentMapper.toEntity(request);
+		// Create user account atomically
+		User user = User.builder()
+				            .school(school)
+				            .username(request.getUsername())
+				            .password(request.getPassword()) // TODO: BCrypt encode when JWT added
+				            .role("STUDENT")
+				            .isActive(true)
+				            .build();
+		user = userRepository.save(user);
 		
-		student.setSchoolClass(findClassById(request.getClassId()));
-		student.setSection(findSectionById(request.getSectionId()));
+		// Resolve optional relations
+		SchoolClass schoolClass = null;
+		if(request.getClassId() != null){
+			schoolClass = classRepository.findById(request.getClassId())
+					              .orElseThrow(() -> new ResourceNotFoundException("Class", request.getClassId()));
+		}
 		
+		Section section = null;
+		if(request.getSectionId() != null){
+			section = sectionRepository.findById(request.getSectionId())
+					          .orElseThrow(() -> new ResourceNotFoundException("Section", request.getSectionId()));
+		}
+		
+		Parent parent = null;
 		if(request.getParentId() != null){
-			student.setParent(findParentById(request.getParentId()));
+			parent = parentRepository.findById(request.getParentId())
+					         .orElseThrow(() -> new ResourceNotFoundException("Parent", request.getParentId()));
 		}
 		
-		student.setStatus(Student.Status.ACTIVE);
+		Student student = Student.builder()
+				                  .school(school)
+				                  .user(user)
+				                  .firstName(request.getFirstName())
+				                  .lastName(request.getLastName())
+				                  .dob(request.getDob())
+				                  .gender(request.getGender() != null ? Gender.valueOf(request.getGender()) : null)
+				                  .address(request.getAddress())
+				                  .phone(request.getPhone())
+				                  .email(request.getEmail())
+				                  .admissionDate(request.getAdmissionDate())
+				                  .schoolClass(schoolClass)
+				                  .section(section)
+				                  .parent(parent)
+				                  .photo(request.getPhoto())
+				                  .status(request.getStatus() != null ? Status.valueOf(request.getStatus())
+				                                                      : Status.ACTIVE)
+				                  .build();
 		
-		return studentMapper.toResponse(studentRepository.save(student));
+		return StudentResponse.from(studentRepository.save(student));
 	}
 	
-	@Override
-	public StudentResponse updateStudent(Long id, UpdateStudentRequest request) {
-		Student student = findStudentById(id);
+	@Transactional
+	public StudentResponse updateStudent(Long schoolId, Long studentId, StudentRequest request) {
+		Student student = studentRepository.findByIdAndSchoolId(studentId, schoolId)
+				                  .orElseThrow(() -> new ResourceNotFoundException("Student", studentId));
 		
-		if(request.getFirstName() != null)
-			student.setFirstName(request.getFirstName());
-		if(request.getLastName() != null)
-			student.setLastName(request.getLastName());
-		if(request.getDob() != null)
-			student.setDob(request.getDob());
-		if(request.getGender() != null)
-			student.setGender(request.getGender());
-		if(request.getAddress() != null)
-			student.setAddress(request.getAddress());
-		if(request.getPhone() != null)
-			student.setPhone(request.getPhone());
-		if(request.getEmail() != null)
-			student.setEmail(request.getEmail());
-		if(request.getClassId() != null)
-			student.setSchoolClass(findClassById(request.getClassId()));
-		if(request.getSectionId() != null)
-			student.setSection(findSectionById(request.getSectionId()));
-		if(request.getParentId() != null)
-			student.setParent(findParentById(request.getParentId()));
+		student.setFirstName(request.getFirstName());
+		student.setLastName(request.getLastName());
+		student.setDob(request.getDob());
+		student.setGender(request.getGender() != null ? Gender.valueOf(request.getGender()) : null);
+		student.setAddress(request.getAddress());
+		student.setPhone(request.getPhone());
+		student.setEmail(request.getEmail());
+		student.setAdmissionDate(request.getAdmissionDate());
+		student.setPhoto(request.getPhoto());
 		
-		return studentMapper.toResponse(studentRepository.save(student));
-	}
-	
-	@Override
-	public void deleteStudent(Long id) throws ResourceNotFoundException {
-		if(!studentRepository.existsById(id)){
-			throw new ResourceNotFoundException("Student not found with id: "+id);
+		if(request.getStatus() != null){
+			student.setStatus(Status.valueOf(request.getStatus()));
 		}
-		studentRepository.deleteById(id);
-	}
-	
-	@Override
-	public void updateStatus(Long id, Student.Status status) {
-		Student student = findStudentById(id);
-		student.setStatus(status);
-		studentRepository.save(student);
-	}
-	
-	@Override
-	public StudentResponse uploadPhoto(Long id, MultipartFile file) {
-		Student student = findStudentById(id);
-		String photoPath = fileUploadUtils.uploadFile(file, "students");
-		if(student.getPhoto() != null){
-			fileUploadUtils.deleteFile(student.getPhoto());
+		if(request.getClassId() != null){
+			student.setSchoolClass(classRepository.findById(request.getClassId())
+					                       .orElseThrow(() -> new ResourceNotFoundException("Class",
+					                                                                        request.getClassId())));
 		}
-		student.setPhoto(photoPath);
-		return studentMapper.toResponse(studentRepository.save(student));
-	}
-	
-	@Override
-	public void deletePhoto(Long id) {
-		Student student = findStudentById(id);
-		if(student.getPhoto() != null){
-			fileUploadUtils.deleteFile(student.getPhoto());
-			student.setPhoto(null);
-			studentRepository.save(student);
+		if(request.getSectionId() != null){
+			student.setSection(sectionRepository.findById(request.getSectionId())
+					                   .orElseThrow(() -> new ResourceNotFoundException("Section",
+					                                                                    request.getSectionId())));
 		}
+		if(request.getParentId() != null){
+			student.setParent(parentRepository.findById(request.getParentId())
+					                  .orElseThrow(() -> new ResourceNotFoundException("Parent", request.getParentId())));
+		}
+		
+		return StudentResponse.from(studentRepository.save(student));
 	}
 	
-	// ── Private helpers ──────────────────────────────────────────────────────
-	
-	private Student findStudentById(Long id) throws ResourceNotFoundException {
-		return studentRepository.findById(id)
-				       .orElseThrow(() -> new ResourceNotFoundException(
-						       "Student not found with id: "+id));
-	}
-	
-	private SchoolClass findClassById(Long id) {
-		return classRepository.findById(id)
-				       .orElseThrow(() -> new ResourceNotFoundException(
-						       "Class not found with id: "+id));
-	}
-	
-	private Section findSectionById(Long id) {
-		return sectionRepository.findById(id)
-				       .orElseThrow(() -> new ResourceNotFoundException(
-						       "Section not found with id: "+id));
-	}
-	
-	private Parent findParentById(Long id) {
-		return parentRepository.findById(id)
-				       .orElseThrow(() -> new ResourceNotFoundException(
-						       "Parent not found with id: "+id));
+	@Transactional
+	public void deleteStudent(Long schoolId, Long studentId) {
+		Student student = studentRepository.findByIdAndSchoolId(studentId, schoolId)
+				                  .orElseThrow(() -> new ResourceNotFoundException("Student", studentId));
+		studentRepository.delete(student);
 	}
 }

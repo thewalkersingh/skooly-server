@@ -1,18 +1,30 @@
 package com.skooly.dto.response;
-import lombok.*;
-
-import java.time.LocalDateTime;
+import com.skooly.model.Section;
+import lombok.Data;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class SectionResponse {
 	private Long id;
+	private String name;
+	private Integer capacity;
 	private Long classId;
 	private String className;
-	private String name;
 	private Long teacherId;
 	private String teacherName;
-	private LocalDateTime createdAt;
+	
+	public static SectionResponse from(Section s) {
+		SectionResponse r = new SectionResponse();
+		r.setId(s.getId());
+		r.setName(s.getName());
+		r.setCapacity(s.getCapacity());
+		if(s.getSchoolClass() != null){
+			r.setClassId(s.getSchoolClass().getId());
+			r.setClassName(s.getSchoolClass().getName());
+		}
+		if(s.getTeacher() != null){
+			r.setTeacherId(s.getTeacher().getId());
+			r.setTeacherName(s.getTeacher().getFirstName()+" "+s.getTeacher().getLastName());
+		}
+		return r;
+	}
 }

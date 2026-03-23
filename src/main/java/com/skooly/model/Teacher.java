@@ -1,8 +1,9 @@
-package com.skooly.model;// Teacher.java
+package com.skooly.model;
+import com.skooly.constant.Gender;
+import com.skooly.constant.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
-import javax.security.auth.Subject;
 import java.time.LocalDate;
 
 @Entity
@@ -12,13 +13,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Teacher extends BaseEntity {
+public class Teacher {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", unique = true)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "school_id", nullable = false)
+	private School school;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 	
 	@Column(name = "first_name", nullable = false, length = 100)
@@ -37,7 +42,7 @@ public class Teacher extends BaseEntity {
 	@Column(length = 20)
 	private String phone;
 	
-	@Column(length = 150)
+	@Column(length = 100)
 	private String email;
 	
 	@Column(name = "joining_date")
@@ -47,18 +52,18 @@ public class Teacher extends BaseEntity {
 	@JoinColumn(name = "subject_id")
 	private Subject subject;
 	
-	@Column(length = 255)
+	@Column(length = 200)
 	private String qualification;
-	private Integer experience = 0;
+	private Integer experience;
 	
-	@Column(length = 255)
+	@Column(length = 500)
 	private String photo;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(length = 20)
+	@Column(nullable = false)
 	private Status status = Status.ACTIVE;
 	
-	public enum Gender {MALE, FEMALE, OTHER}
-	
-	public enum Status {ACTIVE, INACTIVE}
+//	public enum Gender {MALE, FEMALE, OTHER}
+
+//	public enum Status {ACTIVE, INACTIVE}
 }

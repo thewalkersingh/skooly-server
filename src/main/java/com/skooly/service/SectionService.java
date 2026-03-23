@@ -1,18 +1,12 @@
 package com.skooly.service;
-import com.skooly.dto.common.PageResponse;
-import com.skooly.dto.request.CreateSectionRequest;
+import com.skooly.dto.request.SectionRequest;
 import com.skooly.dto.response.SectionResponse;
 
+import java.util.List;
+
 public interface SectionService {
-	PageResponse<SectionResponse> getAllSections(int page, int size, Long classId);
-	
-	SectionResponse getSectionById(Long id);
-	
-	SectionResponse createSection(CreateSectionRequest request);
-	
-	SectionResponse updateSection(Long id, CreateSectionRequest request);
-	
-	void deleteSection(Long id);
-	
-	SectionResponse assignTeacher(Long sectionId, Long teacherId);
+	List<SectionResponse> getSectionsByClass(Long schoolId, Long classId);
+	List<SectionResponse> getAllSections(Long schoolId);
+	SectionResponse createSection(Long schoolId, SectionRequest req);
+	void deleteSection(Long schoolId, Long sectionId);
 }

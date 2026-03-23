@@ -9,15 +9,19 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Subject extends BaseEntity {
+public class Subject {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "school_id", nullable = false)
+	private School school;
+	
 	@Column(nullable = false, length = 100)
 	private String name;
 	
-	@Column(unique = true, length = 20)
+	@Column(length = 50)
 	private String code;
 	
 	@Column(columnDefinition = "TEXT")

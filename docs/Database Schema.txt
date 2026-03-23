@@ -1,0 +1,87 @@
+ Users & Auth
+users (id, username, password, role, is_active, created_at)
+roles (id, name)  -- ADMIN, TEACHER, STUDENT, PARENT, STAFF
+
+🧑‍🎓 Students Module
+students (id, user_id, first_name, last_name, dob, gender, 
+          address, phone, email, admission_date, class_id, 
+          section_id, parent_id, photo, status)
+		  
+👨‍🏫 Teachers Module
+teachers (id, user_id, first_name, last_name, dob, gender,
+          address, phone, email, joining_date, subject_id,
+          qualification, experience, photo, status)
+		  
+🗓️ Classes & Timetable
+classes (id, name, grade_level)
+sections (id, class_id, name, teacher_id)  -- class teacher
+subjects (id, name, code, description)
+timetable (id, class_id, section_id, subject_id, teacher_id, 
+           day_of_week, start_time, end_time, room_id)
+		   
+✅ Attendance		   
+attendance (id, student_id, class_id, date, status, 
+            marked_by, remarks)  -- status: PRESENT/ABSENT/LATE
+teacher_attendance (id, teacher_id, date, status, remarks)
+
+💰 Fees & Finance
+fee_categories (id, name, amount, description)
+fee_structures (id, class_id, fee_category_id, academic_year, due_date)
+fee_payments (id, student_id, fee_structure_id, amount_paid, 
+              payment_date, payment_mode, transaction_id, status)
+			  
+📚 Library
+books (id, title, author, isbn, category, total_copies, 
+       available_copies, publisher, published_year)
+book_issues (id, book_id, student_id, issue_date, 
+             due_date, return_date, fine, status)
+			 
+🏫 Facilities / Infrastructure
+rooms (id, name, type, capacity, floor, building, status)
+-- type: CLASSROOM, LAB, LIBRARY, OFFICE, SPORTS
+facilities (id, name, description, location, status)
+maintenance_logs (id, facility_id, reported_by, issue, 
+                  reported_date, resolved_date, status)
+				  
+📝 Exams & Results 
+exams (id, name, class_id, subject_id, exam_date, 
+       total_marks, passing_marks, academic_year)
+results (id, exam_id, student_id, marks_obtained, 
+         grade, remarks, status)  -- status: PASS/FAIL
+grade_scale (id, grade, min_marks, max_marks, gpa)
+
+👥 Staff / HR
+staff (id, user_id, first_name, last_name, dob, gender,
+       address, phone, email, department, designation,
+       joining_date, salary, photo, status)
+departments (id, name, head_id, description)
+leave_requests (id, staff_id, leave_type, from_date, 
+                to_date, reason, status, approved_by)
+payroll (id, staff_id, month, year, basic_salary, 
+         allowances, deductions, net_salary, paid_date)
+		 
+👨‍👩‍👧 Parents Portal
+parents (id, user_id, first_name, last_name, phone, 
+         email, address, occupation, relation)
+-- parent linked to student via students.parent_id
+notifications (id, user_id, title, message, 
+               is_read, created_at)
+
+schools (id, name, code, address, phone, email, logo, status, created_at)
+			   
+Activity Tracking  
+activity_logs (id, user_id, action, module, description, 
+               ip_address, created_at)
+-- e.g. action: CREATE, UPDATE, DELETE, LOGIN, LOGOUT
+-- module: STUDENT, TEACHER, FEES, EXAM, etc.			   
+			   
+			   
+🔗 Key Relationships
+
+students → users, classes, sections, parents
+teachers → users, subjects
+timetable → classes, sections, subjects, teachers, rooms
+attendance → students, classes
+fee_payments → students, fee_structures
+results → exams, students
+staff → users, departments

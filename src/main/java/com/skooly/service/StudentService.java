@@ -1,33 +1,21 @@
-
 package com.skooly.service;
-import com.skooly.dto.common.PageResponse;
-import com.skooly.dto.request.CreateStudentRequest;
-import com.skooly.dto.request.UpdateStudentRequest;
+import com.skooly.dto.request.StudentRequest;
 import com.skooly.dto.response.StudentResponse;
-import com.skooly.dto.response.StudentSummaryResponse;
-import com.skooly.model.Student;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public interface StudentService {
-	PageResponse<StudentSummaryResponse> getAllStudents(
-			int page, int size, String search,
-			Long classId, Long sectionId,
-			Student.Status status, Student.Gender gender
-	                                                   );
+	List<StudentResponse> getAllStudents(Long schoolId);
 	
-	StudentResponse getStudentById(Long id);
+	StudentResponse getStudentById(Long schoolId, Long studentId);
 	
-	StudentResponse getMyProfile(Long userId);
+	List<StudentResponse> searchStudents(Long schoolId, String query);
 	
-	StudentResponse createStudent(CreateStudentRequest request);
+	long countStudents(Long schoolId);
 	
-	StudentResponse updateStudent(Long id, UpdateStudentRequest request);
+	StudentResponse createStudent(Long schoolId, StudentRequest request);
 	
-	void deleteStudent(Long id);
+	StudentResponse updateStudent(Long schoolId, Long studentId, StudentRequest request);
 	
-	void updateStatus(Long id, Student.Status status);
-	
-	StudentResponse uploadPhoto(Long id, MultipartFile file);
-	
-	void deletePhoto(Long id);
+	void deleteStudent(Long schoolId, Long studentId);
 }
