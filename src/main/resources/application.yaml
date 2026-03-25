@@ -2,7 +2,7 @@ server:
   port: 8080
   servlet:
     context-path: /
-  address: 0.0.0.0 #this enables other device access on same network
+#  address: 0.0.0.0 #this enables other device access on same network
 
 spring:
   application:

@@ -13,7 +13,8 @@ public class WebConfig {
 			@Override
 			public void addCorsMappings(@NonNull CorsRegistry registry) {
 				registry.addMapping("/api/**")
-						.allowedOrigins("http://localhost:5173","https://your-frontend.vercel.app")
+						.allowedOrigins("http://localhost:5173","https://skooly.vercel.app",
+						                "https://skooly-1buzk9nt9-diwakar-singhs-projects.vercel.app")
 						.allowedMethods("GET","POST","PUT","DELETE");
 			}
 		};

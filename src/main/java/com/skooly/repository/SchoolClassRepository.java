@@ -1,5 +1,4 @@
 package com.skooly.repository;
-
 import com.skooly.model.SchoolClass;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -8,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface SchoolClassRepository extends JpaRepository<SchoolClass, Long> {
-    List<SchoolClass> findBySchoolIdOrderByGradeLevelAsc(Long schoolId);
+	List<SchoolClass> findBySchoolIdOrderByGradeLevelAsc(Long schoolId);
 }

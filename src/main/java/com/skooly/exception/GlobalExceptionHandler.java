@@ -40,10 +40,6 @@ public class GlobalExceptionHandler {
 				       .body(new ErrorResponse(500, "An unexpected error occurred: "+ex.getMessage(), null));
 	}
 	
-	public record ErrorResponse(
-			int status,
-			String message,
-			Map<String, String> validationErrors
-	) {
+	public record ErrorResponse(int status, String message, Map<String, String> validationErrors) {
 	}
 }
