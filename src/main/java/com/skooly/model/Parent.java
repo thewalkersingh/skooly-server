@@ -42,4 +42,5 @@ public class Parent {
 	
 	@Column(length = 50)
 	private String relation;
+	
 }

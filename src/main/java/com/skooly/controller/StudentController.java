@@ -69,4 +69,5 @@ public class StudentController {
 		studentService.deleteStudent(schoolId, studentId);
 		return ResponseEntity.noContent().build();
 	}
+	
 }

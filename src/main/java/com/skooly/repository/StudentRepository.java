@@ -24,9 +24,10 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 	long countBySchoolIdAndStatus(Long schoolId, Status status);
 	
 	// searching by firstname, lastname or email
-	@Query("SELECT s FROM Student s WHERE s.school.id = :schoolId AND "+
-	       "(LOWER(s.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR "+
-	       " LOWER(s.lastName)  LIKE LOWER(CONCAT('%', :query, '%')) OR "+
+	@Query("SELECT s FROM Student s WHERE s.school.id = :schoolId AND " +
+	       "(LOWER(s.firstName) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
+	       " LOWER(s.lastName)  LIKE LOWER(CONCAT('%', :query, '%')) OR " +
 	       " LOWER(s.email)     LIKE LOWER(CONCAT('%', :query, '%')))")
 	List<Student> searchBySchoolId(@Param("schoolId") Long schoolId, @Param("query") String query);
+	
 }
