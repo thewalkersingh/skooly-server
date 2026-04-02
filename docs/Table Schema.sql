@@ -203,7 +203,7 @@ CREATE TABLE fee_payments (
     FOREIGN KEY (fee_structure_id) REFERENCES fee_structures(id) ON DELETE CASCADE
 );
 
-🗄️ V8__create_library.sql
+-- 🗄️ V8__create_library.sql
 CREATE TABLE books (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
     title            VARCHAR(255) NOT NULL,
