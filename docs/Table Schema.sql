@@ -1,4 +1,4 @@
-🗄️ V1__create_users_roles.sql
+-- 🗄️ V1__create_users_roles.sql
 CREATE TABLE roles (
     id      BIGINT AUTO_INCREMENT PRIMARY KEY,
     name    VARCHAR(50) NOT NULL UNIQUE
@@ -16,13 +16,9 @@ CREATE TABLE users (
 );
 
 INSERT INTO roles (name) VALUES
-    ('ADMIN'),
-    ('TEACHER'),
-    ('STUDENT'),
-    ('PARENT'),
-    ('STAFF');
+    ('ADMIN'), ('TEACHER'), ('STUDENT'), ('PARENT'), ('STAFF');
 	
-🗄️ V2__create_students.sql
+-- 🗄️ V2__create_students.sql
 CREATE TABLE students (
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id         BIGINT UNIQUE,
@@ -45,7 +41,7 @@ CREATE TABLE students (
 );
 
 
-🗄️ V3__create_teachers.sql
+-- 🗄️ V3__create_teachers.sql
 CREATE TABLE teachers (
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id         BIGINT UNIQUE,
@@ -68,7 +64,7 @@ CREATE TABLE teachers (
 );
 
 
-🗄️ V4__create_classes_sections_subjects.sql
+-- 🗄️ V4__create_classes_sections_subjects.sql
 CREATE TABLE classes (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
@@ -105,7 +101,7 @@ ALTER TABLE students
 ALTER TABLE teachers
     ADD CONSTRAINT fk_teacher_subject FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE SET NULL;
 	
-🗄️ V5__create_timetable.sql
+-- 🗄️ V5__create_timetable.sql
 CREATE TABLE rooms (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
@@ -137,9 +133,10 @@ CREATE TABLE timetable (
     FOREIGN KEY (room_id)    REFERENCES rooms(id)     ON DELETE SET NULL
 );
 
-🗄️ V6__create_attendance.sql
+-- 🗄️ V6__create_attendance.sql
 CREATE TABLE attendance (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    school_id 	BIGINT NOT NULL,
     student_id  BIGINT NOT NULL,
     class_id    BIGINT NOT NULL,
     date        DATE NOT NULL,
@@ -149,6 +146,7 @@ CREATE TABLE attendance (
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uq_student_date (student_id, date),
+    FOREIGN KEY (school_id) REFERENCES schools(id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
     FOREIGN KEY (class_id)   REFERENCES classes(id)  ON DELETE CASCADE,
     FOREIGN KEY (marked_by)  REFERENCES users(id)    ON DELETE SET NULL
@@ -166,7 +164,7 @@ CREATE TABLE teacher_attendance (
     FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE
 );
 
-🗄️ V7__create_fees.sql
+-- 🗄️ V7__create_fees.sql
 CREATE TABLE fee_categories (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
@@ -206,6 +204,7 @@ CREATE TABLE fee_payments (
 -- 🗄️ V8__create_library.sql
 CREATE TABLE books (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+    school_id 		 BIGINT NOT NULL,
     title            VARCHAR(255) NOT NULL,
     author           VARCHAR(255),
     isbn             VARCHAR(50) UNIQUE,
@@ -213,15 +212,17 @@ CREATE TABLE books (
     total_copies     INT DEFAULT 1,
     available_copies INT DEFAULT 1,
     publisher        VARCHAR(255),
-    published_year   YEAR,
+    published_year   INT NOT NULL,
     created_at       DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at       DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at       DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	FOREIGN KEY (school_id)   REFERENCES schools(id)   ON DELETE CASCADE
 );
 
 CREATE TABLE book_issues (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     book_id     BIGINT NOT NULL,
     student_id  BIGINT NOT NULL,
+    school_id 	BIGINT NOT NULL,
     issue_date  DATE NOT NULL,
     due_date    DATE NOT NULL,
     return_date DATE,
@@ -230,10 +231,11 @@ CREATE TABLE book_issues (
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (book_id)    REFERENCES books(id)    ON DELETE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
+    FOREIGN KEY (school_id)   REFERENCES schools(id)   ON DELETE CASCADE
 );
 
-🗄️ V9__create_facilities.sql
+-- 🗄️ V9__create_facilities.sql
 CREATE TABLE facilities (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
@@ -258,7 +260,7 @@ CREATE TABLE maintenance_logs (
     FOREIGN KEY (reported_by) REFERENCES users(id)      ON DELETE SET NULL
 );
 
-🗄️ V10__create_exams_results.sql
+-- 🗄️ V10__create_exams_results.sql
 CREATE TABLE grade_scale (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     grade       VARCHAR(5) NOT NULL,
@@ -308,7 +310,7 @@ INSERT INTO grade_scale (grade, min_marks, max_marks, gpa) VALUES
     ('D',  35.00,  39.99, 1.00),
     ('F',   0.00,  34.99, 0.00);
 	
-🗄️ V11__create_staff_hr.sql
+-- 🗄️ V11__create_staff_hr.sql
 CREATE TABLE departments (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
@@ -439,7 +441,7 @@ CREATE TABLE payroll (
     FOREIGN KEY (staff_id) REFERENCES staff(id) ON DELETE CASCADE
 );
 
-🗄️ V12__create_parents.sql
+-- 🗄️ V12__create_parents.sql
 CREATE TABLE parents (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id     BIGINT UNIQUE,
@@ -458,7 +460,7 @@ CREATE TABLE parents (
 ALTER TABLE students
     ADD CONSTRAINT fk_student_parent FOREIGN KEY (parent_id) REFERENCES parents(id) ON DELETE SET NULL;
 	
-🗄️ V13__create_notifications.sql
+-- 🗄️ V13__create_notifications.sql
 CREATE TABLE notifications (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id     BIGINT NOT NULL,
@@ -469,7 +471,7 @@ CREATE TABLE notifications (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-🗄️ V14__create_activity_logs.sql
+-- 🗄️ V14__create_activity_logs.sql
 CREATE TABLE activity_logs (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id     BIGINT,

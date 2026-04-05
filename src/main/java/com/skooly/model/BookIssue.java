@@ -17,10 +17,6 @@ public class BookIssue {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "school_id", nullable = false)
-//	private School school;
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "book_id", nullable = false)
 	private Book book;
@@ -28,6 +24,10 @@ public class BookIssue {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "student_id", nullable = false)
 	private Student student;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "school_id", nullable = false)
+	private School school;
 	
 	@Column(name = "issue_date", nullable = false)
 	private LocalDate issueDate;

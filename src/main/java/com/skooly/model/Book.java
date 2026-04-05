@@ -2,6 +2,8 @@ package com.skooly.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Year;
+
 @Entity
 @Table(name = "books")
 @Getter
@@ -14,9 +16,9 @@ public class Book {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "school_id", nullable = false)
-//	private School school;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "school_id", nullable = false)
+	private School school;
 	
 	@Column(nullable = false, length = 300)
 	private String title;

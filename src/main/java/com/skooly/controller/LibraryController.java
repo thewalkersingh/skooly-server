@@ -21,7 +21,7 @@ import java.util.List;
 public class LibraryController {
 	private final LibraryService libraryService;
 	private final BookIssueService bookIssueService;
-	// ── Books ─────────────────────────────────────────────
+	// ── Books ────────────────────────────────────────────
 	
 	@GetMapping("/books")
 	public ResponseEntity<List<BookResponse>> getAllBooks(
