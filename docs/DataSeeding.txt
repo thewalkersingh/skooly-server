@@ -1,0 +1,18 @@
+Best Practice
+Do not seed Address separately — always embed it inside the parent entity’s request.
+
+Use @Order to ensure seeding runs in sequence:
+
+Schools (with embedded Address)
+
+Classrooms (linked to School)
+
+Sections (linked to Classroom)
+
+Subjects
+
+Teachers (linked to School + Subjects)
+
+Students (linked to Section + optional Parent)
+
+Parents (linked to Students, with embedded Address)

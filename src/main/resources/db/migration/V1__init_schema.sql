@@ -6,7 +6,7 @@
 -- ============================================================
 -- SCHOOLS (Root tenant table)
 -- ============================================================
-CREATE TABLE schools (
+/*CREATE TABLE schools (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(200) NOT NULL,
     code        VARCHAR(50)  NOT NULL UNIQUE,
@@ -14,14 +14,14 @@ CREATE TABLE schools (
     phone       VARCHAR(20),
     email       VARCHAR(100),
     logo        VARCHAR(500),
-    status      ENUM('ACTIVE','INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+    studentStatus      ENUM('ACTIVE','INACTIVE') NOT NULL DEFAULT 'ACTIVE',
     created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+);*/
 
 -- ============================================================
 -- USERS & AUTH
 -- ============================================================
-CREATE TABLE roles (
+/*CREATE TABLE roles (
     id   BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE   -- ADMIN, TEACHER, STUDENT, PARENT, STAFF
 );
@@ -36,12 +36,12 @@ CREATE TABLE users (
     created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_users_school_username (school_id, username),
     CONSTRAINT fk_users_school FOREIGN KEY (school_id) REFERENCES schools(id)
-);
+);*/
 
 -- ============================================================
 -- ACADEMIC STRUCTURE
 -- ============================================================
-CREATE TABLE classes (
+/*CREATE TABLE classes (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT      NOT NULL,
     name        VARCHAR(100) NOT NULL,
@@ -56,12 +56,12 @@ CREATE TABLE subjects (
     code        VARCHAR(50),
     description TEXT,
     CONSTRAINT fk_subjects_school FOREIGN KEY (school_id) REFERENCES schools(id)
-);
+);*/
 
 -- ============================================================
 -- TEACHERS (needed before sections for class teacher FK)
 -- ============================================================
-CREATE TABLE teachers (
+/*CREATE TABLE teachers (
     id            BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id     BIGINT       NOT NULL,
     user_id       BIGINT       NOT NULL,
@@ -77,13 +77,13 @@ CREATE TABLE teachers (
     qualification VARCHAR(200),
     experience    INT,
     photo         VARCHAR(500),
-    status        ENUM('ACTIVE','INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+    studentStatus        ENUM('ACTIVE','INACTIVE') NOT NULL DEFAULT 'ACTIVE',
     CONSTRAINT fk_teachers_school   FOREIGN KEY (school_id)  REFERENCES schools(id),
     CONSTRAINT fk_teachers_user     FOREIGN KEY (user_id)    REFERENCES users(id),
     CONSTRAINT fk_teachers_subject  FOREIGN KEY (subject_id) REFERENCES subjects(id)
-);
+);*/
 
-CREATE TABLE sections (
+/*CREATE TABLE sections (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT       NOT NULL,
     class_id    BIGINT       NOT NULL,
@@ -93,22 +93,22 @@ CREATE TABLE sections (
     CONSTRAINT fk_sections_school  FOREIGN KEY (school_id)  REFERENCES schools(id),
     CONSTRAINT fk_sections_class   FOREIGN KEY (class_id)   REFERENCES classes(id),
     CONSTRAINT fk_sections_teacher FOREIGN KEY (teacher_id) REFERENCES teachers(id)
-);
+);*/
 
 -- ============================================================
 -- FACILITIES / ROOMS
 -- ============================================================
-CREATE TABLE facilities (
+/*CREATE TABLE facilities (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT       NOT NULL,
     name        VARCHAR(100) NOT NULL,
     description TEXT,
     location    VARCHAR(200),
-    status      ENUM('ACTIVE','INACTIVE','UNDER_MAINTENANCE') NOT NULL DEFAULT 'ACTIVE',
+    studentStatus      ENUM('ACTIVE','INACTIVE','UNDER_MAINTENANCE') NOT NULL DEFAULT 'ACTIVE',
     CONSTRAINT fk_facilities_school FOREIGN KEY (school_id) REFERENCES schools(id)
-);
+);*/
 
-CREATE TABLE rooms (
+/*CREATE TABLE rooms (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT       NOT NULL,
     name        VARCHAR(100) NOT NULL,
@@ -116,11 +116,11 @@ CREATE TABLE rooms (
     capacity    INT,
     floor       VARCHAR(50),
     building    VARCHAR(100),
-    status      ENUM('AVAILABLE','OCCUPIED','MAINTENANCE') NOT NULL DEFAULT 'AVAILABLE',
+    studentStatus      ENUM('AVAILABLE','OCCUPIED','MAINTENANCE') NOT NULL DEFAULT 'AVAILABLE',
     CONSTRAINT fk_rooms_school FOREIGN KEY (school_id) REFERENCES schools(id)
 );
-
-CREATE TABLE maintenance_logs (
+*/
+/*CREATE TABLE maintenance_logs (
     id            BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id     BIGINT NOT NULL,
     facility_id   BIGINT NOT NULL,
@@ -128,16 +128,16 @@ CREATE TABLE maintenance_logs (
     issue         TEXT   NOT NULL,
     reported_date DATE   NOT NULL,
     resolved_date DATE,
-    status        ENUM('OPEN','IN_PROGRESS','RESOLVED') NOT NULL DEFAULT 'OPEN',
+    studentStatus        ENUM('OPEN','IN_PROGRESS','RESOLVED') NOT NULL DEFAULT 'OPEN',
     CONSTRAINT fk_maint_school    FOREIGN KEY (school_id)   REFERENCES schools(id),
     CONSTRAINT fk_maint_facility  FOREIGN KEY (facility_id) REFERENCES facilities(id),
     CONSTRAINT fk_maint_reporter  FOREIGN KEY (reported_by) REFERENCES users(id)
 );
-
+*/
 -- ============================================================
 -- TIMETABLE
 -- ============================================================
-CREATE TABLE timetable (
+/*CREATE TABLE timetable (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT      NOT NULL,
     class_id    BIGINT      NOT NULL,
@@ -154,12 +154,12 @@ CREATE TABLE timetable (
     CONSTRAINT fk_tt_subject  FOREIGN KEY (subject_id) REFERENCES subjects(id),
     CONSTRAINT fk_tt_teacher  FOREIGN KEY (teacher_id) REFERENCES teachers(id),
     CONSTRAINT fk_tt_room     FOREIGN KEY (room_id)    REFERENCES rooms(id)
-);
+);*/
 
 -- ============================================================
 -- PARENTS
 -- ============================================================
-CREATE TABLE parents (
+/*CREATE TABLE parents (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT       NOT NULL,
     user_id     BIGINT       NOT NULL,
@@ -173,11 +173,11 @@ CREATE TABLE parents (
     CONSTRAINT fk_parents_school FOREIGN KEY (school_id) REFERENCES schools(id),
     CONSTRAINT fk_parents_user   FOREIGN KEY (user_id)   REFERENCES users(id)
 );
-
+*/
 -- ============================================================
 -- STUDENTS
 -- ============================================================
-CREATE TABLE students (
+/*CREATE TABLE students (
     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id      BIGINT       NOT NULL,
     user_id        BIGINT       NOT NULL,
@@ -193,24 +193,24 @@ CREATE TABLE students (
     section_id     BIGINT,
     parent_id      BIGINT,
     photo          VARCHAR(500),
-    status         ENUM('ACTIVE','INACTIVE','GRADUATED','TRANSFERRED') NOT NULL DEFAULT 'ACTIVE',
+    studentStatus         ENUM('ACTIVE','INACTIVE','GRADUATED','TRANSFERRED') NOT NULL DEFAULT 'ACTIVE',
     CONSTRAINT fk_students_school   FOREIGN KEY (school_id)  REFERENCES schools(id),
     CONSTRAINT fk_students_user     FOREIGN KEY (user_id)    REFERENCES users(id),
     CONSTRAINT fk_students_class    FOREIGN KEY (class_id)   REFERENCES classes(id),
     CONSTRAINT fk_students_section  FOREIGN KEY (section_id) REFERENCES sections(id),
     CONSTRAINT fk_students_parent   FOREIGN KEY (parent_id)  REFERENCES parents(id)
-);
+);*/
 
 -- ============================================================
 -- ATTENDANCE
 -- ============================================================
-CREATE TABLE attendance (
+/*CREATE TABLE attendance (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT NOT NULL,
     student_id  BIGINT NOT NULL,
     class_id    BIGINT NOT NULL,
     date        DATE   NOT NULL,
-    status      ENUM('PRESENT','ABSENT','LATE') NOT NULL,
+    studentStatus      ENUM('PRESENT','ABSENT','LATE') NOT NULL,
     marked_by   BIGINT,
     remarks     VARCHAR(500),
     CONSTRAINT fk_att_school   FOREIGN KEY (school_id)  REFERENCES schools(id),
@@ -218,24 +218,24 @@ CREATE TABLE attendance (
     CONSTRAINT fk_att_class    FOREIGN KEY (class_id)   REFERENCES classes(id),
     CONSTRAINT fk_att_marker   FOREIGN KEY (marked_by)  REFERENCES users(id),
     UNIQUE KEY uq_attendance (school_id, student_id, date)
-);
+);*/
 
-CREATE TABLE teacher_attendance (
+/*CREATE TABLE teacher_attendance (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT NOT NULL,
     teacher_id  BIGINT NOT NULL,
     date        DATE   NOT NULL,
-    status      ENUM('PRESENT','ABSENT','LATE') NOT NULL,
+    studentStatus      ENUM('PRESENT','ABSENT','LATE') NOT NULL,
     remarks     VARCHAR(500),
     CONSTRAINT fk_tatt_school   FOREIGN KEY (school_id)  REFERENCES schools(id),
     CONSTRAINT fk_tatt_teacher  FOREIGN KEY (teacher_id) REFERENCES teachers(id),
     UNIQUE KEY uq_teacher_attendance (school_id, teacher_id, date)
 );
-
+*/
 -- ============================================================
 -- FEES & FINANCE
 -- ============================================================
-CREATE TABLE fee_categories (
+/*CREATE TABLE fee_categories (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT       NOT NULL,
     name        VARCHAR(100) NOT NULL,
@@ -243,8 +243,8 @@ CREATE TABLE fee_categories (
     description TEXT,
     CONSTRAINT fk_fee_cat_school FOREIGN KEY (school_id) REFERENCES schools(id)
 );
-
-CREATE TABLE fee_structures (
+*/
+/*CREATE TABLE fee_structures (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id        BIGINT       NOT NULL,
     class_id         BIGINT       NOT NULL,
@@ -255,8 +255,8 @@ CREATE TABLE fee_structures (
     CONSTRAINT fk_fee_str_class     FOREIGN KEY (class_id)        REFERENCES classes(id),
     CONSTRAINT fk_fee_str_category  FOREIGN KEY (fee_category_id) REFERENCES fee_categories(id)
 );
-
-CREATE TABLE fee_payments (
+*/
+/*CREATE TABLE fee_payments (
     id                BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id         BIGINT        NOT NULL,
     student_id        BIGINT        NOT NULL,
@@ -265,16 +265,16 @@ CREATE TABLE fee_payments (
     payment_date      DATE          NOT NULL,
     payment_mode      ENUM('CASH','CARD','ONLINE','CHEQUE') NOT NULL DEFAULT 'CASH',
     transaction_id    VARCHAR(200),
-    status            ENUM('PAID','PARTIAL','PENDING','OVERDUE') NOT NULL DEFAULT 'PENDING',
+    studentStatus            ENUM('PAID','PARTIAL','PENDING','OVERDUE') NOT NULL DEFAULT 'PENDING',
     CONSTRAINT fk_fee_pay_school      FOREIGN KEY (school_id)        REFERENCES schools(id),
     CONSTRAINT fk_fee_pay_student     FOREIGN KEY (student_id)       REFERENCES students(id),
     CONSTRAINT fk_fee_pay_structure   FOREIGN KEY (fee_structure_id) REFERENCES fee_structures(id)
-);
+);*/
 
 -- ============================================================
 -- LIBRARY
 -- ============================================================
-CREATE TABLE books (
+/*CREATE TABLE books (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id        BIGINT       NOT NULL,
     title            VARCHAR(300) NOT NULL,
@@ -287,8 +287,8 @@ CREATE TABLE books (
     published_year   INT,
     CONSTRAINT fk_books_school FOREIGN KEY (school_id) REFERENCES schools(id)
 );
-
-CREATE TABLE book_issues (
+*/
+/*CREATE TABLE book_issues (
     id           BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id    BIGINT NOT NULL,
     book_id      BIGINT NOT NULL,
@@ -297,16 +297,16 @@ CREATE TABLE book_issues (
     due_date     DATE   NOT NULL,
     return_date  DATE,
     fine         DECIMAL(8,2) DEFAULT 0.00,
-    status       ENUM('ISSUED','RETURNED','OVERDUE') NOT NULL DEFAULT 'ISSUED',
+    studentStatus       ENUM('ISSUED','RETURNED','OVERDUE') NOT NULL DEFAULT 'ISSUED',
     CONSTRAINT fk_bi_school  FOREIGN KEY (school_id)  REFERENCES schools(id),
     CONSTRAINT fk_bi_book    FOREIGN KEY (book_id)    REFERENCES books(id),
     CONSTRAINT fk_bi_student FOREIGN KEY (student_id) REFERENCES students(id)
 );
-
+*/
 -- ============================================================
 -- EXAMS & RESULTS
 -- ============================================================
-CREATE TABLE grade_scale (
+/*CREATE TABLE grade_scale (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id  BIGINT       NOT NULL,
     grade      VARCHAR(10)  NOT NULL,
@@ -315,8 +315,8 @@ CREATE TABLE grade_scale (
     gpa        DECIMAL(4,2),
     CONSTRAINT fk_grade_school FOREIGN KEY (school_id) REFERENCES schools(id)
 );
-
-CREATE TABLE exams (
+*/
+/*CREATE TABLE exams (
     id             BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id      BIGINT       NOT NULL,
     name           VARCHAR(200) NOT NULL,
@@ -329,9 +329,9 @@ CREATE TABLE exams (
     CONSTRAINT fk_exams_school   FOREIGN KEY (school_id)  REFERENCES schools(id),
     CONSTRAINT fk_exams_class    FOREIGN KEY (class_id)   REFERENCES classes(id),
     CONSTRAINT fk_exams_subject  FOREIGN KEY (subject_id) REFERENCES subjects(id)
-);
+);*/
 
-CREATE TABLE results (
+/*CREATE TABLE results (
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id       BIGINT       NOT NULL,
     exam_id         BIGINT       NOT NULL,
@@ -339,25 +339,25 @@ CREATE TABLE results (
     marks_obtained  DECIMAL(6,2) NOT NULL,
     grade           VARCHAR(10),
     remarks         VARCHAR(500),
-    status          ENUM('PASS','FAIL') NOT NULL,
+    studentStatus          ENUM('PASS','FAIL') NOT NULL,
     CONSTRAINT fk_results_school   FOREIGN KEY (school_id)  REFERENCES schools(id),
     CONSTRAINT fk_results_exam     FOREIGN KEY (exam_id)    REFERENCES exams(id),
     CONSTRAINT fk_results_student  FOREIGN KEY (student_id) REFERENCES students(id),
     UNIQUE KEY uq_result (school_id, exam_id, student_id)
-);
+);*/
 
 -- ============================================================
 -- STAFF / HR
 -- ============================================================
-CREATE TABLE departments (
+/*CREATE TABLE departments (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT       NOT NULL,
     name        VARCHAR(100) NOT NULL,
     description TEXT,
     CONSTRAINT fk_dept_school FOREIGN KEY (school_id) REFERENCES schools(id)
 );
-
-CREATE TABLE staff (
+*/
+/*CREATE TABLE staff (
     id            BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id     BIGINT       NOT NULL,
     user_id       BIGINT       NOT NULL,
@@ -373,17 +373,17 @@ CREATE TABLE staff (
     joining_date  DATE,
     salary        DECIMAL(10,2),
     photo         VARCHAR(500),
-    status        ENUM('ACTIVE','INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+    studentStatus        ENUM('ACTIVE','INACTIVE') NOT NULL DEFAULT 'ACTIVE',
     CONSTRAINT fk_staff_school  FOREIGN KEY (school_id)     REFERENCES schools(id),
     CONSTRAINT fk_staff_user    FOREIGN KEY (user_id)       REFERENCES users(id),
     CONSTRAINT fk_staff_dept    FOREIGN KEY (department_id) REFERENCES departments(id)
-);
+);*/
 
 -- Add head_id to departments after staff is created
-ALTER TABLE departments ADD COLUMN head_id BIGINT;
-ALTER TABLE departments ADD CONSTRAINT fk_dept_head FOREIGN KEY (head_id) REFERENCES staff(id);
+/*ALTER TABLE departments ADD COLUMN head_id BIGINT;
+ALTER TABLE departments ADD CONSTRAINT fk_dept_head FOREIGN KEY (head_id) REFERENCES staff(id);*/
 
-CREATE TABLE leave_requests (
+/*CREATE TABLE leave_requests (
     id           BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id    BIGINT      NOT NULL,
     staff_id     BIGINT      NOT NULL,
@@ -391,14 +391,14 @@ CREATE TABLE leave_requests (
     from_date    DATE        NOT NULL,
     to_date      DATE        NOT NULL,
     reason       TEXT,
-    status       ENUM('PENDING','APPROVED','REJECTED') NOT NULL DEFAULT 'PENDING',
+    studentStatus       ENUM('PENDING','APPROVED','REJECTED') NOT NULL DEFAULT 'PENDING',
     approved_by  BIGINT,
     CONSTRAINT fk_leave_school      FOREIGN KEY (school_id)  REFERENCES schools(id),
     CONSTRAINT fk_leave_staff       FOREIGN KEY (staff_id)   REFERENCES staff(id),
     CONSTRAINT fk_leave_approver    FOREIGN KEY (approved_by) REFERENCES users(id)
 );
-
-CREATE TABLE payroll (
+*/
+/*CREATE TABLE payroll (
     id            BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id     BIGINT        NOT NULL,
     staff_id      BIGINT        NOT NULL,
@@ -413,11 +413,11 @@ CREATE TABLE payroll (
     CONSTRAINT fk_payroll_staff  FOREIGN KEY (staff_id)  REFERENCES staff(id),
     UNIQUE KEY uq_payroll (school_id, staff_id, month, year)
 );
-
+*/
 -- ============================================================
 -- NOTIFICATIONS
 -- ============================================================
-CREATE TABLE notifications (
+/*CREATE TABLE notifications (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT       NOT NULL,
     user_id     BIGINT       NOT NULL,
@@ -427,12 +427,12 @@ CREATE TABLE notifications (
     created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_notif_school FOREIGN KEY (school_id) REFERENCES schools(id),
     CONSTRAINT fk_notif_user   FOREIGN KEY (user_id)   REFERENCES users(id)
-);
+);*/
 
 -- ============================================================
 -- ACTIVITY LOGS
 -- ============================================================
-CREATE TABLE activity_logs (
+/*CREATE TABLE activity_logs (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     school_id   BIGINT       NOT NULL,
     user_id     BIGINT       NOT NULL,
@@ -444,14 +444,14 @@ CREATE TABLE activity_logs (
     CONSTRAINT fk_log_school FOREIGN KEY (school_id) REFERENCES schools(id),
     CONSTRAINT fk_log_user   FOREIGN KEY (user_id)   REFERENCES users(id)
 );
-
+*/
 -- ============================================================
 -- SEED DATA — default roles
 -- ============================================================
-INSERT INTO roles (name) VALUES ('ADMIN'), ('TEACHER'), ('STUDENT'), ('PARENT'), ('STAFF');
-
+/*INSERT INTO roles (name) VALUES ('ADMIN'), ('TEACHER'), ('STUDENT'), ('PARENT'), ('STAFF');
+*/
 -- Seed school
-INSERT INTO schools (name, code, address, phone, email, status)
+INSERT INTO schools (name, code, address, phone, email, studentStatus)
 VALUES ('Demo School', 'DEMO001', '123 Main Street, City', '+1-555-0100', 'admin@demoschool.com', 'ACTIVE');
 
 -- Seed admin user (password stored as plain text — JWT auth added later)

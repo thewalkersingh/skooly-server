@@ -1,57 +1,35 @@
 package com.skooly.dto.response;
 
-import com.skooly.model.Teacher;
+import com.skooly.dto.common.SubjectSummary;
+import com.skooly.enums.TeacherStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class TeacherResponse {
 	
 	private Long id;
-	private String firstName;
-	private String lastName;
-	private String fullName;
-	private LocalDate dob;
-	private String gender;
-	private String address;
-	private String phone;
-	private String email;
-	private LocalDate joiningDate;
 	private String qualification;
 	private Integer experience;
-	private String photo;
-	private String status;
+	private String photoUrl;
+	private LocalDate dob;
+	private LocalDate joiningDate;
+	private AddressResponse address;   // embedded DTO
+	private TeacherStatus status;
+	private Long schoolId;
+	private String schoolName;
+	private UserIdentityResponse identity;  // nested DTO
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
+	private List<SubjectSummary> subjects;
 	
-	private Long subjectId;
-	private String subjectName;
-	
-	private Long userId;
-	private String username;
-	
-	public static TeacherResponse from(Teacher t) {
-		TeacherResponse r = new TeacherResponse();
-		r.setId(t.getId());
-		r.setFirstName(t.getFirstName());
-		r.setLastName(t.getLastName());
-		r.setFullName(t.getFirstName() + " " + t.getLastName());
-		r.setDob(t.getDob());
-		r.setGender(t.getGender() != null ? t.getGender().name() : null);
-		r.setAddress(t.getAddress());
-		r.setPhone(t.getPhone());
-		r.setEmail(t.getEmail());
-		r.setJoiningDate(t.getJoiningDate());
-		r.setQualification(t.getQualification());
-		r.setExperience(t.getExperience());
-		r.setPhoto(t.getPhoto());
-		r.setStatus(t.getStatus().name());
-		if (t.getSubject() != null) {
-			r.setSubjectId(t.getSubject().getId());
-			r.setSubjectName(t.getSubject().getName());
-		}
-		if (t.getUser() != null) {
-			r.setUserId(t.getUser().getId());
-			r.setUsername(t.getUser().getUsername());
-		}
-		return r;
-	}
 }

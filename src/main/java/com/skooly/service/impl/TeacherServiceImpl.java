@@ -1,128 +1,188 @@
 package com.skooly.service.impl;
-import com.skooly.constant.Gender;
-import com.skooly.constant.Status;
+
 import com.skooly.dto.request.TeacherRequest;
+import com.skooly.dto.response.SectionResponse;
 import com.skooly.dto.response.TeacherResponse;
-import com.skooly.exception.BadRequestException;
+import com.skooly.entity.School;
+import com.skooly.entity.Teacher;
+import com.skooly.enums.TeacherStatus;
 import com.skooly.exception.ResourceNotFoundException;
-import com.skooly.model.*;
-import com.skooly.repository.*;
+import com.skooly.mapper.SectionMapper;
+import com.skooly.mapper.TeacherMapper;
+import com.skooly.repository.SchoolRepository;
+import com.skooly.repository.SectionRepository;
+import com.skooly.repository.TeacherRepository;
 import com.skooly.service.TeacherService;
+import com.skooly.wrapper.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TeacherServiceImpl implements TeacherService {
+	
 	private final TeacherRepository teacherRepository;
-	private final UserRepository userRepository;
+	private final TeacherMapper teacherMapper;
 	private final SchoolRepository schoolRepository;
-	private final SubjectRepository subjectRepository;
+	private final SectionRepository sectionRepository;
+	private final SectionMapper sectionMapper;
 	
-	public List<TeacherResponse> getAllTeachers(Long schoolId) {
-		return teacherRepository.findBySchoolId(schoolId)
-				       .stream().map(TeacherResponse::from).toList();
-	}
-	
-	public TeacherResponse getTeacherById(Long schoolId, Long teacherId) {
-		Teacher teacher = teacherRepository.findByIdAndSchoolId(teacherId, schoolId)
-				                  .orElseThrow(() -> new ResourceNotFoundException("Teacher", teacherId));
-		return TeacherResponse.from(teacher);
-	}
-	
-	public List<TeacherResponse> searchTeachers(Long schoolId, String query) {
-		return teacherRepository.searchBySchoolId(schoolId, query)
-				       .stream().map(TeacherResponse::from).toList();
-	}
-	
-	public long countTeachers(Long schoolId) {
-		return teacherRepository.countBySchoolId(schoolId);
-	}
-	
-	@Transactional
+	// ── Create / Update / Delete ──────────────────────────────────────────────
 	public TeacherResponse createTeacher(Long schoolId, TeacherRequest request) {
-		School school = schoolRepository.findById(schoolId)
-				                .orElseThrow(() -> new ResourceNotFoundException("School", schoolId));
-		
-		if(userRepository.existsBySchoolIdAndUsername(schoolId, request.getUsername())){
-			throw new BadRequestException("Username '"+request.getUsername()+"' already exists");
+		// Validate no duplicate phone/email
+		if (teacherRepository.existsByIdentityPhone(request.getIdentity().getPhone())) {
+			throw new IllegalStateException("Phone already registered");
 		}
-		
-		// Create user account atomically
-		User user = User.builder()
-				            .school(school)
-				            .username(request.getUsername())
-				            .password(request.getPassword()) // TODO: BCrypt when JWT added
-				            .role("TEACHER")
-				            .isActive(true)
-				            .build();
-		user = userRepository.save(user);
-		
-		Subject subject = null;
-		if(request.getSubjectId() != null){
-			subject = subjectRepository.findById(request.getSubjectId())
-					          .orElseThrow(() -> new ResourceNotFoundException("Subject", request.getSubjectId()));
+		if (request.getIdentity().getEmail() != null && teacherRepository.existsByIdentityEmail(
+			request.getIdentity().getEmail())) {
+			throw new IllegalStateException("Email already registered");
 		}
-		
-		Teacher teacher = Teacher.builder()
-				                  .school(school)
-				                  .user(user)
-				                  .firstName(request.getFirstName())
-				                  .lastName(request.getLastName())
-				                  .dob(request.getDob())
-				                  .gender(request.getGender() != null ? Gender.valueOf(request.getGender()) : null)
-				                  .address(request.getAddress())
-				                  .phone(request.getPhone())
-				                  .email(request.getEmail())
-				                  .joiningDate(request.getJoiningDate())
-				                  .subject(subject)
-				                  .qualification(request.getQualification())
-				                  .experience(request.getExperience())
-				                  .photo(request.getPhoto())
-				                  .status(request.getStatus() != null
-				                          ? Status.valueOf(request.getStatus())
-				                          : Status.ACTIVE)
-				                  .build();
-		
-		return TeacherResponse.from(teacherRepository.save(teacher));
+		Teacher teacher = teacherMapper.toEntity(request);
+		School school = schoolRepository.findById(schoolId).orElseThrow(() -> new RuntimeException("School not found"));
+		teacher.setSchool(school);
+		teacher = teacherRepository.save(teacher);
+		return teacherMapper.toResponse(teacher);
 	}
 	
-	@Transactional
-	public TeacherResponse updateTeacher(Long schoolId, Long teacherId, TeacherRequest request) {
-		Teacher teacher = teacherRepository.findByIdAndSchoolId(teacherId, schoolId)
-				                  .orElseThrow(() -> new ResourceNotFoundException("Teacher", teacherId));
-		
-		teacher.setFirstName(request.getFirstName());
-		teacher.setLastName(request.getLastName());
-		teacher.setDob(request.getDob());
-		teacher.setGender(request.getGender() != null ? Gender.valueOf(request.getGender()) : null);
-		teacher.setAddress(request.getAddress());
-		teacher.setPhone(request.getPhone());
-		teacher.setEmail(request.getEmail());
-		teacher.setJoiningDate(request.getJoiningDate());
-		teacher.setQualification(request.getQualification());
-		teacher.setExperience(request.getExperience());
-		teacher.setPhoto(request.getPhoto());
-		
-		if(request.getStatus() != null){
-			teacher.setStatus(Status.valueOf(request.getStatus()));
-		}
-		if(request.getSubjectId() != null){
-			teacher.setSubject(subjectRepository.findById(request.getSubjectId())
-					                   .orElseThrow(() -> new ResourceNotFoundException("Subject",
-					                                                                    request.getSubjectId())));
-		}
-		
-		return TeacherResponse.from(teacherRepository.save(teacher));
+	public TeacherResponse updateTeacher(Long teacherId, TeacherRequest request) {
+		teacherRepository.findById(teacherId).orElseThrow(() -> new RuntimeException("Teacher not found"));
+		Teacher teacher = teacherMapper.toEntity(request);
+		Teacher response = teacherRepository.save(teacher);
+		return teacherMapper.toResponse(response);
 	}
 	
-	@Transactional
-	public void deleteTeacher(Long schoolId, Long teacherId) {
-		Teacher teacher = teacherRepository.findByIdAndSchoolId(teacherId, schoolId)
-				                  .orElseThrow(() -> new ResourceNotFoundException("Teacher", teacherId));
-		teacherRepository.delete(teacher);
+	public void deleteTeacher(Long teacherId) {
+		Teacher teacher =
+			teacherRepository.findById(teacherId).orElseThrow(() -> new RuntimeException("Teacher not found"));
+		teacher.setStatus(TeacherStatus.DELETED);
+		teacherRepository.save(teacher);
 	}
+	
+	// ── Single fetch ──────────────────────────────────────────────────────────
+	public TeacherResponse getTeacher(Long id) {
+		
+		return teacherRepository
+			       .findById(id)
+			       .map(teacherMapper::toResponse)
+			       .orElseThrow(() -> new RuntimeException("Teacher not found"));
+	}
+	
+	public TeacherResponse getTeacherByPhone(String phone) {
+		
+		return teacherRepository
+			       .findByIdentityPhone(phone)
+			       .map(teacherMapper::toResponse)
+			       .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with phone: " + phone));
+		
+	}
+	
+	public TeacherResponse getTeacherByEmail(String email) {
+		
+		return teacherRepository
+			       .findByIdentityEmail(email)
+			       .map(teacherMapper::toResponse)
+			       .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with email: " + email));
+	}
+	
+	public TeacherResponse getClassTeacherBySection(Long sectionId) {
+		Teacher teacher = teacherRepository
+			                  .findClassTeacherBySectionId(sectionId)
+			                  .orElseThrow(() -> new RuntimeException("Teacher not found"));
+		return teacherMapper.toResponse(teacher);
+	}
+	
+	// ── Lists ─────────────────────────────────────────────────────────────────
+	public PageResponse<TeacherResponse> getAllTeachers(Pageable pageable) {
+		Page<Teacher> page = teacherRepository.findAll(pageable);
+		List<TeacherResponse> response = page.getContent().stream().map(teacherMapper::toResponse).toList();
+		return PageResponse
+			       .<TeacherResponse>builder()
+			       .data(response)
+			       .page(page.getNumber())
+			       .size(page.getSize())
+			       .totalElements(page.getTotalElements())
+			       .totalPages(page.getTotalPages())
+			       .hasNext(page.hasNext())
+			       .hasPrevious(page.hasPrevious())
+			       .build();
+	}
+	
+	public PageResponse<TeacherResponse> getTeachersBySchool(Long schoolId, Pageable pageable) {
+		Page<Teacher> page = teacherRepository.findBySchoolId(schoolId, pageable);
+		List<TeacherResponse> responses = page.getContent().stream().map(teacherMapper::toResponse).toList();
+		return PageResponse
+			       .<TeacherResponse>builder()
+			       .data(responses)
+			       .page(page.getNumber())
+			       .size(page.getSize())
+			       .totalElements(page.getTotalElements())
+			       .totalPages(page.getTotalPages())
+			       .hasNext(page.hasNext())
+			       .hasPrevious(page.hasPrevious())
+			       .build();
+	}
+	
+	public PageResponse<TeacherResponse> getTeachersBySchoolAndStatus(Long schoolId, TeacherStatus status,
+		Pageable pageable) {
+		Page<Teacher> page = teacherRepository.findBySchoolIdAndStatus(schoolId, status, pageable);
+		List<TeacherResponse> responses = page.getContent().stream().map(teacherMapper::toResponse).toList();
+		return PageResponse
+			       .<TeacherResponse>builder()
+			       .data(responses)
+			       .page(page.getNumber())
+			       .size(page.getSize())
+			       .totalElements(page.getTotalElements())
+			       .totalPages(page.getTotalPages())
+			       .hasNext(page.hasNext())
+			       .hasPrevious(page.hasPrevious())
+			       .build();
+	}
+	
+	public List<TeacherResponse> getTeachersBySubject(Long subjectId) {
+		List<Teacher> response = teacherRepository.findTeachersBySubjectId(subjectId);
+		return response.stream().map(teacherMapper::toResponse).toList();
+	}
+	
+	// ── Search ────────────────────────────────────────────────────────────────
+	public PageResponse<TeacherResponse> searchTeachersByName(Long schoolId, String name, Pageable pageable) {
+		Page<Teacher> page = teacherRepository.searchByNameAndSchoolId(schoolId, name, pageable);
+		List<TeacherResponse> responses = page.getContent().stream().map(teacherMapper::toResponse).toList();
+		return PageResponse
+			       .<TeacherResponse>builder()
+			       .data(responses)
+			       .page(page.getNumber())
+			       .size(page.getSize())
+			       .totalElements(page.getTotalElements())
+			       .totalPages(page.getTotalPages())
+			       .hasNext(page.hasNext())
+			       .hasPrevious(page.hasPrevious())
+			       .build();
+	}
+	
+	// ── Status management ─────────────────────────────────────────────────────
+	public TeacherResponse updateStatus(Long teacherId, TeacherStatus status) {
+		Teacher teacher =
+			teacherRepository.findById(teacherId).orElseThrow(() -> new RuntimeException("Teacher not found"));
+		teacher.setStatus(status);
+		teacherRepository.save(teacher);
+		return teacherMapper.toResponse(teacher);
+	}
+	
+	// ── Unassigned teachers (admin utility) ───────────────────────────────────
+	public List<TeacherResponse> getUnassignedTeachers(Long schoolId) {
+		List<Teacher> teachers = teacherRepository.findUnassignedTeachersBySchoolId(schoolId);
+		return teachers.stream().map(teacherMapper::toResponse).toList();
+	}
+	
+	public List<SectionResponse> getSectionsByTeacher(Long teacherId) {
+		if (!teacherRepository.existsById(teacherId)) {
+			throw new ResourceNotFoundException("Teacher not found");
+		}
+		return sectionRepository.findByTeacherId(teacherId).stream().map(sectionMapper::toResponse).toList();
+	}
+	
 }

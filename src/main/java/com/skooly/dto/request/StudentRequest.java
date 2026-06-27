@@ -1,39 +1,35 @@
 package com.skooly.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import com.skooly.enums.StudentStatus;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class StudentRequest {
-
-    @NotBlank(message = "First name is required")
-    private String firstName;
-
-    @NotBlank(message = "Last name is required")
-    private String lastName;
-
-    private LocalDate dob;
-    private String gender;
-    private String address;
-    private String phone;
-
-    @Email(message = "Invalid email format")
-    private String email;
-
-    private LocalDate admissionDate;
-    private Long classId;
-    private Long sectionId;
-    private Long parentId;
-    private String photo;
-    private String status;
-
-    // User account fields
-    @NotBlank(message = "Username is required")
-    private String username;
-
-    @NotBlank(message = "Password is required")
-    private String password;
+	
+	@NotNull
+	private LocalDate dob;
+	private LocalDate admissionDate;
+	
+	@Size(max = 500)
+	private String photoUrl;
+	private AddressRequest address;   // embedded  DTO for address
+	private String guardianName;
+	private String guardianRelation;
+	
+	@NotNull
+	private StudentStatus studentStatus;
+	
+	@NotNull
+	private UserIdentityRequest identity;  // nested DTO
+	
 }

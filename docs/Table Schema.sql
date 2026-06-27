@@ -17,7 +17,7 @@ CREATE TABLE users (
 
 INSERT INTO roles (name) VALUES
     ('ADMIN'), ('TEACHER'), ('STUDENT'), ('PARENT'), ('STAFF');
-	
+
 -- 🗄️ V2__create_students.sql
 CREATE TABLE students (
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -34,7 +34,7 @@ CREATE TABLE students (
     section_id      BIGINT,
     parent_id       BIGINT,
     photo           VARCHAR(255),
-    status          ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
+    studentStatus          ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
@@ -57,7 +57,7 @@ CREATE TABLE teachers (
     qualification   VARCHAR(255),
     experience      INT DEFAULT 0,
     photo           VARCHAR(255),
-    status          ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
+    studentStatus          ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
@@ -87,7 +87,7 @@ CREATE TABLE sections (
 CREATE TABLE subjects (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
-    code        VARCHAR(20) UNIQUE,
+    subjectCode        VARCHAR(20) UNIQUE,
     description TEXT,
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -100,7 +100,7 @@ ALTER TABLE students
 
 ALTER TABLE teachers
     ADD CONSTRAINT fk_teacher_subject FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE SET NULL;
-	
+
 -- 🗄️ V5__create_timetable.sql
 CREATE TABLE rooms (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -109,7 +109,7 @@ CREATE TABLE rooms (
     capacity    INT,
     floor       VARCHAR(50),
     building    VARCHAR(100),
-    status      ENUM('AVAILABLE', 'OCCUPIED', 'UNDER_MAINTENANCE') DEFAULT 'AVAILABLE',
+    studentStatus      ENUM('AVAILABLE', 'OCCUPIED', 'UNDER_MAINTENANCE') DEFAULT 'AVAILABLE',
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -140,7 +140,7 @@ CREATE TABLE attendance (
     student_id  BIGINT NOT NULL,
     class_id    BIGINT NOT NULL,
     date        DATE NOT NULL,
-    status      ENUM('PRESENT','ABSENT','LATE','HALF_DAY','HOLIDAY') NOT NULL,
+    studentStatus      ENUM('PRESENT','ABSENT','LATE','HALF_DAY','HOLIDAY') NOT NULL,
     marked_by   BIGINT,
     remarks     VARCHAR(255),
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -156,7 +156,7 @@ CREATE TABLE teacher_attendance (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     teacher_id  BIGINT NOT NULL,
     date        DATE NOT NULL,
-    status      ENUM('PRESENT','ABSENT','LATE','HALF_DAY','HOLIDAY') NOT NULL,
+    studentStatus      ENUM('PRESENT','ABSENT','LATE','HALF_DAY','HOLIDAY') NOT NULL,
     remarks     VARCHAR(255),
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -194,7 +194,7 @@ CREATE TABLE fee_payments (
     payment_date     DATE NOT NULL,
     payment_mode     ENUM('CASH','ONLINE','CHEQUE','DD') NOT NULL,
     transaction_id   VARCHAR(100),
-    status           ENUM('PAID','PENDING','OVERDUE','PARTIAL') DEFAULT 'PAID',
+    studentStatus           ENUM('PAID','PENDING','OVERDUE','PARTIAL') DEFAULT 'PAID',
     created_at       DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at       DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id)       REFERENCES students(id)       ON DELETE CASCADE,
@@ -227,7 +227,7 @@ CREATE TABLE book_issues (
     due_date    DATE NOT NULL,
     return_date DATE,
     fine        DECIMAL(8,2) DEFAULT 0.00,
-    status      ENUM('ISSUED','RETURNED','OVERDUE') DEFAULT 'ISSUED',
+    studentStatus      ENUM('ISSUED','RETURNED','OVERDUE') DEFAULT 'ISSUED',
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (book_id)    REFERENCES books(id)    ON DELETE CASCADE,
@@ -241,7 +241,7 @@ CREATE TABLE facilities (
     name        VARCHAR(100) NOT NULL,
     description TEXT,
     location    VARCHAR(255),
-    status      ENUM('ACTIVE','INACTIVE','UNDER_MAINTENANCE') DEFAULT 'ACTIVE',
+    studentStatus      ENUM('ACTIVE','INACTIVE','UNDER_MAINTENANCE') DEFAULT 'ACTIVE',
     created_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at  DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -253,7 +253,7 @@ CREATE TABLE maintenance_logs (
     issue         TEXT NOT NULL,
     reported_date DATE NOT NULL,
     resolved_date DATE,
-    status        ENUM('OPEN','IN_PROGRESS','RESOLVED') DEFAULT 'OPEN',
+    studentStatus        ENUM('OPEN','IN_PROGRESS','RESOLVED') DEFAULT 'OPEN',
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (facility_id) REFERENCES facilities(id) ON DELETE CASCADE,
@@ -292,7 +292,7 @@ CREATE TABLE results (
     marks_obtained  DECIMAL(6,2) NOT NULL,
     grade           VARCHAR(5),
     remarks         VARCHAR(255),
-    status          ENUM('PASS','FAIL') NOT NULL,
+    studentStatus          ENUM('PASS','FAIL') NOT NULL,
     created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uq_exam_student (exam_id, student_id),
@@ -309,7 +309,7 @@ INSERT INTO grade_scale (grade, min_marks, max_marks, gpa) VALUES
     ('C',  40.00,  49.99, 2.00),
     ('D',  35.00,  39.99, 1.00),
     ('F',   0.00,  34.99, 0.00);
-	
+
 -- 🗄️ V11__create_staff_hr.sql
 CREATE TABLE departments (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -334,7 +334,7 @@ CREATE TABLE staff (
     joining_date  DATE,
     salary        DECIMAL(10,2),
     photo         VARCHAR(255),
-    status        ENUM('ACTIVE','INACTIVE') DEFAULT 'ACTIVE',
+    studentStatus        ENUM('ACTIVE','INACTIVE') DEFAULT 'ACTIVE',
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id)       REFERENCES users(id)       ON DELETE SET NULL,
@@ -352,7 +352,7 @@ CREATE TABLE leave_requests (
     from_date    DATE NOT NULL,
     to_date      DATE NOT NULL,
     reason       TEXT,
-    status       ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING',
+    studentStatus       ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING',
     approved_by  BIGINT,
     created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -399,7 +399,7 @@ CREATE TABLE staff (
     joining_date  DATE,
     salary        DECIMAL(10,2),
     photo         VARCHAR(255),
-    status        ENUM('ACTIVE','INACTIVE') DEFAULT 'ACTIVE',
+    studentStatus        ENUM('ACTIVE','INACTIVE') DEFAULT 'ACTIVE',
     created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id)       REFERENCES users(id)       ON DELETE SET NULL,
@@ -417,7 +417,7 @@ CREATE TABLE leave_requests (
     from_date    DATE NOT NULL,
     to_date      DATE NOT NULL,
     reason       TEXT,
-    status       ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING',
+    studentStatus       ENUM('PENDING','APPROVED','REJECTED') DEFAULT 'PENDING',
     approved_by  BIGINT,
     created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at   DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -459,7 +459,7 @@ CREATE TABLE parents (
 
 ALTER TABLE students
     ADD CONSTRAINT fk_student_parent FOREIGN KEY (parent_id) REFERENCES parents(id) ON DELETE SET NULL;
-	
+
 -- 🗄️ V13__create_notifications.sql
 CREATE TABLE notifications (
     id          BIGINT AUTO_INCREMENT PRIMARY KEY,

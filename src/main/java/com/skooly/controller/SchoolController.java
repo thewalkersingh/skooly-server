@@ -1,71 +1,137 @@
 package com.skooly.controller;
+
 import com.skooly.dto.request.SchoolRequest;
 import com.skooly.dto.response.SchoolResponse;
-import com.skooly.dto.response.SubjectResponse;
-import com.skooly.repository.SubjectRepository;
+import com.skooly.enums.SchoolStatus;
+import com.skooly.exception.ResourceNotFoundException;
 import com.skooly.service.SchoolService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import com.skooly.wrapper.ApiResponse;
+import com.skooly.wrapper.PageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/v1/schools")
+@RequestMapping("/schools")
 @RequiredArgsConstructor
-@Tag(name = "Schools", description = "School management endpoints")
 public class SchoolController {
+	
 	private final SchoolService schoolService;
-	private final SubjectRepository subjectRepository;
-	
-	@GetMapping
-	@Operation(summary = "Get all schools")
-	public ResponseEntity<List<SchoolResponse>> getAllSchools() {
-		return ResponseEntity.ok(schoolService.getAllSchools());
-	}
-	
-	@GetMapping("/{id}")
-	@Operation(summary = "Get school by ID")
-	public ResponseEntity<SchoolResponse> getSchoolById(@PathVariable Long id) {
-		return ResponseEntity.ok(schoolService.getSchoolById(id));
-	}
 	
 	@PostMapping
-	@Operation(summary = "Create a new school")
-	public ResponseEntity<SchoolResponse> createSchool(@Valid @RequestBody SchoolRequest request) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(schoolService.createSchool(request));
+	public ApiResponse<SchoolResponse> createSchool(@RequestBody SchoolRequest request) {
+		SchoolResponse response = schoolService.createSchool(request);
+		return ApiResponse.<SchoolResponse>builder()
+			       .success(true)
+			       .message("School created successfully")
+			       .data(response)
+			       .build();
 	}
 	
-	@PutMapping("/{id}")
-	@Operation(summary = "Update a school")
-	public ResponseEntity<SchoolResponse> updateSchool(
-			@PathVariable Long id,
-			@Valid @RequestBody SchoolRequest request) {
-		return ResponseEntity.ok(schoolService.updateSchool(id, request));
+	@PatchMapping("/{id}/request")
+	public ApiResponse<SchoolResponse> updateSchool(@PathVariable Long id, @RequestBody SchoolRequest request) {
+		SchoolResponse response = schoolService.updateSchool(id, request);
+		return ApiResponse.<SchoolResponse>builder()
+			       .success(true)
+			       .message("School Updated Successfully")
+			       .data(response)
+			       .build();
 	}
 	
 	@DeleteMapping("/{id}")
-	@Operation(summary = "Delete a school")
-	public ResponseEntity<Void> deleteSchool(@PathVariable Long id) {
+	public ApiResponse<String> deleteSchool(@PathVariable Long id) {
 		schoolService.deleteSchool(id);
-		return ResponseEntity.noContent().build();
+		return ApiResponse.<String>builder()
+			       .success(true)
+			       .message("School deleted successfully")
+			       .data("Deleted school with id: " + id)
+			       .statusCode(200)
+			       .build();
 	}
 	
-	// Add endpoint
-	@GetMapping("/{schoolId}/subjects")
-	public ResponseEntity<List<SubjectResponse>> getAllSubjects(@PathVariable Long schoolId) {
-		var subjects = subjectRepository.findBySchoolId(schoolId).stream()
-				               .map(s -> {
-					               var r = new SubjectResponse();
-					               r.setId(s.getId());
-					               r.setName(s.getName());
-					               r.setCode(s.getCode());
-					               return r;
-				               }).toList();
-		return ResponseEntity.ok(subjects);
+	@GetMapping("/{id}")
+	public ApiResponse<SchoolResponse> getSchool(@PathVariable Long id) {
+		SchoolResponse response = schoolService.getSchool(id);
+		return ApiResponse.<SchoolResponse>builder()
+			       .success(true)
+			       .message("School by ID fetched successfully")
+			       .data(response)
+			       .build();
+	}
+	
+	@GetMapping("/{schoolCode}")
+	public ApiResponse<SchoolResponse> getSchoolByCode(String schoolCode) {
+		if (!schoolService.existsByCode(schoolCode))
+			throw new ResourceNotFoundException("School with code " + schoolCode + " not found");
+		SchoolResponse response = schoolService.getSchoolByCode(schoolCode);
+		return ApiResponse.<SchoolResponse>builder()
+			       .success(true)
+			       .message("School by SchoolCode fetched successfully")
+			       .data(response)
+			       .build();
+	}
+	
+	@GetMapping("/{email}")
+	ApiResponse<SchoolResponse> getSchoolByEmail(String email) {
+		if (!schoolService.existsByEmail(email))
+			throw new ResourceNotFoundException("School with email " + email + " not found");
+		SchoolResponse response = schoolService.getSchoolByEmail(email);
+		return ApiResponse.<SchoolResponse>builder()
+			       .success(true)
+			       .message("School by Email fetched successfully")
+			       .data(response)
+			       .build();
+	}
+	
+	@GetMapping("/{phone}")
+	ApiResponse<SchoolResponse> getSchoolByPhone(String phone) {
+		SchoolResponse response = schoolService.getSchoolByPhone(phone);
+		return ApiResponse.<SchoolResponse>builder()
+			       .success(true)
+			       .message("School by Phone fetched successfully")
+			       .data(response)
+			       .build();
+	}
+	
+	@GetMapping
+	public ApiResponse<PageResponse<SchoolResponse>> getAllSchools(Pageable pageable) {
+		PageResponse<SchoolResponse> response = schoolService.getAllSchools(pageable);
+		return ApiResponse.<PageResponse<SchoolResponse>>builder()
+			       .success(true)
+			       .message("Schools fetched successfully")
+			       .data(response)
+			       .build();
+	}
+	
+	@GetMapping("/{status}")
+	public ApiResponse<PageResponse<SchoolResponse>> getSchoolsByStatus(@PathVariable SchoolStatus status,
+		Pageable pageable) {
+		PageResponse<SchoolResponse> response =
+			schoolService.getSchoolsByStatus(status, pageable);
+		return ApiResponse.<PageResponse<SchoolResponse>>builder()
+			       .data(response)
+			       .success(true)
+			       .message("School by Status fetched Successfully")
+			       .build();
+	}
+	
+	@GetMapping("/{name}")
+	public ApiResponse<PageResponse<SchoolResponse>> searchSchoolsByName(String name, Pageable pageable) {
+		PageResponse<SchoolResponse> response = schoolService.searchSchoolsByName(name, pageable);
+		return ApiResponse.<PageResponse<SchoolResponse>>builder()
+			       .data(response)
+			       .success(true)
+			       .message("School by Name fetched Successfully")
+			       .build();
+	}
+	
+	@PutMapping("/{id}/status")
+	public ApiResponse<SchoolResponse> updateSchoolStatus(Long schoolId, SchoolStatus status) {
+		SchoolResponse response = schoolService.updateStatus(schoolId, status);
+		return ApiResponse.<SchoolResponse>builder()
+			       .data(response)
+			       .success(true)
+			       .message("School Status Updated Successfully")
+			       .build();
 	}
 }
