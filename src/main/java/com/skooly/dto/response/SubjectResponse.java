@@ -1,40 +1,26 @@
 package com.skooly.dto.response;
 
-import com.skooly.dto.ParentSummary;
-import com.skooly.enums.StudentStatus;
+import com.skooly.enums.SubjectStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StudentResponse {
+public class SubjectResponse {
 	
 	private Long id;
-	private LocalDate dob;
-	private LocalDate admissionDate;
-	private String photoUrl;
-	private AddressResponse address;
-	private StudentStatus studentStatus;
-	private String guardianName;
-	private String guardianRelation;
-	
-	// Flat section fields — enough for list views
-	private Long sectionId;
-	private String sectionName;
-	private String classroomName;   // reachable via section → classroom
-	
-	// Parent summary — null if not linked yet
-	private ParentSummary parent;
-	
-	private UserIdentityResponse identity;
+	private String subjectName;
+	private String subjectCode;
+	private SubjectStatus status;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	List<TeacherResponse> teachers;
 	
 }
