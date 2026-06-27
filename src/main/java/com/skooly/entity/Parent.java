@@ -1,5 +1,6 @@
 package com.skooly.entity;
 
+import com.skooly.enums.ParentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +29,10 @@ public class Parent {
 	
 	@Embedded
 	private Address address;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, length = 20)
+	private ParentStatus status;
 	
 	@OneToOne(optional = false, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "identity_id", nullable = false)

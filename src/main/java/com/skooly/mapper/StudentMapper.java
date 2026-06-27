@@ -1,6 +1,6 @@
 package com.skooly.mapper;
 
-import com.skooly.dto.ParentSummary;
+import com.skooly.dto.common.ParentSummary;
 import com.skooly.dto.request.StudentRequest;
 import com.skooly.dto.response.StudentResponse;
 import com.skooly.entity.Parent;

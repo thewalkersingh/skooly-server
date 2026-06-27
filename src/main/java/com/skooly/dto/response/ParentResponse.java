@@ -1,5 +1,7 @@
 package com.skooly.dto.response;
 
+import com.skooly.dto.common.StudentSummary;
+import com.skooly.enums.ParentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,9 +19,10 @@ public class ParentResponse {
 	private Long id;
 	private String occupation;
 	private String relation;
+	private ParentStatus status;
 	private AddressResponse address;   // embedded DTO
 	private UserIdentityResponse identity;  // nested DTO
-	private List<StudentResponse> students; // nested list of children
+	private List<StudentSummary> students; // nested list of children
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	

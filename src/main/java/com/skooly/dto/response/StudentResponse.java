@@ -1,6 +1,6 @@
 package com.skooly.dto.response;
 
-import com.skooly.dto.ParentSummary;
+import com.skooly.dto.common.ParentSummary;
 import com.skooly.enums.StudentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -34,14 +34,10 @@ public class TeacherServiceImpl implements TeacherService {
 	// ── Create / Update / Delete ──────────────────────────────────────────────
 	public TeacherResponse createTeacher(Long schoolId, TeacherRequest request) {
 		// Validate no duplicate phone/email
-		if (teacherRepository.existsByIdentityPhone(request.getIdentity()
-		                                                   .getPhone())) {
+		if (teacherRepository.existsByIdentityPhone(request.getIdentity().getPhone())) {
 			throw new IllegalStateException("Phone already registered");
 		}
-		if (request.getIdentity()
-		           .getEmail() != null && teacherRepository.existsByIdentityEmail(
-			request.getIdentity()
-			       .getEmail())) {
+		if (teacherRepository.existsByIdentityEmail(request.getIdentity().getEmail())) {
 			throw new IllegalStateException("Email already registered");
 		}
 		Teacher teacher = teacherMapper.toEntity(request);
@@ -109,16 +105,15 @@ public class TeacherServiceImpl implements TeacherService {
 		                                     .stream()
 		                                     .map(teacherMapper::toResponse)
 		                                     .toList();
-		return PageResponse
-			       .<TeacherResponse>builder()
-			       .data(response)
-			       .page(page.getNumber())
-			       .size(page.getSize())
-			       .totalElements(page.getTotalElements())
-			       .totalPages(page.getTotalPages())
-			       .hasNext(page.hasNext())
-			       .hasPrevious(page.hasPrevious())
-			       .build();
+		return PageResponse.<TeacherResponse>builder()
+		                   .data(response)
+		                   .page(page.getNumber())
+		                   .size(page.getSize())
+		                   .totalElements(page.getTotalElements())
+		                   .totalPages(page.getTotalPages())
+		                   .hasNext(page.hasNext())
+		                   .hasPrevious(page.hasPrevious())
+		                   .build();
 	}
 	
 	public PageResponse<TeacherResponse> getTeachersBySchool(Long schoolId, Pageable pageable) {
@@ -186,9 +181,9 @@ public class TeacherServiceImpl implements TeacherService {
 	
 	// ── Status management ─────────────────────────────────────────────────────
 	public TeacherResponse updateStatus(Long teacherId, TeacherStatus status) {
-		Teacher teacher =
-			teacherRepository.findById(teacherId)
-			                 .orElseThrow(() -> new RuntimeException("Teacher not found"));
+		Teacher teacher = teacherRepository
+			                  .findById(teacherId)
+			                  .orElseThrow(() -> new RuntimeException("Teacher not found"));
 		teacher.setStatus(status);
 		teacherRepository.save(teacher);
 		return teacherMapper.toResponse(teacher);

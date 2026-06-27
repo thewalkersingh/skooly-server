@@ -1,5 +1,6 @@
 package com.skooly.entity;
 
+import com.skooly.enums.Department;
 import com.skooly.enums.StaffRole;
 import com.skooly.enums.StaffStatus;
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,14 +28,31 @@ public class Staff {
 	private Address address;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 30)
-	private StaffRole role;
-	// e.g. ADMIN, ACCOUNTANT, LIBRARIAN, LAB_ASSISTANT, DRIVER, SECURITY
+	@Column(length = 50)
+	private Department department;
+	
+	@Enumerated(EnumType.STRING)
+	@Column(length = 100)
+	private StaffRole staffRole;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)
-	private StaffStatus status;
-	// ACTIVE, INACTIVE, ON_LEAVE, TERMINATED
+	private StaffStatus status;   // ACTIVE, INACTIVE, ON_LEAVE, TERMINATED
+	
+	@Column(name = "joining_date")
+	private LocalDate joiningDate;        // same as Teacher — when did they join
+	
+	@Column(name = "date_of_birth")
+	private LocalDate dob;                // same as Teacher
+	
+	@Column(length = 500)
+	private String photoUrl;              // profile photo
+	
+	@Column(length = 200)
+	private String qualification;         // relevant for LIBRARIAN, LAB_ASSISTANT etc
+	
+	@Column(name = "experience_years")
+	private Integer experience;           // years of experience
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "school_id", nullable = false)

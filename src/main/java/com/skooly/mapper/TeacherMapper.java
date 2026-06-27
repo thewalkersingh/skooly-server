@@ -13,7 +13,6 @@ import org.mapstruct.Mapping;
 public interface TeacherMapper {
 	
 	@Mapping(target = "school", ignore = true)   // set manually in service
-//	@Mapping(target = "identity", ignore = true)   // set manually in service or comment it for Auto handling
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
 	Teacher toEntity(TeacherRequest request);
