@@ -35,7 +35,7 @@ public class Student {
 	private Address address;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(nullable = false, length = 20)
 	private StudentStatus studentStatus;
 	// Student entity
 	@Column(length = 100)

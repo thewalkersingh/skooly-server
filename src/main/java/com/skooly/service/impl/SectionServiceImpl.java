@@ -11,6 +11,7 @@ import com.skooly.mapper.SectionMapper;
 import com.skooly.repository.*;
 import com.skooly.service.SectionService;
 import com.skooly.wrapper.PageResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class SectionServiceImpl implements SectionService {
 	

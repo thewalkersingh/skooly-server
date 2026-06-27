@@ -17,6 +17,12 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
 	
 	Page<Section> findByClassroomId(Long classroomId, Pageable pageable);
 	
+	@Query("SELECT DISTINCT s FROM Section s LEFT JOIN FETCH s.classroom")
+	List<Section> findAllWithClassroom();
+	
+	@Query("SELECT s FROM Section s LEFT JOIN FETCH s.classroom WHERE s.id = :id")
+	Optional<Section> findByIdWithClassroom(@Param("id") Long id);
+	
 	// ── By School (traverse classroom → school) ───────────────────────────────
 	@Query("SELECT s FROM Section s WHERE s.classroom.school.id = :schoolId")
 	Page<Section> findBySchoolId(@Param("schoolId") Long schoolId, Pageable pageable);

@@ -11,6 +11,7 @@ import com.skooly.repository.ClassroomRepository;
 import com.skooly.repository.SchoolRepository;
 import com.skooly.service.ClassroomService;
 import com.skooly.wrapper.PageResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ClassroomServiceImpl implements ClassroomService {
 	
