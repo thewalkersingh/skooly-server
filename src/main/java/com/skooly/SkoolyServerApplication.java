@@ -4,10 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-//@EnableJpaAuditing
-//@EnableAsync  // ← enables async logging
-//@EnableScheduling
-//@ComponentScan("com.skooly.mapper")
 public class SkoolyServerApplication {
 	
 	public static void main(String[] args) {

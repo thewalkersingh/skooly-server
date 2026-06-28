@@ -34,6 +34,36 @@ spring:
       max-file-size: 5MB
       max-request-size: 10MB
 
+  # ── JWT ───────────────────────────────────────────────────────────────────────
+  jwt:
+    secret: YXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYXNkZg==
+    access-token-expiry: 900000        # 15 minutes in milliseconds
+    refresh-token-expiry: 604800000    # 7 days in milliseconds
+  #JWT secret — when you replace it later use a Base64 encoded string of at least 256 bits. You can generate one with:
+
+  # ── Mail (dummy for now — replace with real credentials later) ────────────────
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dummy@skooly.com
+    password: dummy-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# ── OTP ───────────────────────────────────────────────────────────────────────
+otp:
+  expiry-minutes: 5
+  length: 6
+
+# ── CORS (Vite local dev) ─────────────────────────────────────────────────────
+cors:
+  allowed-origins: http://localhost:5173
+
+# ── Swagger Ui ───────────────────────────────────────────────────────────────────────
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
