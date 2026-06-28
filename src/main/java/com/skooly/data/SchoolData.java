@@ -19,7 +19,7 @@ public class SchoolData {
 	private final SchoolRepository schoolRepository;
 	
 	//	@Bean
-//	@Order(1)
+//	@Order(2)
 	public CommandLineRunner seedSchools() {
 		return args -> {
 			Faker faker = new Faker();

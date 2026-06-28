@@ -73,7 +73,7 @@ public class SchoolController {
 		                  .build();
 	}
 	
-	@GetMapping("/{schoolCode}")
+	@GetMapping("/code/{schoolCode}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<SchoolResponse> getSchoolByCode(String schoolCode) {
 		if (!schoolService.existsByCode(schoolCode))
@@ -86,7 +86,7 @@ public class SchoolController {
 		                  .build();
 	}
 	
-	@GetMapping("/{email}")
+	@GetMapping("/email/{email}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	ApiResponse<SchoolResponse> getSchoolByEmail(String email) {
 		if (!schoolService.existsByEmail(email))
@@ -99,7 +99,7 @@ public class SchoolController {
 		                  .build();
 	}
 	
-	@GetMapping("/{phone}")
+	@GetMapping("/phone/{phone}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	ApiResponse<SchoolResponse> getSchoolByPhone(String phone) {
 		SchoolResponse response = schoolService.getSchoolByPhone(phone);
@@ -111,7 +111,7 @@ public class SchoolController {
 	}
 	
 	// ── Get all schools ───────────────────────────────────────────────────
-	@GetMapping
+	@GetMapping("/all")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<SchoolResponse>> getAllSchools(Pageable pageable) {
 		PageResponse<SchoolResponse> response = schoolService.getAllSchools(pageable);
@@ -122,7 +122,7 @@ public class SchoolController {
 		                  .build();
 	}
 	
-	@GetMapping("/{status}")
+	@GetMapping("/status/{status}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<SchoolResponse>> getSchoolsByStatus(@PathVariable SchoolStatus status,
 		Pageable pageable) {
@@ -135,7 +135,7 @@ public class SchoolController {
 		                  .build();
 	}
 	
-	@GetMapping("/{name}")
+	@GetMapping("/name/{name}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<SchoolResponse>> searchSchoolsByName(String name, Pageable pageable) {
 		PageResponse<SchoolResponse> response = schoolService.searchSchoolsByName(name, pageable);

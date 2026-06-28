@@ -34,25 +34,26 @@ spring:
       max-file-size: 5MB
       max-request-size: 10MB
 
-  # ── JWT ───────────────────────────────────────────────────────────────────────
-  jwt:
-    secret: YXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYXNkZg==
-    access-token-expiry: 900000        # 15 minutes in milliseconds
-    refresh-token-expiry: 604800000    # 7 days in milliseconds
-  #JWT secret — when you replace it later use a Base64 encoded string of at least 256 bits. You can generate one with:
-
   # ── Mail (dummy for now — replace with real credentials later) ────────────────
   mail:
-    host: smtp.gmail.com
+    host: smtp.sendgrid.net
     port: 587
-    username: dummy@skooly.com
-    password: dummy-password
+    username: apikey
+    password: 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
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
+
+# ── JWT ───────────────────────────────────────────────────────────────────────
+jwt:
+  secret: a3f8b2c1d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0
+  access-token-expiry: 900000        # 15 minutes in milliseconds
+  refresh-token-expiry: 604800000    # 7 days in milliseconds
+  #JWT secret — when you replace it later use a Base64 encoded string of at least 256 bits. You can generate one with:
+  # secret: YXNkZmFzZGZhc2RmYXNkZmFzZGZhc2RmYXNkZg==
 
 # ── OTP ───────────────────────────────────────────────────────────────────────
 otp:

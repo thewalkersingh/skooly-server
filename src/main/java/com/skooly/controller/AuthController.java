@@ -24,13 +24,14 @@ public class AuthController {
 	
 	private final AuthService authService;
 	private final UserService userService;
+	
 	// ── Self Registration ─────────────────────────────────────────────────────
 	// Public — no token needed
 	// Creates PENDING user — admin must approve before login is possible
-	
 	// POST /auth/register
 	@PostMapping("/register")
 	public ApiResponse<AuthMessageResponse> register(@Valid @RequestBody RegisterRequest request) {
+		
 		AuthMessageResponse response = authService.register(request);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -46,6 +47,7 @@ public class AuthController {
 	@PostMapping("/create-account")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<AuthMessageResponse> createAccount(@Valid @RequestBody CreateAccountRequest request) {
+		
 		AuthMessageResponse response = authService.createAccount(request);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -60,6 +62,7 @@ public class AuthController {
 	@PostMapping("/approve/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<AuthMessageResponse> approveAccount(@PathVariable Long userId) {
+		
 		AuthMessageResponse response = authService.approveAccount(userId);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -74,6 +77,7 @@ public class AuthController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<AuthMessageResponse> rejectAccount(@PathVariable Long userId,
 		@RequestParam(required = false) String reason) {
+		
 		AuthMessageResponse response = authService.rejectAccount(userId, reason);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -88,6 +92,7 @@ public class AuthController {
 	@GetMapping("/pending")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<List<UserResponse>> getPendingApprovals() {
+		
 		return ApiResponse.<List<UserResponse>>builder()
 		                  .success(true)
 		                  .message("Pending approvals fetched successfully")
@@ -100,8 +105,8 @@ public class AuthController {
 	// Public — no token needed
 	// POST /auth/login
 	@PostMapping("/login")
-	public ApiResponse<LoginResponse> login(
-		@Valid @RequestBody LoginRequest request) {
+	public ApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+		
 		LoginResponse response = authService.login(request);
 		return ApiResponse.<LoginResponse>builder()
 		                  .success(true)
@@ -117,8 +122,8 @@ public class AuthController {
 	// Public — no token needed
 	// POST /auth/verify-otp
 	@PostMapping("/verify-otp")
-	public ApiResponse<AuthMessageResponse> verifyOtp(
-		@Valid @RequestBody VerifyOtpRequest request) {
+	public ApiResponse<AuthMessageResponse> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
+		
 		AuthMessageResponse response = authService.verifyOtp(request);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -130,8 +135,8 @@ public class AuthController {
 	
 	// POST /auth/resend-otp
 	@PostMapping("/resend-otp")
-	public ApiResponse<AuthMessageResponse> resendOtp(
-		@Valid @RequestBody ResendOtpRequest request) {
+	public ApiResponse<AuthMessageResponse> resendOtp(@Valid @RequestBody ResendOtpRequest request) {
+		
 		AuthMessageResponse response = authService.resendOtp(request);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -145,8 +150,8 @@ public class AuthController {
 	// Public — user doesn't have a token yet at this point
 	// POST /auth/set-password
 	@PostMapping("/set-password")
-	public ApiResponse<LoginResponse> setPassword(
-		@Valid @RequestBody SetPasswordRequest request) {
+	public ApiResponse<LoginResponse> setPassword(@Valid @RequestBody SetPasswordRequest request) {
+		
 		LoginResponse response = authService.setPassword(request);
 		return ApiResponse.<LoginResponse>builder()
 		                  .success(true)
@@ -160,8 +165,8 @@ public class AuthController {
 	// Public — no token needed (user is locked out)
 	// POST /auth/forgot-password
 	@PostMapping("/forgot-password")
-	public ApiResponse<AuthMessageResponse> forgotPassword(
-		@Valid @RequestBody ForgotPasswordRequest request) {
+	public ApiResponse<AuthMessageResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+		
 		AuthMessageResponse response = authService.forgotPassword(request);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -173,8 +178,8 @@ public class AuthController {
 	
 	// POST /auth/reset-password
 	@PostMapping("/reset-password")
-	public ApiResponse<AuthMessageResponse> resetPassword(
-		@Valid @RequestBody ResetPasswordRequest request) {
+	public ApiResponse<AuthMessageResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+		
 		AuthMessageResponse response = authService.resetPassword(request);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -188,8 +193,8 @@ public class AuthController {
 	// POST /auth/refresh
 	// Public — refresh token sent in body (no access token available at this point)
 	@PostMapping("/refresh")
-	public ApiResponse<LoginResponse> refreshToken(
-		@RequestParam String refreshToken) {
+	public ApiResponse<LoginResponse> refreshToken(@RequestParam String refreshToken) {
+		
 		LoginResponse response = authService.refreshToken(refreshToken);
 		return ApiResponse.<LoginResponse>builder()
 		                  .success(true)
@@ -202,8 +207,8 @@ public class AuthController {
 	// POST /auth/logout
 	// Authenticated — need to know which refresh token to revoke
 	@PostMapping("/logout")
-	public ApiResponse<AuthMessageResponse> logout(
-		@RequestParam String refreshToken) {
+	public ApiResponse<AuthMessageResponse> logout(@RequestParam String refreshToken) {
+		
 		AuthMessageResponse response = authService.logout(refreshToken);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -217,8 +222,8 @@ public class AuthController {
 	// GET /auth/me
 	// Authenticated — extracts userId from SecurityContext via @AuthenticationPrincipal
 	@GetMapping("/me")
-	public ApiResponse<MeResponse> getMe(
-		@AuthenticationPrincipal CustomUserDetails userDetails) {
+	public ApiResponse<MeResponse> getMe(@AuthenticationPrincipal CustomUserDetails userDetails) {
+		
 		MeResponse response = authService.getMe(userDetails.getUserId());
 		return ApiResponse.<MeResponse>builder()
 		                  .success(true)

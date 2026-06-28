@@ -22,7 +22,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@OneToOne(optional = false, fetch = FetchType.LAZY)
+	@OneToOne(optional = false, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name = "identity_id", nullable = false)
 	private UserIdentity identity;
 	

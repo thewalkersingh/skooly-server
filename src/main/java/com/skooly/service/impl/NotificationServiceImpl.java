@@ -14,6 +14,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,6 @@ public class NotificationServiceImpl implements NotificationService {
 	private final NotificationRepository notificationRepository;
 	
 	// ── Core send — saves to DB + dispatches to channel ──────────────────────
-	
 	@Override
 	public void send(Long userId, NotificationType type, String title,
 		String message, NotificationChannel channel) {
@@ -40,10 +41,10 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 	
 	// ── Email ─────────────────────────────────────────────────────────────────
-	
 	@Async   // fire and forget — don't block the request thread
 	@Override
 	public void sendEmail(String toEmail, String subject, String body) {
+
 		if (toEmail == null || toEmail.isBlank()) {
 			log.warn("Skipping email — no email address provided");
 			return;
@@ -54,18 +55,32 @@ public class NotificationServiceImpl implements NotificationService {
 			helper.setTo(toEmail);
 			helper.setSubject(subject);
 			helper.setText(body, true);   // true = HTML content
+			helper.setFrom("anysignup47@gmail.com", "SkoolyTest");
 			mailSender.send(message);
 			log.info("Email sent to {}", toEmail);
 		} catch (MessagingException e) {
 			log.error("Failed to send email to {}: {}", toEmail, e.getMessage());
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
 		}
 	}
 	
-	// ── SMS (stub — replace with Twilio/AWS SNS later) ────────────────────────
+	// just for testing, actual method is above
+//	@Override
+//	public void sendEmail(String to, String subject, String body) {
+//
+//		SimpleMailMessage message = new SimpleMailMessage();
+//		message.setTo(to);
+//		message.setSubject(subject);
+//		message.setText(body);
+//		mailSender.send(message);
+//	}
 	
+	// ── SMS (stub — replace with Twilio/AWS SNS later) ────────────────────────
 	@Async
 	@Override
 	public void sendSms(String toPhone, String message) {
+		
 		if (toPhone == null || toPhone.isBlank()) {
 			log.warn("Skipping SMS — no phone number provided");
 			return;
@@ -76,9 +91,9 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 	
 	// ── Auth specific helpers ─────────────────────────────────────────────────
-	
 	@Override
 	public void sendOtp(String toEmail, String toPhone, String otp, NotificationChannel channel) {
+		
 		String subject = "Your Skooly OTP Code";
 		String body = buildOtpEmailBody(otp);
 		String smsMessage = "Your Skooly OTP is: " + otp + ". Valid for 5 minutes. Do not share.";
@@ -95,6 +110,7 @@ public class NotificationServiceImpl implements NotificationService {
 	
 	@Override
 	public void sendAccountApproved(String toEmail, String toPhone, String firstName) {
+		
 		String subject = "Your Skooly Account Has Been Approved";
 		String body = buildSimpleEmailBody(
 			"Account Approved 🎉",
@@ -109,6 +125,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public void sendAccountRejected(String toEmail, String toPhone,
 		String firstName, String reason) {
+		
 		String subject = "Your Skooly Account Request Was Rejected";
 		String body = buildSimpleEmailBody(
 			"Account Request Rejected",
@@ -125,6 +142,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public void sendAccountCreated(String toEmail, String toPhone,
 		String firstName, String tempPassword) {
+		
 		String subject = "Welcome to Skooly — Your Account Is Ready";
 		String body = buildSimpleEmailBody(
 			"Welcome to Skooly!",
@@ -141,6 +159,7 @@ public class NotificationServiceImpl implements NotificationService {
 	
 	@Override
 	public void sendPasswordChanged(String toEmail, String toPhone, String firstName) {
+		
 		String subject = "Your Skooly Password Was Changed";
 		String body = buildSimpleEmailBody(
 			"Password Changed",
@@ -157,6 +176,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public void sendPendingApprovalToAdmin(String adminEmail, String adminPhone,
 		String applicantName, String role) {
+		
 		String subject = "New Account Request — Action Required";
 		String body = buildSimpleEmailBody(
 			"New Account Request",
@@ -173,6 +193,7 @@ public class NotificationServiceImpl implements NotificationService {
 	// ── Email Template Builders ───────────────────────────────────────────────
 	
 	private String buildOtpEmailBody(String otp) {
+		
 		return """
 			<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px;">
 			    <h2 style="color: #4F46E5;">Your Skooly OTP Code</h2>
@@ -192,6 +213,7 @@ public class NotificationServiceImpl implements NotificationService {
 	
 	private String buildSimpleEmailBody(String heading, String greeting,
 		String content, String btnText, String btnUrl) {
+		
 		String button = (btnText != null && btnUrl != null)
 			                ? """
 			<a href="%s" style="display: inline-block; padding: 12px 24px;

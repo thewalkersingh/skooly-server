@@ -43,7 +43,6 @@ public class CustomUserDetails implements UserDetails {
 	}
 	
 	// ── Account state checks ──────────────────────────────────────────────────
-	
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;   // we handle expiry via UserStatus, not Spring's mechanism

@@ -1,0 +1,12 @@
+AdminUserSeeder     → @Order(1)   ← new
+SchoolData          → @Order(2)   ← was 1
+ClassroomData       → @Order(3)   ← was 2
+SectionData         → @Order(4)   ← was 3
+SubjectData         → @Order(5)   ← was 4
+SectionSubjects     → @Order(6)   ← was 5
+TeacherData         → @Order(7)   ← was 6
+SectionTeachers     → @Order(8)   ← was 7
+StudentData         → @Order(9)   ← was 8
+ParentData          → @Order(10)  ← was 9
+ParentLinks         → @Order(11)  ← was 10
+StaffData           → @Order(12)  ← was 11

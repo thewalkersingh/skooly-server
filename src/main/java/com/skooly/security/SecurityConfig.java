@@ -37,9 +37,9 @@ public class SecurityConfig {
 	private String allowedOrigin;
 	
 	// ── Security Filter Chain ─────────────────────────────────────────────────
-	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		
 		http
 			// Disable CSRF — we use JWT, not sessions
 			.csrf(AbstractHttpConfigurer::disable)
@@ -54,7 +54,15 @@ public class SecurityConfig {
 			// Request authorization rules
 			.authorizeHttpRequests(
 				auth -> auth
-					        
+					        // ── Swagger — permit in dev ───────────────────────────────────────
+					        .requestMatchers(
+						        "/swagger-ui/**",
+						        "/swagger-ui.html",
+						        "/v3/api-docs/**",
+						        "/v3/api-docs",
+						        "/swagger-resources/**",
+						        "/webjars/**"
+					        ).permitAll()
 					        // ── Public endpoints — no token needed ────────────────────────
 					        .requestMatchers(
 						        "/auth/login",
@@ -125,10 +133,18 @@ public class SecurityConfig {
 					        .requestMatchers("/notifications/**").authenticated()
 					        
 					        // ── GET endpoints — authenticated users (RBAC via @PreAuthorize)
+//					        .requestMatchers(HttpMethod.GET, "/**").authenticated()
+					        
+					        // Schools — allow ADMIN for all methods
+					        .requestMatchers("/schools/**").hasRole("ADMIN")
+					        
+					        // Generic GET fallback
 					        .requestMatchers(HttpMethod.GET, "/**").authenticated()
+					        
 					        
 					        // ── Everything else — deny ────────────────────────────────────
 					        .anyRequest().denyAll()
+			
 			)
 			
 			// Register our JWT filter before Spring's default auth filter
@@ -143,6 +159,7 @@ public class SecurityConfig {
 	// ── CORS ──────────────────────────────────────────────────────────────────
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
+		
 		CorsConfiguration config = new CorsConfiguration();
 		
 		config.setAllowedOrigins(List.of(allowedOrigin));   // http://localhost:5173
@@ -160,6 +177,7 @@ public class SecurityConfig {
 	// ── Authentication Provider ───────────────────────────────────────────────
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
+		
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
 		provider.setPasswordEncoder(passwordEncoder());
 		return provider;
@@ -168,6 +186,7 @@ public class SecurityConfig {
 	// ── Password Encoder ──────────────────────────────────────────────────────
 	@Bean
 	public PasswordEncoder passwordEncoder() {
+		
 		return new BCryptPasswordEncoder();
 	}
 	
@@ -176,6 +195,7 @@ public class SecurityConfig {
 	@Bean
 	public AuthenticationManager authenticationManager(
 		AuthenticationConfiguration config) throws Exception {
+		
 		return config.getAuthenticationManager();
 	}
 	

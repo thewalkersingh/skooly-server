@@ -47,4 +47,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	// ── By Role ───────────────────────────────────────────────────────────────
 	Page<User> findByRole(UserRole role, Pageable pageable);
 	
+	// ── By User ID ───────────────────────────────────────────────────────────────
+	@Query("SELECT u FROM User u JOIN FETCH u.identity WHERE u.id = :id")
+	Optional<User> findByIdWithIdentity(@Param("id") Long id);
+	
 }
