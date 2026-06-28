@@ -10,28 +10,21 @@ import com.skooly.wrapper.PageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/schools")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 @Tag(name = "School Management", description = "Endpoints for managing schools")
 public class SchoolController {
 	
 	private final SchoolService schoolService;
 	
 	// ── Create a new school ────────────────────────────────────────────────
-	@io.swagger.v3.oas.annotations.Operation(
-		summary = "Get all schools",
-		description = "Fetches a list of all schools registered in the system."
-	)
-	@io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(
-			responseCode = "200", description = "Schools fetched successfully"),
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(
-			responseCode = "404", description = "No schools found")
-	})
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<SchoolResponse> createSchool(@RequestBody SchoolRequest request) {
 		SchoolResponse response = schoolService.createSchool(request);
 		return ApiResponse.<SchoolResponse>builder()
@@ -43,14 +36,8 @@ public class SchoolController {
 	}
 	
 	// ── Update school details ─────────────────────────────────────────────
-	@io.swagger.v3.oas.annotations.Operation(summary = "Update school details",
-		description = "Updates an existing school's information using its ID.")
-	@io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200",
-			description = "School updated successfully"),
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "School not found")
-	})
 	@PatchMapping("/{id}/request")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<SchoolResponse> updateSchool(@PathVariable Long id, @RequestBody SchoolRequest request) {
 		SchoolResponse response = schoolService.updateSchool(id, request);
 		return ApiResponse.<SchoolResponse>builder()
@@ -62,14 +49,8 @@ public class SchoolController {
 	}
 	
 	// ── Delete a school ───────────────────────────────────────────────────
-	@io.swagger.v3.oas.annotations.Operation(summary = "Delete a school",
-		description = "Deletes a school by its ID. This action is irreversible.")
-	@io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "School deleted " +
-			                                                                                         "successfully"),
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "School not found")
-	})
 	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<String> deleteSchool(@PathVariable Long id) {
 		schoolService.deleteSchool(id);
 		return ApiResponse.<String>builder()
@@ -81,14 +62,8 @@ public class SchoolController {
 	}
 	
 	// ── Get school by ID ──────────────────────────────────────────────────
-	@io.swagger.v3.oas.annotations.Operation(summary = "Get school by ID",
-		description = "Fetches details of a school using its unique ID.")
-	@io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "School fetched " +
-			                                                                                         "successfully"),
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "School not found")
-	})
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<SchoolResponse> getSchool(@PathVariable Long id) {
 		SchoolResponse response = schoolService.getSchool(id);
 		return ApiResponse.<SchoolResponse>builder()
@@ -99,6 +74,7 @@ public class SchoolController {
 	}
 	
 	@GetMapping("/{schoolCode}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<SchoolResponse> getSchoolByCode(String schoolCode) {
 		if (!schoolService.existsByCode(schoolCode))
 			throw new ResourceNotFoundException("School with code " + schoolCode + " not found");
@@ -111,6 +87,7 @@ public class SchoolController {
 	}
 	
 	@GetMapping("/{email}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	ApiResponse<SchoolResponse> getSchoolByEmail(String email) {
 		if (!schoolService.existsByEmail(email))
 			throw new ResourceNotFoundException("School with email " + email + " not found");
@@ -123,6 +100,7 @@ public class SchoolController {
 	}
 	
 	@GetMapping("/{phone}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	ApiResponse<SchoolResponse> getSchoolByPhone(String phone) {
 		SchoolResponse response = schoolService.getSchoolByPhone(phone);
 		return ApiResponse.<SchoolResponse>builder()
@@ -133,13 +111,8 @@ public class SchoolController {
 	}
 	
 	// ── Get all schools ───────────────────────────────────────────────────
-	@io.swagger.v3.oas.annotations.Operation(summary = "Get all schools",
-		description = "Fetches a list of all schools registered in the system.")
-	@io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
-		@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Schools fetched " +
-			                                                                                         "successfully")
-	})
 	@GetMapping
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<SchoolResponse>> getAllSchools(Pageable pageable) {
 		PageResponse<SchoolResponse> response = schoolService.getAllSchools(pageable);
 		return ApiResponse.<PageResponse<SchoolResponse>>builder()
@@ -150,6 +123,7 @@ public class SchoolController {
 	}
 	
 	@GetMapping("/{status}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<SchoolResponse>> getSchoolsByStatus(@PathVariable SchoolStatus status,
 		Pageable pageable) {
 		PageResponse<SchoolResponse> response =
@@ -162,6 +136,7 @@ public class SchoolController {
 	}
 	
 	@GetMapping("/{name}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<SchoolResponse>> searchSchoolsByName(String name, Pageable pageable) {
 		PageResponse<SchoolResponse> response = schoolService.searchSchoolsByName(name, pageable);
 		return ApiResponse.<PageResponse<SchoolResponse>>builder()
@@ -172,6 +147,7 @@ public class SchoolController {
 	}
 	
 	@PutMapping("/{id}/status")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<SchoolResponse> updateSchoolStatus(Long schoolId, SchoolStatus status) {
 		SchoolResponse response = schoolService.updateStatus(schoolId, status);
 		return ApiResponse.<SchoolResponse>builder()

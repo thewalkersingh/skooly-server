@@ -4,8 +4,10 @@ import com.skooly.dto.request.auth.*;
 import com.skooly.dto.response.auth.AuthMessageResponse;
 import com.skooly.dto.response.auth.LoginResponse;
 import com.skooly.dto.response.auth.MeResponse;
+import com.skooly.dto.response.auth.UserResponse;
 import com.skooly.security.CustomUserDetails;
 import com.skooly.service.AuthService;
+import com.skooly.service.UserService;
 import com.skooly.wrapper.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,21 +15,22 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 	
 	private final AuthService authService;
-	
+	private final UserService userService;
 	// ── Self Registration ─────────────────────────────────────────────────────
 	// Public — no token needed
 	// Creates PENDING user — admin must approve before login is possible
 	
 	// POST /auth/register
 	@PostMapping("/register")
-	public ApiResponse<AuthMessageResponse> register(
-		@Valid @RequestBody RegisterRequest request) {
+	public ApiResponse<AuthMessageResponse> register(@Valid @RequestBody RegisterRequest request) {
 		AuthMessageResponse response = authService.register(request);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -42,8 +45,7 @@ public class AuthController {
 	// POST /auth/create-account
 	@PostMapping("/create-account")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ApiResponse<AuthMessageResponse> createAccount(
-		@Valid @RequestBody CreateAccountRequest request) {
+	public ApiResponse<AuthMessageResponse> createAccount(@Valid @RequestBody CreateAccountRequest request) {
 		AuthMessageResponse response = authService.createAccount(request);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -57,8 +59,7 @@ public class AuthController {
 	// POST /auth/approve/{userId}
 	@PostMapping("/approve/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ApiResponse<AuthMessageResponse> approveAccount(
-		@PathVariable Long userId) {
+	public ApiResponse<AuthMessageResponse> approveAccount(@PathVariable Long userId) {
 		AuthMessageResponse response = authService.approveAccount(userId);
 		return ApiResponse.<AuthMessageResponse>builder()
 		                  .success(true)
@@ -71,8 +72,7 @@ public class AuthController {
 	// POST /auth/reject/{userId}
 	@PostMapping("/reject/{userId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ApiResponse<AuthMessageResponse> rejectAccount(
-		@PathVariable Long userId,
+	public ApiResponse<AuthMessageResponse> rejectAccount(@PathVariable Long userId,
 		@RequestParam(required = false) String reason) {
 		AuthMessageResponse response = authService.rejectAccount(userId, reason);
 		return ApiResponse.<AuthMessageResponse>builder()
@@ -87,9 +87,13 @@ public class AuthController {
 	// GET /auth/pending
 	@GetMapping("/pending")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ApiResponse<java.util.List<com.skooly.entity.User>> getPendingApprovals() {
-		// TODO: move to UserService with proper UserResponse DTO later
-		return null;
+	public ApiResponse<List<UserResponse>> getPendingApprovals() {
+		return ApiResponse.<List<UserResponse>>builder()
+		                  .success(true)
+		                  .message("Pending approvals fetched successfully")
+		                  .data(userService.getPendingApprovals())
+		                  .statusCode(200)
+		                  .build();
 	}
 	
 	// ── Login ─────────────────────────────────────────────────────────────────

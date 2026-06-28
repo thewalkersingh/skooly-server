@@ -9,6 +9,7 @@ import com.skooly.wrapper.ApiResponse;
 import com.skooly.wrapper.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,14 +17,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/students")
 @RequiredArgsConstructor
+@PreAuthorize("isAuthenticated()")
 public class StudentController {
 	
 	private final StudentService studentService;
 	
 	// ── Create / Update / Delete ──────────────────────────────────────────────
 	@PostMapping("/{sectionId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<StudentResponse> createStudent(@PathVariable Long sectionId,
 		@RequestBody StudentRequest request) {
+		
 		StudentResponse response = studentService.createStudent(sectionId, request);
 		return ApiResponse.<StudentResponse>builder()
 		                  .success(true)
@@ -34,8 +38,10 @@ public class StudentController {
 	
 	// PUT /students/{studentId}
 	@PutMapping("/{studentId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<StudentResponse> updateStudent(@PathVariable Long studentId,
 		@RequestBody StudentRequest request) {
+		
 		StudentResponse response = studentService.updateStudent(studentId, request);
 		return ApiResponse.<StudentResponse>builder()
 		                  .success(true)
@@ -47,7 +53,9 @@ public class StudentController {
 	// DELETE /students/{studentId}
 	// Soft delete — sets status to DELETED, data preserved in DB
 	@DeleteMapping("/{studentId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<Void> deleteStudent(@PathVariable Long studentId) {
+		
 		studentService.deleteStudent(studentId);
 		return ApiResponse.<Void>builder().success(true).message("Student fetched successfully").build();
 	}
@@ -55,7 +63,9 @@ public class StudentController {
 	// ── Single fetch ──────────────────────────────────────────────────────────
 	// GET /students/{studentId}
 	@GetMapping("/{studentId}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STUDENT', 'STAFF')")
 	public ApiResponse<StudentResponse> getStudent(@PathVariable Long studentId) {
+		
 		StudentResponse response = studentService.getStudent(studentId);
 		return ApiResponse.<StudentResponse>builder()
 		                  .success(true)
@@ -67,7 +77,9 @@ public class StudentController {
 	// GET /students/{studentId}/details
 	// Fetches student with section + classroom + school in one query
 	@GetMapping("/{studentId}/details")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STUDENT', 'STAFF')")
 	public ApiResponse<StudentResponse> getStudentWithDetails(@PathVariable Long studentId) {
+		
 		StudentResponse response = studentService.getStudentWithDetails(studentId);
 		return ApiResponse.<StudentResponse>builder()
 		                  .success(true)
@@ -78,7 +90,9 @@ public class StudentController {
 	
 	// GET /students/phone/{phone}
 	@GetMapping("/phone/{phone}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STUDENT', 'STAFF')")
 	public ApiResponse<StudentResponse> getStudentByPhone(@PathVariable String phone) {
+		
 		StudentResponse response = studentService.getStudentByPhone(phone);
 		return ApiResponse.<StudentResponse>builder()
 		                  .success(true)
@@ -89,7 +103,9 @@ public class StudentController {
 	
 	// GET /students/email/{email}
 	@GetMapping("/email/{email}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STUDENT', 'STAFF')")
 	public ApiResponse<StudentResponse> getStudentByEmail(@PathVariable String email) {
+		
 		StudentResponse response = studentService.getStudentByEmail(email);
 		return ApiResponse.<StudentResponse>builder()
 		                  .success(true)
@@ -101,7 +117,9 @@ public class StudentController {
 	// GET /students/{studentId}/section
 	// Returns the section this student belongs to
 	@GetMapping("/{studentId}/section")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STUDENT', 'STAFF')")
 	public ApiResponse<SectionResponse> getSectionByStudent(@PathVariable Long studentId) {
+		
 		SectionResponse response = studentService.getSectionByStudent(studentId);
 		return ApiResponse.<SectionResponse>builder()
 		                  .success(true)
@@ -113,7 +131,9 @@ public class StudentController {
 	// ── Lists ─────────────────────────────────────────────────────────────────
 	// GET /students?page=0&size=10
 	@GetMapping
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STUDENT', 'STAFF')")
 	public ApiResponse<PageResponse<StudentResponse>> getAllStudents(Pageable pageable) {
+		
 		PageResponse<StudentResponse> response = studentService.getAllStudents(pageable);
 		return ApiResponse.<PageResponse<StudentResponse>>builder()
 		                  .data(response)
@@ -124,8 +144,10 @@ public class StudentController {
 	
 	// GET /students/section/{sectionId}?page=0&size=10
 	@GetMapping("/section/{sectionId}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<StudentResponse>> getStudentsBySection(@PathVariable Long sectionId,
 		Pageable pageable) {
+		
 		PageResponse<StudentResponse> response = studentService.getStudentsBySection(sectionId, pageable);
 		return ApiResponse.<PageResponse<StudentResponse>>builder()
 		                  .data(response)
@@ -136,8 +158,10 @@ public class StudentController {
 	
 	// GET /students/section/{sectionId}/status/{status}?page=0&size=10
 	@GetMapping("/section/{sectionId}/status/{status}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<StudentResponse>> getStudentsBySectionAndStatus(@PathVariable Long sectionId,
 		@PathVariable StudentStatus status, Pageable pageable) {
+		
 		PageResponse<StudentResponse> response =
 			studentService.getStudentsBySectionAndStatus(sectionId, status, pageable);
 		return ApiResponse.<PageResponse<StudentResponse>>builder()
@@ -149,8 +173,10 @@ public class StudentController {
 	
 	// GET /students/classroom/{classroomId}?page=0&size=10
 	@GetMapping("/classroom/{classroomId}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<StudentResponse>> getStudentsByClassroom(@PathVariable Long classroomId,
 		Pageable pageable) {
+		
 		PageResponse<StudentResponse> response = studentService.getStudentsByClassroom(classroomId, pageable);
 		return ApiResponse.<PageResponse<StudentResponse>>builder()
 		                  .data(response)
@@ -161,8 +187,10 @@ public class StudentController {
 	
 	// GET /students/school/{schoolId}?page=0&size=10
 	@GetMapping("/school/{schoolId}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<StudentResponse>> getStudentsBySchool(@PathVariable Long schoolId,
 		Pageable pageable) {
+		
 		PageResponse<StudentResponse> response = studentService.getStudentsBySchool(schoolId, pageable);
 		return ApiResponse.<PageResponse<StudentResponse>>builder()
 		                  .data(response)
@@ -174,7 +202,9 @@ public class StudentController {
 	// Students linked to a parent
 	// GET /students/parent/{parentId}
 	@GetMapping("/parent/{parentId}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'PARENT', 'STAFF')")
 	public ApiResponse<List<StudentResponse>> getStudentsByParent(@PathVariable Long parentId) {
+		
 		List<StudentResponse> response = studentService.getStudentsByParent(parentId);
 		return ApiResponse.<List<StudentResponse>>builder()
 		                  .data(response)
@@ -186,8 +216,10 @@ public class StudentController {
 	// ── Search ────────────────────────────────────────────────────────────────
 	// GET /students/school/{schoolId}/search?name=arjun&page=0&size=10
 	@GetMapping("/school/{schoolId}/search")
+	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<StudentResponse>> searchStudentsByName(@PathVariable Long schoolId,
 		@RequestParam String name, Pageable pageable) {
+		
 		PageResponse<StudentResponse> response = studentService.searchStudentsByName(schoolId, name, pageable);
 		return ApiResponse.<PageResponse<StudentResponse>>builder()
 		                  .data(response)
@@ -199,7 +231,9 @@ public class StudentController {
 	// ── Status management ─────────────────────────────────────────────────────
 	// PATCH /students/{studentId}/status/{status}
 	@PatchMapping("/{studentId}/status/{status}")
+	@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 	public ApiResponse<StudentResponse> updateStatus(@PathVariable Long studentId, @PathVariable StudentStatus status) {
+		
 		StudentResponse response = studentService.updateStatus(studentId, status);
 		return ApiResponse.<StudentResponse>builder()
 		                  .data(response)
@@ -211,7 +245,9 @@ public class StudentController {
 	// ── Section transfer ──────────────────────────────────────────────────────
 	// PATCH /students/{studentId}/transfer/{newSectionId}
 	@PatchMapping("/{studentId}/transfer/{newSectionId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<StudentResponse> transferSection(@PathVariable Long studentId, @PathVariable Long newSectionId) {
+		
 		StudentResponse response = studentService.transferSection(studentId, newSectionId);
 		return ApiResponse.<StudentResponse>builder()
 		                  .data(response)
@@ -223,7 +259,9 @@ public class StudentController {
 	// ── Parent assignment ─────────────────────────────────────────────────────
 	// PUT /students/{studentId}/parent/{parentId}
 	@PutMapping("/{studentId}/parent/{parentId}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<StudentResponse> assignParent(@PathVariable Long studentId, @PathVariable Long parentId) {
+		
 		StudentResponse response = studentService.assignParent(studentId, parentId);
 		return ApiResponse.<StudentResponse>builder()
 		                  .data(response)
@@ -234,7 +272,9 @@ public class StudentController {
 	
 	// DELETE /students/{studentId}/parent
 	@DeleteMapping("/{studentId}/parent")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<StudentResponse> removeParent(@PathVariable Long studentId) {
+		
 		StudentResponse response = studentService.removeParent(studentId);
 		return ApiResponse.<StudentResponse>builder()
 		                  .data(response)
@@ -246,7 +286,9 @@ public class StudentController {
 	// ── Stats ─────────────────────────────────────────────────────────────────
 	// GET /students/section/{sectionId}/count
 	@GetMapping("/section/{sectionId}/count")
+	@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 	public ApiResponse<Long> countStudentsBySection(@PathVariable Long sectionId) {
+		
 		return ApiResponse.<Long>builder()
 		                  .data(studentService.countStudentsBySection(sectionId))
 		                  .success(true)
@@ -256,7 +298,9 @@ public class StudentController {
 	
 	// GET /students/school/{schoolId}/count
 	@GetMapping("/school/{schoolId}/count")
+	@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 	public ApiResponse<Long> countStudentsBySchool(@PathVariable Long schoolId) {
+		
 		return ApiResponse.<Long>builder()
 		                  .data(studentService.countStudentsBySchool(schoolId))
 		                  .success(true)
@@ -268,7 +312,9 @@ public class StudentController {
 	
 	// GET /students/school/{schoolId}/without-parent
 	@GetMapping("/school/{schoolId}/without-parent")
+	@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 	public ApiResponse<List<StudentResponse>> getStudentsWithoutParent(@PathVariable Long schoolId) {
+		
 		List<StudentResponse> response = studentService.getStudentsWithoutParent(schoolId);
 		return ApiResponse.<List<StudentResponse>>builder()
 		                  .data(response)
