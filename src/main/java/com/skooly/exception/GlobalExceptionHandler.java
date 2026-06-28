@@ -1,8 +1,17 @@
 package com.skooly.exception;
 
 import com.skooly.wrapper.ApiResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,45 +21,169 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-	@ExceptionHandler(ResourceNotFoundException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ApiResponse<Void> handleNotFound(ResourceNotFoundException ex) {
-		return ApiResponse.<Void>builder()
-			        .success(false)
-			        .message(ex.getMessage())
-			        .statusCode(404)
-			        .build();
-	}
 	
-	@ExceptionHandler(BadRequestException.class)
-	public ResponseEntity<ErrorResponse> handleBadRequest(BadRequestException ex) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				       .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage(), null));
-	}
+	// ── Validation errors (@Valid failures) ───────────────────────────────────
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiResponse<Map<String, String>> handleValidationErrors(
+		MethodArgumentNotValidException ex) {
 		Map<String, String> errors = new HashMap<>();
 		ex.getBindingResult().getAllErrors().forEach(error -> {
 			String field = ((FieldError) error).getField();
-			errors.put(field, error.getDefaultMessage());
+			String message = error.getDefaultMessage();
+			errors.put(field, message);
 		});
-		return ResponseEntity.badRequest()
-				       .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Validation failed", errors));
+		return ApiResponse.<Map<String, String>>builder()
+		                  .success(false)
+		                  .message("Validation failed")
+		                  .data(errors)
+		                  .statusCode(400)
+		                  .build();
 	}
+	
+	// ── Resource not found ────────────────────────────────────────────────────
+	
+	@ExceptionHandler(ResourceNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiResponse<Void> handleResourceNotFound(ResourceNotFoundException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message(ex.getMessage())
+		                  .statusCode(404)
+		                  .build();
+	}
+	
+	@ExceptionHandler(EntityNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiResponse<Void> handleEntityNotFound(EntityNotFoundException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message(ex.getMessage())
+		                  .statusCode(404)
+		                  .build();
+	}
+	
+	// ── Auth errors ───────────────────────────────────────────────────────────
+	
+	@ExceptionHandler(BadCredentialsException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ApiResponse<Void> handleBadCredentials(BadCredentialsException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message("Invalid email/phone or password")
+		                  .statusCode(401)
+		                  .build();
+	}
+	
+	@ExceptionHandler(LockedException.class)
+	@ResponseStatus(HttpStatus.LOCKED)
+	public ApiResponse<Void> handleLocked(LockedException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message("Account is locked. Please contact your admin.")
+		                  .statusCode(423)
+		                  .build();
+	}
+	
+	@ExceptionHandler(DisabledException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public ApiResponse<Void> handleDisabled(DisabledException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message("Account is disabled. Please contact your admin.")
+		                  .statusCode(403)
+		                  .build();
+	}
+	
+	@ExceptionHandler(UsernameNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ApiResponse<Void> handleUsernameNotFound(UsernameNotFoundException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message("User not found")
+		                  .statusCode(404)
+		                  .build();
+	}
+	
+	@ExceptionHandler(AccessDeniedException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public ApiResponse<Void> handleAccessDenied(AccessDeniedException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message("You do not have permission to perform this action")
+		                  .statusCode(403)
+		                  .build();
+	}
+	
+	// ── JWT errors ────────────────────────────────────────────────────────────
+	
+	@ExceptionHandler(ExpiredJwtException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ApiResponse<Void> handleExpiredJwt(ExpiredJwtException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message("Token has expired. Please log in again.")
+		                  .statusCode(401)
+		                  .build();
+	}
+	
+	@ExceptionHandler(MalformedJwtException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ApiResponse<Void> handleMalformedJwt(MalformedJwtException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message("Invalid token format")
+		                  .statusCode(401)
+		                  .build();
+	}
+	
+	@ExceptionHandler(SignatureException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public ApiResponse<Void> handleSignatureException(SignatureException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message("Token signature is invalid")
+		                  .statusCode(401)
+		                  .build();
+	}
+	
+	// ── Business logic errors ─────────────────────────────────────────────────
+	
+	@ExceptionHandler(IllegalStateException.class)
+	@ResponseStatus(HttpStatus.CONFLICT)
+	public ApiResponse<Void> handleIllegalState(IllegalStateException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message(ex.getMessage())
+		                  .statusCode(409)
+		                  .build();
+	}
+	
+	@ExceptionHandler(IllegalArgumentException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ApiResponse<Void> handleIllegalArgument(IllegalArgumentException ex) {
+		return ApiResponse.<Void>builder()
+		                  .success(false)
+		                  .message(ex.getMessage())
+		                  .statusCode(400)
+		                  .build();
+	}
+	
+	// ── Fallback — catch everything else ──────────────────────────────────────
 	
 	@ExceptionHandler(Exception.class)
-	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)   // sets HTTP 500
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public ApiResponse<Void> handleGeneric(Exception ex) {
+		log.error("Unhandled exception: ", ex);
 		return ApiResponse.<Void>builder()
-			        .success(false)
-			        .message("Something went wrong")
-			        .statusCode(500)
-			        .build();
+		                  .success(false)
+		                  .message("Something went wrong. Please try again later.")
+		                  .statusCode(500)
+		                  .build();
 	}
 	
-	public record ErrorResponse(int status, String message, Map<String, String> validationErrors) {
-	}
 }
