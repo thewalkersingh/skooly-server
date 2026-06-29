@@ -34,7 +34,7 @@ public class SecurityConfig {
 	private final UserDetailsServiceImpl userDetailsService;
 	
 	@Value("${cors.allowed-origins}")
-	private String allowedOrigin;
+	private String allowedOrigins;
 	
 	// ── Security Filter Chain ─────────────────────────────────────────────────
 	@Bean
@@ -164,7 +164,9 @@ public class SecurityConfig {
 		
 		CorsConfiguration config = new CorsConfiguration();
 		
-		config.setAllowedOrigins(List.of(allowedOrigin));   // http://localhost:5173
+		// Split by comma — supports multiple origins
+		List<String> origins = List.of(allowedOrigins.split(","));
+		config.setAllowedOrigins(origins);   // http://localhost:5173
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
 		config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
 		config.setExposedHeaders(List.of("Authorization"));

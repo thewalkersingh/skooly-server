@@ -1,0 +1,23 @@
+# Maven
+target/
+*.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Git
+.git/
+.gitignore
+
+# Environment files — never in Docker image
+.env
+.env.dev
+.env.prod
+application-dev.yaml
+application-prod.yaml
+
+# OS
+.DS_Store
+Thumbs.db

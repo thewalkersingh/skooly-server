@@ -1,0 +1,40 @@
+DB_URL          → jdbc:mysql://mysql-thewa-skooly.h.aivencloud.com:13758/defaultdb?ssl-mode=REQUIRED&useSSL=true&requireSSL=true&verifyServerCertificate=false
+DB_USERNAME     → avnadmin
+DB_PASSWORD     → your-password
+
+JWT_SECRET          -> a3f8b2c1d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0
+JWT_ACCESS_EXPIRY   -> 900000
+JWT_REFRESH_EXPIRY  -> 604800000
+
+MAIL_HOST       -> smtp.sendgrid.net
+MAIL_PORT       -> 587
+MAIL_USERNAME   -> apikey
+MAIL_PASSWORD   -> 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
+
+CORS_ORIGINS    → https://skooly.vercel.app,http://localhost:5173
+
+SPRING_PROFILES_ACTIVE → prod
+
+
+ # ── Mail (dummy for now — replace with real credentials later) ────────────────
+  mail:
+    host: ${MAIL_HOST:smtp.sendgrid.net}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:apikey}
+    password: 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
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# ── JWT ───────────────────────────────────────────────────────────────────────
+jwt:
+  secret: a3f8b2c1d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0
+  access-token-expiry: 900000        # 15 minutes in milliseconds
+  refresh-token-expiry: 604800000    # 7 days in milliseconds
+
+# ── CORS (Vite prod) ─────────────────────────────────────────────────────
+cors:
+  allowed-origins: https://skooly.vercel.app,http://localhost:5173

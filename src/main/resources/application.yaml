@@ -9,7 +9,7 @@ spring:
   application:
     name: skooly
   profiles:
-    active: prod
+    active: dev
 
   datasource:
     url: ${DB_URL}
@@ -63,9 +63,9 @@ otp:
   expiry-minutes: 5
   length: 6
 
-# ── CORS (Vite local dev) ─────────────────────────────────────────────────────
+# ── CORS ─────────────────────────────────────────────────────────────────────
 cors:
-  allowed-origins: http://localhost:5173, https://skooly.vercel.app
+  allowed-origins: ${CORS_ORIGINS:http://localhost:5173}
 
 # ── Swagger Ui ───────────────────────────────────────────────────────────────────────
 springdoc:
