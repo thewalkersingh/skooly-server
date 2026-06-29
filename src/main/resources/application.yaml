@@ -5,11 +5,7 @@ spring:
     active: prod
 
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
 
   servlet:
     multipart:
@@ -17,24 +13,10 @@ spring:
       max-file-size: 5MB
       max-request-size: 10MB
 
-  # ── Mail (dummy for now — replace with real credentials later) ────────────────
-  mail:
-    host: smtp.sendgrid.net
-    port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
 # ── JWT ───────────────────────────────────────────────────────────────────────
 jwt:
-  secret: ${JWT_SECRET}
-  access-token-expiry: ${JWT_ACCESS_EXPIRY}        # 15 minutes in milliseconds
-  refresh-token-expiry: ${JWT_REFRESH_EXPIRY}    # 7 days in milliseconds
+  access-token-expiry: 900000        # default 15 minutes
+  refresh-token-expiry: 604800000    # default 7 days
 
 # ── OTP ───────────────────────────────────────────────────────────────────────
 otp:
@@ -43,4 +25,4 @@ otp:
 
 # ── CORS ─────────────────────────────────────────────────────────────────────
 cors:
-  allowed-origins: ${CORS_ORIGINS:http://localhost:5173}
+  allowed-origins: http://localhost:5173

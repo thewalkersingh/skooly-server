@@ -450,10 +450,10 @@ ALTER TABLE departments ADD CONSTRAINT fk_dept_head FOREIGN KEY (head_id) REFERE
 -- ============================================================
 /*INSERT INTO roles (name) VALUES ('ADMIN'), ('TEACHER'), ('STUDENT'), ('PARENT'), ('STAFF');
 */
--- Seed school
+/*-- Seed school
 INSERT INTO schools (name, code, address, phone, email, studentStatus)
 VALUES ('Demo School', 'DEMO001', '123 Main Street, City', '+1-555-0100', 'admin@demoschool.com', 'ACTIVE');
 
 -- Seed admin user (password stored as plain text — JWT auth added later)
 INSERT INTO users (school_id, username, password, role, is_active)
-VALUES (1, 'admin', 'admin123', 'ADMIN', TRUE);
+VALUES (1, 'admin', 'admin123', 'ADMIN', TRUE);*/
