@@ -10,7 +10,7 @@ services:
       - "8080:8080"
     environment:
       # Database
-      DB_URL: jdbc:mysql://mysql-thewa-skooly.h.aivencloud.com:13758/defaultdb?ssl-mode=REQUIRED&useSSL=true&requireSSL=true&verifyServerCertificate=false
+      DB_URL: jdbc:mysql://mysql-thewa-skooly.h.aivencloud.com:13762/defaultdb
       DB_USERNAME: avnadmin
       DB_PASSWORD: ${DB_PASSWORD}
 
