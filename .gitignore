@@ -40,3 +40,6 @@ application-prod.yaml
 
 # Docker
 docker-compose.override.yml
+
+# Docs
+/docs
