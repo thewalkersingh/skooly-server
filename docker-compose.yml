@@ -10,8 +10,8 @@ services:
       - "8080:8080"
     environment:
       # Database
-      DB_URL: jdbc:mysql://mysql-thewa-skooly.h.aivencloud.com:13762/defaultdb?sslMode=REQUIRED&serverTimezone=UTC
-      DB_USERNAME: avnadmin
+      DB_URL: ${DB_URL}
+      DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
 
       # JWT
@@ -22,7 +22,7 @@ services:
       # Mail
       MAIL_HOST: smtp.sendgrid.net
       MAIL_PORT: 587
-      MAIL_USERNAME: apikey
+      MAIL_USERNAME: ${MAIL_USERNAME}
       MAIL_PASSWORD: ${MAIL_PASSWORD}
 
       # CORS
