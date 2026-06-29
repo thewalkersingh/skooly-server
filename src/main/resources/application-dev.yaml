@@ -1,20 +1,17 @@
 server:
   port: 8080
-
   servlet:
     context-path: /
-    address: 0.0.0.0
+  address: 0.0.0.0 #this enables other device access on same network
 
 spring:
   application:
     name: skooly
-  profiles:
-    active: prod
 
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://localhost:3306/skooly_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: root
+    password: admin
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -41,8 +38,8 @@ spring:
   mail:
     host: smtp.sendgrid.net
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: apikey
+    password: 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
     properties:
       mail:
         smtp:
@@ -52,7 +49,7 @@ spring:
 
 # ── JWT ───────────────────────────────────────────────────────────────────────
 jwt:
-  secret: ${JWT_SECRET}
+  secret: a3f8b2c1d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0
   access-token-expiry: 900000        # 15 minutes in milliseconds
   refresh-token-expiry: 604800000    # 7 days in milliseconds
   #JWT secret — when you replace it later use a Base64 encoded string of at least 256 bits. You can generate one with:

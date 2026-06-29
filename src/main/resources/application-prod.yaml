@@ -3,23 +3,21 @@ server:
 
   servlet:
     context-path: /
-    address: 0.0.0.0
+#    address: 0.0.0.0
 
 spring:
   application:
     name: skooly
-  profiles:
-    active: prod
 
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:mysql://mysql-thewa-skooly.h.aivencloud.com:13758/defaultdb?ssl-mode=REQUIRED&useSSL=true&requireSSL=true&verifyServerCertificate=false
+    username: avnadmin
+    password: AVNS_bPHgjtjGj8OkY40E3aK
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
@@ -41,8 +39,8 @@ spring:
   mail:
     host: smtp.sendgrid.net
     port: 587
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: apikey
+    password: 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
     properties:
       mail:
         smtp:
@@ -52,7 +50,7 @@ spring:
 
 # ── JWT ───────────────────────────────────────────────────────────────────────
 jwt:
-  secret: ${JWT_SECRET}
+  secret: a3f8b2c1d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0
   access-token-expiry: 900000        # 15 minutes in milliseconds
   refresh-token-expiry: 604800000    # 7 days in milliseconds
   #JWT secret — when you replace it later use a Base64 encoded string of at least 256 bits. You can generate one with:

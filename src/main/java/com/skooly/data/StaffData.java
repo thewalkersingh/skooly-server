@@ -30,7 +30,7 @@ public class StaffData {
 	private final SchoolRepository schoolRepository;
 	
 	@Bean
-	@Order(11)
+	@Order(12)
 	public CommandLineRunner seedStaff() {
 		return args -> {
 			Faker faker = new Faker();
