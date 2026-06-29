@@ -17,9 +17,7 @@ import com.skooly.repository.TeacherRepository;
 import com.skooly.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,8 +32,8 @@ public class TeacherData {
 	private final SectionRepository sectionRepository;
 	private final TeacherRepository teacherRepository;
 	
-	@Bean
-	@Order(7)
+	//	@Bean
+//	@Order(7)
 	public CommandLineRunner seedTeachers() {
 		return args -> {
 			Faker faker = new Faker();
@@ -101,8 +99,8 @@ public class TeacherData {
 		};
 	}
 	
-	@Bean
-	@Order(8)
+	//	@Bean
+//	@Order(8)
 	public CommandLineRunner seedSectionTeachers() {
 		return args -> {
 			List<School> schools = schoolRepository.findAll();

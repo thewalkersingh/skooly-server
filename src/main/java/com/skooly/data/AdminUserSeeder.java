@@ -9,9 +9,7 @@ import com.skooly.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Slf4j
@@ -22,8 +20,8 @@ public class AdminUserSeeder {
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 	
-	@Bean
-	@Order(1)
+	//	@Bean
+//	@Order(1)
 	public CommandLineRunner seedAdminUser() {
 		
 		return args -> {

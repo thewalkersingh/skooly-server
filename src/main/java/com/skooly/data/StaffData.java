@@ -14,9 +14,7 @@ import com.skooly.repository.StaffRepository;
 import com.skooly.service.StaffService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,8 +27,8 @@ public class StaffData {
 	private final StaffRepository staffRepository;
 	private final SchoolRepository schoolRepository;
 	
-	@Bean
-	@Order(12)
+	//	@Bean
+//	@Order(12)
 	public CommandLineRunner seedStaff() {
 		return args -> {
 			Faker faker = new Faker();

@@ -14,9 +14,7 @@ import com.skooly.service.ParentService;
 import com.skooly.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 
 import java.util.List;
 
@@ -29,8 +27,8 @@ public class ParentData {
 	private final StudentRepository studentRepository;
 	private final StudentService studentService;
 	
-	@Bean
-	@Order(10)
+	//	@Bean
+//	@Order(10)
 	public CommandLineRunner seedParents() {
 		return args -> {
 			Faker faker = new Faker();
@@ -89,8 +87,8 @@ public class ParentData {
 		};
 	}
 	
-	@Bean
-	@Order(11)
+	//	@Bean
+//	@Order(11)
 	public CommandLineRunner seedStudentParentLinks() {
 		return args -> {
 			List<Student> students = studentRepository.findAll();
