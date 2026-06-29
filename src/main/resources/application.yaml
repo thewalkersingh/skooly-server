@@ -9,7 +9,7 @@ spring:
   application:
     name: skooly
   profiles:
-    active: dev
+    active: prod
 
   datasource:
     url: ${DB_URL}
