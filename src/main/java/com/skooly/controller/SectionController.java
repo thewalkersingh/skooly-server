@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sections")
+@RequestMapping("/v1/sections")
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
 public class SectionController {

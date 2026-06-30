@@ -8,5 +8,5 @@ public enum UserRole {
 	TEACHER,
 	LIBRARIAN,
 	HELPER,
-	ADMINISTRATOR,
+	SUPER_ADMIN,
 }

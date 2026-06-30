@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/staff")
+@RequestMapping("/v1/staff")
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
 public class StaffController {

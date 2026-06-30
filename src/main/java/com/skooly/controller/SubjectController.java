@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/subjects")
+@RequestMapping("/v1/subjects")
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
 public class SubjectController {

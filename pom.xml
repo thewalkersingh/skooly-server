@@ -94,7 +94,7 @@
             <version>1.5.5.Final</version>
             <scope>provided</scope>
         </dependency>
-        
+
         <!-- Swagger -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -124,6 +124,12 @@
             <version>1.0.2</version>
         </dependency>
 
+        <!-- Twilo Sms -->
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio</artifactId>
+            <version>10.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

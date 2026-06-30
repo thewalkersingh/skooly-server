@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/classrooms")
+@RequestMapping("/v1/classrooms")
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
 public class ClassroomController {
