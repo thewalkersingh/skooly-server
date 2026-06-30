@@ -18,6 +18,7 @@ import com.skooly.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -77,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
 		userRepository.save(user);
 		
 		// Notify all ADMIN users about the pending request
-		userRepository.findByRole(UserRole.ADMIN, org.springframework.data.domain.Pageable.unpaged())
+		userRepository.findByRole(UserRole.ADMIN, Pageable.unpaged())
 		              .forEach(admin -> notificationService.sendPendingApprovalToAdmin(
 			              admin.getIdentity().getEmail(),
 			              admin.getIdentity().getPhone(),
