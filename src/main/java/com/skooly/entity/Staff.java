@@ -37,7 +37,7 @@ public class Staff {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)
-	private StaffStatus status;   // ACTIVE, INACTIVE, ON_LEAVE, TERMINATED
+	private StaffStatus staffStatus;   // ACTIVE, INACTIVE, ON_LEAVE, TERMINATED
 	
 	@Column(name = "joining_date")
 	private LocalDate joiningDate;        // same as Teacher — when did they join

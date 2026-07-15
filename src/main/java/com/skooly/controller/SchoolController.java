@@ -26,6 +26,7 @@ public class SchoolController {
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<SchoolResponse> createSchool(@RequestBody SchoolRequest request) {
+		
 		SchoolResponse response = schoolService.createSchool(request);
 		return ApiResponse.<SchoolResponse>builder()
 		                  .success(true)
@@ -39,6 +40,7 @@ public class SchoolController {
 	@PatchMapping("/{id}/request")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<SchoolResponse> updateSchool(@PathVariable Long id, @RequestBody SchoolRequest request) {
+		
 		SchoolResponse response = schoolService.updateSchool(id, request);
 		return ApiResponse.<SchoolResponse>builder()
 		                  .success(true)
@@ -52,6 +54,7 @@ public class SchoolController {
 	@DeleteMapping("/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<String> deleteSchool(@PathVariable Long id) {
+		
 		schoolService.deleteSchool(id);
 		return ApiResponse.<String>builder()
 		                  .success(true)
@@ -65,6 +68,7 @@ public class SchoolController {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<SchoolResponse> getSchool(@PathVariable Long id) {
+		
 		SchoolResponse response = schoolService.getSchool(id);
 		return ApiResponse.<SchoolResponse>builder()
 		                  .success(true)
@@ -76,6 +80,7 @@ public class SchoolController {
 	@GetMapping("/code/{schoolCode}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<SchoolResponse> getSchoolByCode(String schoolCode) {
+		
 		if (!schoolService.existsByCode(schoolCode))
 			throw new ResourceNotFoundException("School with code " + schoolCode + " not found");
 		SchoolResponse response = schoolService.getSchoolByCode(schoolCode);
@@ -89,6 +94,7 @@ public class SchoolController {
 	@GetMapping("/email/{email}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	ApiResponse<SchoolResponse> getSchoolByEmail(String email) {
+		
 		if (!schoolService.existsByEmail(email))
 			throw new ResourceNotFoundException("School with email " + email + " not found");
 		SchoolResponse response = schoolService.getSchoolByEmail(email);
@@ -102,6 +108,7 @@ public class SchoolController {
 	@GetMapping("/phone/{phone}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	ApiResponse<SchoolResponse> getSchoolByPhone(String phone) {
+		
 		SchoolResponse response = schoolService.getSchoolByPhone(phone);
 		return ApiResponse.<SchoolResponse>builder()
 		                  .success(true)
@@ -111,9 +118,21 @@ public class SchoolController {
 	}
 	
 	// ── Get all schools ───────────────────────────────────────────────────
+	@GetMapping("/public")
+	public ApiResponse<PageResponse<SchoolResponse>> getPublicSchools(Pageable pageable) {
+		
+		PageResponse<SchoolResponse> response = schoolService.getPublicSchools(pageable);
+		return ApiResponse.<PageResponse<SchoolResponse>>builder()
+		                  .success(true)
+		                  .message("Schools fetched successfully")
+		                  .data(response)
+		                  .build();
+	}
+	
 	@GetMapping("/all")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<SchoolResponse>> getAllSchools(Pageable pageable) {
+		
 		PageResponse<SchoolResponse> response = schoolService.getAllSchools(pageable);
 		return ApiResponse.<PageResponse<SchoolResponse>>builder()
 		                  .success(true)
@@ -126,8 +145,9 @@ public class SchoolController {
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<SchoolResponse>> getSchoolsByStatus(@PathVariable SchoolStatus status,
 		Pageable pageable) {
+		
 		PageResponse<SchoolResponse> response =
-			schoolService.getSchoolsByStatus(status, pageable);
+			schoolService.getSchoolsBySchoolStatus(status, pageable);
 		return ApiResponse.<PageResponse<SchoolResponse>>builder()
 		                  .data(response)
 		                  .success(true)
@@ -138,6 +158,7 @@ public class SchoolController {
 	@GetMapping("/name/{name}")
 	@PreAuthorize("hasAnyRole('ADMIN', 'TEACHER', 'STAFF')")
 	public ApiResponse<PageResponse<SchoolResponse>> searchSchoolsByName(String name, Pageable pageable) {
+		
 		PageResponse<SchoolResponse> response = schoolService.searchSchoolsByName(name, pageable);
 		return ApiResponse.<PageResponse<SchoolResponse>>builder()
 		                  .data(response)
@@ -149,6 +170,7 @@ public class SchoolController {
 	@PutMapping("/{id}/status")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<SchoolResponse> updateSchoolStatus(Long schoolId, SchoolStatus status) {
+		
 		SchoolResponse response = schoolService.updateStatus(schoolId, status);
 		return ApiResponse.<SchoolResponse>builder()
 		                  .data(response)

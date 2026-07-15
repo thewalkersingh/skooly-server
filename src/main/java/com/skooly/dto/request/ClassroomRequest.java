@@ -23,7 +23,7 @@ public class ClassroomRequest {
 	private String classroomCode;
 	
 	@NotNull
-	private ClassroomStatus status;
+	private ClassroomStatus classroomStatus;
 	
 	@NotNull
 	private Long schoolId;

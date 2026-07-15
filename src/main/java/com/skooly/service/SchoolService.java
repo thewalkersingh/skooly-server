@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 public interface SchoolService {
 	
 	// ── Create / Update / Delete ──────────────────────────────────────────────
-	SchoolResponse createSchool(SchoolRequest request);
+	SchoolResponse createSchool(SchoolRequest schoolRequest);
 	
-	SchoolResponse updateSchool(Long schoolId, SchoolRequest request);
+	SchoolResponse updateSchool(Long schoolId, SchoolRequest schoolRequest);
 	
 	void deleteSchool(Long schoolId);
 	
@@ -25,14 +25,16 @@ public interface SchoolService {
 	SchoolResponse getSchoolByPhone(String phone);
 	
 	// ── Lists ─────────────────────────────────────────────────────────────────
+	PageResponse<SchoolResponse> getPublicSchools(Pageable pageable);
+	
 	PageResponse<SchoolResponse> getAllSchools(Pageable pageable);
 	
-	PageResponse<SchoolResponse> getSchoolsByStatus(SchoolStatus status, Pageable pageable);
+	PageResponse<SchoolResponse> getSchoolsBySchoolStatus(SchoolStatus schoolStatus, Pageable pageable);
 	
 	PageResponse<SchoolResponse> searchSchoolsByName(String name, Pageable pageable);
 	
 	// ── Status management ─────────────────────────────────────────────────────
-	SchoolResponse updateStatus(Long schoolId, SchoolStatus status);
+	SchoolResponse updateStatus(Long schoolId, SchoolStatus schoolStatus);
 	
 	// ── Existence checks (useful before creating classrooms/teachers) ─────────
 	boolean existsByCode(String schoolCode);

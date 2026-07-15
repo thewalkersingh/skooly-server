@@ -19,7 +19,7 @@ public class ParentResponse {
 	private Long id;
 	private String occupation;
 	private String relation;
-	private ParentStatus status;
+	private ParentStatus parentStatus;
 	private AddressResponse address;   // embedded DTO
 	private UserIdentityResponse identity;  // nested DTO
 	private List<StudentSummary> students; // nested list of children

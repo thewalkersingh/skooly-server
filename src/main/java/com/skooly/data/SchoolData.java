@@ -7,9 +7,7 @@ import com.skooly.repository.SchoolRepository;
 import com.skooly.service.SchoolService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 
 import java.util.List;
 
@@ -20,8 +18,8 @@ public class SchoolData {
 	private final SchoolService schoolService;
 	private final SchoolRepository schoolRepository;
 	
-	@Bean
-	@Order(2)
+	//	@Bean
+//	@Order(2)
 	public CommandLineRunner seedSchools() {
 		
 		return args -> {
@@ -48,7 +46,7 @@ public class SchoolData {
 					                        .phone(faker.phoneNumber().subscriberNumber(10))
 					                        .email(schoolCode.toLowerCase() + "@skooly.com")
 					                        .logoUrl(faker.internet().avatar())
-					                        .status(SchoolStatus.ACTIVE)
+					                        .schoolStatus(SchoolStatus.ACTIVE)
 					                        .build();
 				
 				schoolService.createSchool(request);

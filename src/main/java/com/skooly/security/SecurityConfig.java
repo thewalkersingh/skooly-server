@@ -51,6 +51,7 @@ public class SecurityConfig {
 				                               // ── Swagger ──────────────────────────────────────────────────
 				                               .requestMatchers(
 					                               "/swagger-ui/**",
+					                               
 					                               "/swagger-ui.html",
 					                               "/swagger-ui/index.html",
 					                               "/api-docs/**",
@@ -81,10 +82,12 @@ public class SecurityConfig {
 				                               .requestMatchers(
 					                               "/v1/auth/create-account",
 					                               "/v1/auth/approve/**",
-					                               "/v1/auth/reject/**"
+					                               "/v1/auth/reject/**",
+					                               "/v1/auth/pending/**"
 				                               ).hasRole("ADMIN")
 				                               
 				                               // ── School management ─────────────────────────────────────────
+				                               .requestMatchers(HttpMethod.GET, "/schools/public").permitAll()
 				                               .requestMatchers(HttpMethod.GET, "/v1/schools/**").authenticated()
 				                               .requestMatchers(HttpMethod.POST, "/v1/schools/**").hasRole("ADMIN")
 				                               .requestMatchers(HttpMethod.PUT, "/v1/schools/**").hasRole("ADMIN")

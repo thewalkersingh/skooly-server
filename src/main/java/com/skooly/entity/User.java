@@ -31,13 +31,13 @@ public class User {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)
-	private UserRole role;
+	private UserRole userRole;
 	
 	private Long roleEntityId;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)
-	private UserStatus status;
+	private UserStatus userStatus;
 	
 	private boolean firstLogin;         // ← renamed from isFirstLogin
 	private String lastLoginDevice;

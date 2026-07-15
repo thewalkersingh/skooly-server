@@ -22,7 +22,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 	
 	List<Staff> findBySchoolId(Long schoolId);
 	
-	Page<Staff> findBySchoolIdAndStatus(Long schoolId, StaffStatus status, Pageable pageable);
+	Page<Staff> findBySchoolIdAndStaffStatus(Long schoolId, StaffStatus staffStatus, Pageable pageable);
 	
 	// ── By Role ───────────────────────────────────────────────────────────────
 	List<Staff> findByStaffRole(StaffRole staffRole);
@@ -37,7 +37,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 	List<Staff> findBySchoolIdAndDepartment(Long schoolId, Department department);
 	
 	// ── By Status ─────────────────────────────────────────────────────────────
-	Page<Staff> findByStatus(StaffStatus status, Pageable pageable);
+	Page<Staff> findByStaffStatus(StaffStatus staffStatus, Pageable pageable);
 	
 	// ── Lookup via UserIdentity ───────────────────────────────────────────────
 	Optional<Staff> findByIdentityId(Long identityId);
@@ -66,7 +66,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 	List<Staff> findBySchoolIdWithIdentity(@Param("schoolId") Long schoolId);
 	
 	// ── Count by role per school (for dashboard) ──────────────────────────────
-	@Query("SELECT COUNT(s) FROM Staff s WHERE s.school.id = :schoolId AND s.staffRole = :role")
-	long countBySchoolIdAndRole(@Param("schoolId") Long schoolId, @Param("role") StaffRole role);
+	@Query("SELECT COUNT(s) FROM Staff s WHERE s.school.id = :schoolId AND s.staffRole = :staffRole")
+	long countBySchoolIdAndStaffRole(@Param("schoolId") Long schoolId, @Param("staffRole") StaffRole staffRole);
 	
 }

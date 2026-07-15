@@ -33,7 +33,8 @@ public interface TeacherService {
 	
 	PageResponse<TeacherResponse> getTeachersBySchool(Long schoolId, Pageable pageable);
 	
-	PageResponse<TeacherResponse> getTeachersBySchoolAndStatus(Long schoolId, TeacherStatus status, Pageable pageable);
+	PageResponse<TeacherResponse> getTeachersBySchoolAndStatus(Long schoolId, TeacherStatus teacherStatus,
+		Pageable pageable);
 	
 	// Teachers assigned to a specific subject
 	List<TeacherResponse> getTeachersBySubject(Long subjectId);
@@ -42,7 +43,7 @@ public interface TeacherService {
 	PageResponse<TeacherResponse> searchTeachersByName(Long schoolId, String name, Pageable pageable);
 	
 	// ── Status management ─────────────────────────────────────────────────────
-	TeacherResponse updateStatus(Long teacherId, TeacherStatus status);
+	TeacherResponse updateStatus(Long teacherId, TeacherStatus teacherStatus);
 	
 	// ── Unassigned teachers (admin utility) ───────────────────────────────────
 	// Returns active teachers not yet assigned as class teacher to any section

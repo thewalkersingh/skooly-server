@@ -39,6 +39,6 @@ public class School {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)
-	private SchoolStatus status;
+	private SchoolStatus schoolStatus;
 	
 }

@@ -20,6 +20,6 @@ public class StaffSummary {
 	private Department role;
 	private StaffRole staffRole;
 	private Department department;
-	private StaffStatus status;
+	private StaffStatus staffStatus;
 	
 }

@@ -44,7 +44,7 @@ public class Teacher {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private TeacherStatus status;
+	private TeacherStatus teacherStatus;
 	
 	// Teacher belongs to a School (can be inserted without School existing first
 	// if nullable, but best practice is to always assign school)

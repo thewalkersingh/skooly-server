@@ -18,7 +18,7 @@ public class SubjectResponse {
 	private Long id;
 	private String subjectName;
 	private String subjectCode;
-	private SubjectStatus status;
+	private SubjectStatus subjectStatus;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	List<TeacherResponse> teachers;

@@ -1,5 +1,6 @@
 package com.skooly.dto.request.auth;
 
+import com.skooly.enums.OtpPurpose;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,6 @@ public class ResendOtpRequest {
 	private String identifier;      // email OR phone
 	
 	@NotNull
-	private com.skooly.enums.OtpPurpose purpose;
+	private OtpPurpose purpose;
 	
 }

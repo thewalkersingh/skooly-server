@@ -27,7 +27,7 @@ public interface SchoolRepository extends JpaRepository<School, Long> {
 	boolean existsByPhone(String phone);
 	
 	// ── Filtered lists ────────────────────────────────────────────────────────
-	Page<School> findByStatus(SchoolStatus status, Pageable pageable);
+	Page<School> findBySchoolStatus(SchoolStatus schoolStatus, Pageable pageable);
 	
 	Page<School> findBySchoolNameContainingIgnoreCase(String name, Pageable pageable);
 	

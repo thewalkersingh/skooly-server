@@ -22,6 +22,8 @@ public class SchoolRequest {
 	@Size(max = 20)
 	private String schoolCode;
 	private String address;
+	
+	@NotNull
 	private SchoolStatus schoolStatus;
 	
 	@Size(max = 15)
@@ -30,8 +32,5 @@ public class SchoolRequest {
 	@Email
 	private String email;
 	private String logoUrl;
-	
-	@NotNull
-	private SchoolStatus status;
 	
 }

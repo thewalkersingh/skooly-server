@@ -136,7 +136,7 @@ public class StaffController {
 	public ApiResponse<PageResponse<StaffResponse>> getStaffBySchoolAndStatus(@PathVariable Long schoolId,
 		@PathVariable StaffStatus status, Pageable pageable) {
 		
-		PageResponse<StaffResponse> response = staffService.getStaffBySchoolAndStatus(schoolId, status, pageable);
+		PageResponse<StaffResponse> response = staffService.getStaffBySchoolAndStaffStatus(schoolId, status, pageable);
 		return ApiResponse.<PageResponse<StaffResponse>>builder()
 		                  .message("Staff created successfully")
 		                  .success(true)
@@ -151,7 +151,7 @@ public class StaffController {
 	public ApiResponse<List<StaffResponse>> getStaffByRole(@PathVariable Long schoolId,
 		@PathVariable StaffRole staffRole) {
 		
-		List<StaffResponse> response = staffService.getStaffByRole(schoolId, staffRole);
+		List<StaffResponse> response = staffService.getStaffByStaffRole(schoolId, staffRole);
 		return ApiResponse.<List<StaffResponse>>builder()
 		                  .message("Staff created successfully")
 		                  .success(true)
@@ -210,7 +210,7 @@ public class StaffController {
 	@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 	public ApiResponse<Long> countBySchoolAndRole(@PathVariable Long schoolId, @PathVariable StaffRole staffRole) {
 		
-		Long count = staffService.countBySchoolAndRole(schoolId, staffRole);
+		Long count = staffService.countBySchoolAndStaffRole(schoolId, staffRole);
 		return ApiResponse.<Long>builder()
 		                  .message("Staff created successfully")
 		                  .success(true)

@@ -28,7 +28,7 @@ public interface SubjectService {
 	// ── Lists ─────────────────────────────────────────────────────────────────
 	PageResponse<SubjectResponse> getAllSubjects(Pageable pageable);
 	
-	PageResponse<SubjectResponse> getSubjectsByStatus(SubjectStatus status, Pageable pageable);
+	PageResponse<SubjectResponse> getSubjectsByStatus(SubjectStatus subjectStatus, Pageable pageable);
 	
 	// Subjects assigned to a section
 	List<SubjectResponse> getSubjectsBySection(Long sectionId);
@@ -40,7 +40,7 @@ public interface SubjectService {
 	PageResponse<SubjectResponse> searchSubjectsByName(String name, Pageable pageable);
 	
 	// ── Status management ─────────────────────────────────────────────────────
-	SubjectResponse updateStatus(Long subjectId, SubjectStatus status);
+	SubjectResponse updateStatus(Long subjectId, SubjectStatus subjectStatus);
 	
 	// ── Teacher assignment ────────────────────────────────────────────────────
 	// Adds a teacher to subject_teachers join table

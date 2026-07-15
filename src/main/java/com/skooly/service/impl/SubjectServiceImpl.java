@@ -85,7 +85,8 @@ public class SubjectServiceImpl implements SubjectService {
 	}
 	
 	public PageResponse<SubjectResponse> getSubjectsByStatus(SubjectStatus status, Pageable pageable) {
-		Page<Subject> page = subjectRepository.findByStatus(status, pageable);
+		
+		Page<Subject> page = subjectRepository.findBySubjectStatus(status, pageable);
 		List<SubjectResponse> list = page.getContent().stream().map(subjectMapper::toResponse).toList();
 		return PageResponse.<SubjectResponse>builder()
 			       .data(list)
@@ -128,7 +129,7 @@ public class SubjectServiceImpl implements SubjectService {
 	public SubjectResponse updateStatus(Long subjectId, SubjectStatus status) {
 		Subject subject = subjectRepository.findById(subjectId)
 			                  .orElseThrow(() -> new ResourceNotFoundException("Subject not found"));
-		subject.setStatus(status);
+		subject.setSubjectStatus(status);
 		subjectRepository.save(subject);
 		return subjectMapper.toResponse(subject);
 	}
@@ -183,7 +184,8 @@ public class SubjectServiceImpl implements SubjectService {
 	}
 	
 	private List<Subject> findByStatus(SubjectStatus status) {
-		return subjectRepository.findByStatus(status);
+		
+		return subjectRepository.findBySubjectStatus(status);
 	}
 	
 }

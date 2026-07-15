@@ -21,7 +21,7 @@ public class SchoolResponse {
 	private String phone;
 	private String email;
 	private String logoUrl;
-	private SchoolStatus status;
+	private SchoolStatus schoolStatus;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	

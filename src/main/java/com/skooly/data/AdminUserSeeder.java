@@ -48,8 +48,8 @@ public class AdminUserSeeder {
 			
 			User admin = User.builder().identity(identity)
 			                 .password(passwordEncoder.encode("Admin@1234"))  // change after first login
-			                 .role(UserRole.ADMIN).roleEntityId(null)     // ADMIN is not linked to any entity
-			                 .status(UserStatus.ACTIVE).firstLogin(false)      // ADMIN doesn't need OTP flow
+			                 .userRole(UserRole.ADMIN).roleEntityId(null)     // ADMIN is not linked to any entity
+			                 .userStatus(UserStatus.ACTIVE).firstLogin(false)      // ADMIN doesn't need OTP flow
 			                 .build();
 			
 			userRepository.save(admin);

@@ -24,6 +24,7 @@ public class ClassroomData {
 	//	@Bean
 //	@Order(3)
 	public CommandLineRunner seedClassrooms() {
+		
 		return args -> {
 			Faker faker = new Faker();
 			
@@ -46,13 +47,13 @@ public class ClassroomData {
 					
 					ClassroomRequest request =
 						ClassroomRequest.builder()
-							.classroomName(grade)
-							// unique per school: "GVS001-Grade1"
-							.classroomCode(
-								school
-									.getSchoolCode() + "-" + grade.replace(" ", ""))
-							.status(ClassroomStatus.ACTIVE)
-							.build();
+						                .classroomName(grade)
+						                // unique per school: "GVS001-Grade1"
+						                .classroomCode(
+							                school
+								                .getSchoolCode() + "-" + grade.replace(" ", ""))
+						                .classroomStatus(ClassroomStatus.ACTIVE)
+						                .build();
 					
 					classroomService.createClassroom(school.getId(), request);
 				}

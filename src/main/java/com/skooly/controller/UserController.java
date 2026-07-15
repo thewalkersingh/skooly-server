@@ -6,6 +6,7 @@ import com.skooly.enums.UserStatus;
 import com.skooly.service.UserService;
 import com.skooly.wrapper.ApiResponse;
 import com.skooly.wrapper.PageResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/users")
 @RequiredArgsConstructor
+@Tag(name = "User Management", description = "Endpoints for managing users")
 public class UserController {
 	
 	private final UserService userService;

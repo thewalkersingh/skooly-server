@@ -25,8 +25,8 @@ public class LoginResponse {
 	private Long userId;
 	private String firstName;
 	private String lastName;
-	private UserRole role;
-	private UserStatus status;
+	private UserRole userRole;
+	private UserStatus userStatus;
 	private Long roleEntityId;          // teacherId / studentId etc
 	private boolean firstLogin;         // true → redirect to set-password page
 	private String message;

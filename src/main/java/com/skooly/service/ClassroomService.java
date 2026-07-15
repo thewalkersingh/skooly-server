@@ -25,10 +25,10 @@ public interface ClassroomService {
 	
 	PageResponse<ClassroomResponse> getClassroomsBySchool(Long schoolId, Pageable pageable);
 	
-	PageResponse<ClassroomResponse> getClassroomsBySchoolAndStatus(Long schoolId, ClassroomStatus status,
+	PageResponse<ClassroomResponse> getClassroomsBySchoolAndStatus(Long schoolId, ClassroomStatus classroomStatus,
 		 Pageable pageable);
 	
 	// ── Status management ─────────────────────────────────────────────────────
-	ClassroomResponse updateStatus(Long classroomId, ClassroomStatus status);
+	ClassroomResponse updateStatus(Long classroomId, ClassroomStatus classroomStatus);
 	
 }

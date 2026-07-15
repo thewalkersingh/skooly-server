@@ -20,8 +20,8 @@ public class UserResponse {
 	private String lastName;
 	private String email;
 	private String phone;
-	private UserRole role;
-	private UserStatus status;
+	private UserRole userRole;
+	private UserStatus userStatus;
 	private Long roleEntityId;
 	private boolean firstLogin;
 	private LocalDateTime lastLoginAt;

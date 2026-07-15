@@ -7,6 +7,7 @@ import com.skooly.enums.StudentStatus;
 import com.skooly.service.StudentService;
 import com.skooly.wrapper.ApiResponse;
 import com.skooly.wrapper.PageResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/v1/students")
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
+@Tag(name = "Student Management", description = "Endpoints for managing students")
 public class StudentController {
 	
 	private final StudentService studentService;

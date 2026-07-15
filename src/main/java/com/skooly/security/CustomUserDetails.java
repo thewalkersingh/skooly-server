@@ -1,6 +1,7 @@
 package com.skooly.security;
 
 import com.skooly.entity.User;
+import com.skooly.enums.UserStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,14 +13,17 @@ public class CustomUserDetails implements UserDetails {
 	private final User user;
 	
 	public CustomUserDetails(User user) {
+		
 		this.user = user;
 	}
 	
 	public Long getUserId() {
+		
 		return user.getId();
 	}
 	
 	public Long getRoleEntityId() {
+		
 		return user.getRoleEntityId();
 	}
 	
@@ -33,25 +37,27 @@ public class CustomUserDetails implements UserDetails {
 	
 	@Override
 	public String getPassword() {
+		
 		return user.getPassword();
 	}
 	
 	@Override
 	public List<SimpleGrantedAuthority> getAuthorities() {
 		// ROLE_ prefix is Spring Security convention
-		return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+		return List.of(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().name()));
 	}
 	
 	// ── Account state checks ──────────────────────────────────────────────────
 	@Override
 	public boolean isAccountNonExpired() {
+		
 		return true;   // we handle expiry via UserStatus, not Spring's mechanism
 	}
 	
 	@Override
 	public boolean isAccountNonLocked() {
 		// Account is locked if status is anything other than ACTIVE
-		return switch (user.getStatus()) {
+		return switch (user.getUserStatus()) {
 			case ACTIVE -> true;
 			case PENDING, INACTIVE, REJECTED, DELETED -> false;
 		};
@@ -59,12 +65,14 @@ public class CustomUserDetails implements UserDetails {
 	
 	@Override
 	public boolean isCredentialsNonExpired() {
+		
 		return true;   // we handle this via firstLogin flag + OTP flow
 	}
 	
 	@Override
 	public boolean isEnabled() {
-		return user.getStatus() == com.skooly.enums.UserStatus.ACTIVE;
+		
+		return user.getUserStatus() == UserStatus.ACTIVE;
 	}
 	
 }

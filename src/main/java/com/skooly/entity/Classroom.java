@@ -14,10 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(
-	 name = "classrooms",
-	 uniqueConstraints = {@UniqueConstraint(columnNames = {"school_id", "classroom_code"})  // code unique per school
-	 })
+@Table(name = "classrooms",
+	uniqueConstraints = {@UniqueConstraint(columnNames = {"school_id", "classroom_code"})})
 public class Classroom {
 	
 	@Id
@@ -32,7 +30,7 @@ public class Classroom {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)
-	private ClassroomStatus status;   // ACTIVE, INACTIVE, etc.
+	private ClassroomStatus classroomStatus;   // ACTIVE, INACTIVE, etc.
 	
 	// Owning side: Classroom belongs to a School.
 	// School does NOT hold a List<Classroom> — query instead.
@@ -48,12 +46,14 @@ public class Classroom {
 	
 	@PrePersist
 	public void onCreate() {
+		
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
 	}
 	
 	@PreUpdate
 	public void onUpdate() {
+		
 		this.updatedAt = LocalDateTime.now();
 	}
 	

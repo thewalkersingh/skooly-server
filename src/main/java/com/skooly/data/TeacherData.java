@@ -35,6 +35,7 @@ public class TeacherData {
 	//	@Bean
 //	@Order(7)
 	public CommandLineRunner seedTeachers() {
+		
 		return args -> {
 			Faker faker = new Faker();
 			
@@ -60,38 +61,42 @@ public class TeacherData {
 					
 					// Assign 2-3 subjects round-robin per teacher
 					List<Long> subjectIds = allSubjects.stream()
-						                        .skip((teacherIndex - 1) % allSubjects.size())
-						                        .limit(3)
-						                        .map(Subject::getId)
-						                        .toList();
+					                                   .skip((teacherIndex - 1) % allSubjects.size())
+					                                   .limit(3)
+					                                   .map(Subject::getId)
+					                                   .toList();
 					
-					TeacherRequest request = TeacherRequest.builder()
-						                         .qualification(faker.educator().campus())
-						                         .experience(faker.number().numberBetween(1, 20))
-						                         .photoUrl(faker.internet().avatar())
-						                         .dob(LocalDate.of(
-							                         faker.number().numberBetween(1970, 1995),
-							                         faker.number().numberBetween(1, 12),
-							                         faker.number().numberBetween(1, 28)))
-						                         .joiningDate(LocalDate.now())
-						                         .address(AddressRequest.builder()
-							                                  .houseNumber(faker.address().buildingNumber())
-							                                  .streetName(faker.address().streetName())
-							                                  .zipCode(faker.address().zipCode())
-							                                  .city(faker.address().city())
-							                                  .state(faker.address().state())
-							                                  .build())
-						                         .status(faker.options().option(TeacherStatus.ACTIVE))
-						                         // never seed DELETED/INACTIVE
-						                         .subjectIds(subjectIds)
-						                         .identity(UserIdentityRequest.builder()
-							                                   .firstName(faker.name().firstName())
-							                                   .lastName(faker.name().lastName())
-							                                   .phone(phone)
-							                                   .email(email)
-							                                   .gender(faker.options().option(Gender.MALE, Gender.FEMALE))
-							                                   .build())
-						                         .build();
+					TeacherRequest request =
+						TeacherRequest.builder()
+						              .qualification(faker.educator().campus())
+						              .experience(faker.number().numberBetween(1, 20))
+						              .photoUrl(faker.internet().avatar())
+						              .dob(LocalDate.of(
+							              faker.number().numberBetween(1970, 1995),
+							              faker.number().numberBetween(1, 12),
+							              faker.number().numberBetween(1, 28)))
+						              .joiningDate(LocalDate.now())
+						              .address(AddressRequest.builder()
+						                                     .houseNumber(
+							                                     faker.address().buildingNumber())
+						                                     .streetName(faker.address().streetName())
+						                                     .zipCode(faker.address().zipCode())
+						                                     .city(faker.address().city())
+						                                     .state(faker.address().state())
+						                                     .build())
+						              .teacherStatus(faker.options().option(TeacherStatus.ACTIVE))
+						              // never seed DELETED/INACTIVE
+						              .subjectIds(subjectIds)
+						              .identity(UserIdentityRequest.builder()
+						                                           .firstName(faker.name().firstName())
+						                                           .lastName(faker.name().lastName())
+						                                           .phone(phone)
+						                                           .email(email)
+						                                           .gender(faker.options()
+						                                                        .option(Gender.MALE,
+							                                                        Gender.FEMALE))
+						                                           .build())
+						              .build();
 					
 					teacherService.createTeacher(school.getId(), request);
 				}
@@ -102,6 +107,7 @@ public class TeacherData {
 	//	@Bean
 //	@Order(8)
 	public CommandLineRunner seedSectionTeachers() {
+		
 		return args -> {
 			List<School> schools = schoolRepository.findAll();
 			

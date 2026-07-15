@@ -50,6 +50,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 	
 	public TeacherResponse updateTeacher(Long teacherId, TeacherRequest request) {
+		
 		teacherRepository.findById(teacherId)
 		                 .orElseThrow(() -> new RuntimeException("Teacher not found"));
 		Teacher teacher = teacherMapper.toEntity(request);
@@ -58,10 +59,11 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 	
 	public void deleteTeacher(Long teacherId) {
+		
 		Teacher teacher = teacherRepository
 			                  .findById(teacherId)
 			                  .orElseThrow(() -> new RuntimeException("Teacher not found"));
-		teacher.setStatus(TeacherStatus.DELETED);
+		teacher.setTeacherStatus(TeacherStatus.DELETED);
 		teacherRepository.save(teacher);
 	}
 	
@@ -92,6 +94,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 	
 	public TeacherResponse getClassTeacherBySection(Long sectionId) {
+		
 		Teacher teacher = teacherRepository
 			                  .findClassTeacherBySectionId(sectionId)
 			                  .orElseThrow(() -> new RuntimeException("Teacher not found"));
@@ -100,6 +103,7 @@ public class TeacherServiceImpl implements TeacherService {
 	
 	// ── Lists ─────────────────────────────────────────────────────────────────
 	public PageResponse<TeacherResponse> getAllTeachers(Pageable pageable) {
+		
 		Page<Teacher> page = teacherRepository.findAll(pageable);
 		List<TeacherResponse> response = page.getContent()
 		                                     .stream()
@@ -117,6 +121,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 	
 	public PageResponse<TeacherResponse> getTeachersBySchool(Long schoolId, Pageable pageable) {
+		
 		Page<Teacher> page = teacherRepository.findBySchoolId(schoolId, pageable);
 		List<TeacherResponse> responses = page.getContent()
 		                                      .stream()
@@ -136,7 +141,8 @@ public class TeacherServiceImpl implements TeacherService {
 	
 	public PageResponse<TeacherResponse> getTeachersBySchoolAndStatus(Long schoolId, TeacherStatus status,
 		Pageable pageable) {
-		Page<Teacher> page = teacherRepository.findBySchoolIdAndStatus(schoolId, status, pageable);
+		
+		Page<Teacher> page = teacherRepository.findBySchoolIdAndTeacherStatus(schoolId, status, pageable);
 		List<TeacherResponse> responses = page.getContent()
 		                                      .stream()
 		                                      .map(teacherMapper::toResponse)
@@ -154,6 +160,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 	
 	public List<TeacherResponse> getTeachersBySubject(Long subjectId) {
+		
 		List<Teacher> response = teacherRepository.findTeachersBySubjectId(subjectId);
 		return response.stream()
 		               .map(teacherMapper::toResponse)
@@ -162,6 +169,7 @@ public class TeacherServiceImpl implements TeacherService {
 	
 	// ── Search ────────────────────────────────────────────────────────────────
 	public PageResponse<TeacherResponse> searchTeachersByName(Long schoolId, String name, Pageable pageable) {
+		
 		Page<Teacher> page = teacherRepository.searchByNameAndSchoolId(schoolId, name, pageable);
 		List<TeacherResponse> responses = page.getContent()
 		                                      .stream()
@@ -181,16 +189,18 @@ public class TeacherServiceImpl implements TeacherService {
 	
 	// ── Status management ─────────────────────────────────────────────────────
 	public TeacherResponse updateStatus(Long teacherId, TeacherStatus status) {
+		
 		Teacher teacher = teacherRepository
 			                  .findById(teacherId)
 			                  .orElseThrow(() -> new RuntimeException("Teacher not found"));
-		teacher.setStatus(status);
+		teacher.setTeacherStatus(status);
 		teacherRepository.save(teacher);
 		return teacherMapper.toResponse(teacher);
 	}
 	
 	// ── Unassigned teachers (admin utility) ───────────────────────────────────
 	public List<TeacherResponse> getUnassignedTeachers(Long schoolId) {
+		
 		List<Teacher> teachers = teacherRepository.findUnassignedTeachersBySchoolId(schoolId);
 		return teachers.stream()
 		               .map(teacherMapper::toResponse)
@@ -198,6 +208,7 @@ public class TeacherServiceImpl implements TeacherService {
 	}
 	
 	public List<SectionResponse> getSectionsByTeacher(Long teacherId) {
+		
 		if (!teacherRepository.existsById(teacherId)) {
 			throw new ResourceNotFoundException("Teacher not found");
 		}

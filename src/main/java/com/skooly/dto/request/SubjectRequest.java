@@ -24,6 +24,6 @@ public class SubjectRequest {
 	private Long sectionId;
 	
 	@NotNull
-	private SubjectStatus status;
+	private SubjectStatus subjectStatus;
 	
 }

@@ -18,10 +18,10 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 	
 	List<Teacher> findBySchoolId(Long schoolId);
 	
-	Page<Teacher> findBySchoolIdAndStatus(Long schoolId, TeacherStatus status, Pageable pageable);
+	Page<Teacher> findBySchoolIdAndTeacherStatus(Long schoolId, TeacherStatus teacherStatus, Pageable pageable);
 	
 	// ── By Status ─────────────────────────────────────────────────────────────
-	Page<Teacher> findByStatus(TeacherStatus status, Pageable pageable);
+	Page<Teacher> findByTeacherStatus(TeacherStatus teacherStatus, Pageable pageable);
 	
 	// ── Lookup via UserIdentity ───────────────────────────────────────────────
 	Optional<Teacher> findByIdentityId(Long identityId);
@@ -59,7 +59,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 	@Query("""
 		SELECT t FROM Teacher t
 		WHERE t.school.id = :schoolId
-		AND t.status = 'ACTIVE'
+		AND t.teacherStatus = 'ACTIVE'
 		AND t.id NOT IN (
 		    SELECT sec.teacher.id FROM Section sec
 		    WHERE sec.teacher IS NOT NULL

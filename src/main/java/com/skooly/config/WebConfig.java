@@ -11,15 +11,18 @@ public class WebConfig {
 	
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
+		
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(@NonNull CorsRegistry registry) {
+				
 				registry.addMapping("/api/**")
-						.allowedOrigins(
-								"http://localhost:5173",
-								"https://skooly.vercel.app",
-								"https://skooly-1buzk9nt9-diwakar-singhs-projects.vercel.app")
-						.allowedMethods("GET", "POST", "PUT", "DELETE");
+				        .allowedOrigins(
+					        "http://localhost:5173",
+					        "http://localhost:8080/swagger-ui",
+					        "https://skooly.vercel.app",
+					        "https://skooly-1buzk9nt9-diwakar-singhs-projects.vercel.app")
+				        .allowedMethods("GET", "POST", "PUT", "DELETE");
 			}
 		};
 	}

@@ -28,7 +28,7 @@ public class TeacherRequest {
 	private AddressRequest address;   // embedded DTO
 	
 	@NotNull
-	private TeacherStatus status;
+	private TeacherStatus teacherStatus;
 	
 	private List<Long> subjectIds;    // references to subjects
 	

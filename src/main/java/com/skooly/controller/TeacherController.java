@@ -25,7 +25,7 @@ public class TeacherController {
 	private final TeacherMapper teacherMapper;
 	
 	// ── Create / Update / Delete ──────────────────────────────────────────────
-	@PostMapping
+	@PostMapping("/{schoolId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ApiResponse<TeacherResponse> createTeacher(@PathVariable Long schoolId,
 		@RequestBody TeacherRequest request) {

@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		                          .orElseThrow(() -> new UsernameNotFoundException(
 			                          "User not found with email or phone: " + username));
 //		/ Log authorities here
-		log.info("Authorities for {}: {}", username, user.getRole());
+		log.info("Authorities for {}: {}", username, user.getUserRole());
 		return new CustomUserDetails(user);
 	}
 	

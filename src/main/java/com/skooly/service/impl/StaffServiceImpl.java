@@ -32,6 +32,7 @@ public class StaffServiceImpl implements StaffService {
 	
 	// ── Create / Update / Delete ──────────────────────────────────────────────
 	public StaffResponse createStaff(Long schoolId, StaffRequest request) {
+		
 		if (staffRepository.existsByIdentityPhone(request.getIdentity().getPhone()))
 			throw new IllegalStateException("Phone already registered");
 		if (staffRepository.existsByIdentityEmail(request.getIdentity().getEmail()))
@@ -46,6 +47,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 	
 	public StaffResponse updateStaff(Long staffId, StaffRequest request) {
+		
 		staffRepository.findById(staffId)
 		               .orElseThrow(() -> new EntityNotFoundException("Staff Not Found"));
 		Staff staff = staffMapper.toEntity(request);
@@ -55,15 +57,17 @@ public class StaffServiceImpl implements StaffService {
 	}
 	
 	public void deleteStaff(Long staffId) {
+		
 		Staff staff = staffRepository
 			              .findById(staffId)
 			              .orElseThrow(() -> new EntityNotFoundException("Staff Not Found"));
-		staff.setStatus(StaffStatus.DELETED);
+		staff.setStaffStatus(StaffStatus.DELETED);
 		staffRepository.save(staff);
 	}
 	
 	// ── Single fetch ──────────────────────────────────────────────────────────
 	public StaffResponse getStaff(Long staffId) {
+		
 		return staffRepository
 			       .findById(staffId)
 			       .map(staffMapper::toResponse)
@@ -71,6 +75,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 	
 	public StaffResponse getStaffByPhone(String phone) {
+		
 		return staffRepository
 			       .findByIdentityPhone(phone)
 			       .map(staffMapper::toResponse)
@@ -78,6 +83,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 	
 	public StaffResponse getStaffByEmail(String email) {
+		
 		return staffRepository
 			       .findByIdentityEmail(email)
 			       .map(staffMapper::toResponse)
@@ -86,6 +92,7 @@ public class StaffServiceImpl implements StaffService {
 	
 	// ── Lists ─────────────────────────────────────────────────────────────────
 	public PageResponse<StaffResponse> getAllStaff(Pageable pageable) {
+		
 		Page<Staff> page = staffRepository.findAll(pageable);
 		List<StaffResponse> response = page.getContent()
 		                                   .stream()
@@ -103,6 +110,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 	
 	public PageResponse<StaffResponse> getStaffBySchool(Long schoolId, Pageable pageable) {
+		
 		Page<Staff> page = staffRepository.findBySchoolId(schoolId, pageable);
 		List<StaffResponse> responses = page.getContent()
 		                                    .stream()
@@ -119,8 +127,10 @@ public class StaffServiceImpl implements StaffService {
 		                   .build();
 	}
 	
-	public PageResponse<StaffResponse> getStaffBySchoolAndStatus(Long schoolId, StaffStatus status, Pageable pageable) {
-		Page<Staff> page = staffRepository.findBySchoolIdAndStatus(schoolId, status, pageable);
+	public PageResponse<StaffResponse> getStaffBySchoolAndStaffStatus(Long schoolId, StaffStatus status,
+		Pageable pageable) {
+		
+		Page<Staff> page = staffRepository.findBySchoolIdAndStaffStatus(schoolId, status, pageable);
 		List<StaffResponse> responses = page.getContent()
 		                                    .stream()
 		                                    .map(staffMapper::toResponse)
@@ -137,7 +147,7 @@ public class StaffServiceImpl implements StaffService {
 	}
 	
 	// Filter by role — e.g. all LIBRARIAN staff in a school
-	public List<StaffResponse> getStaffByRole(Long schoolId, StaffRole staffRole) {
+	public List<StaffResponse> getStaffByStaffRole(Long schoolId, StaffRole staffRole) {
 		
 		return staffRepository.findBySchoolIdAndStaffRole(schoolId, staffRole)
 		                      .stream()
@@ -156,6 +166,7 @@ public class StaffServiceImpl implements StaffService {
 	
 	// ── Search ────────────────────────────────────────────────────────────────
 	public PageResponse<StaffResponse> searchStaffByName(Long schoolId, String name, Pageable pageable) {
+		
 		Page<Staff> page = staffRepository.searchByNameAndSchoolId(schoolId, name, pageable);
 		List<StaffResponse> responses = page.getContent()
 		                                    .stream()
@@ -174,18 +185,20 @@ public class StaffServiceImpl implements StaffService {
 	
 	// ── Status management ─────────────────────────────────────────────────────
 	public StaffResponse updateStatus(Long staffId, StaffStatus status) {
+		
 		Staff staff = staffRepository
 			              .findById(staffId)
 			              .orElseThrow(() -> new RuntimeException("Teacher not found"));
-		staff.setStatus(status);
+		staff.setStaffStatus(status);
 		staffRepository.save(staff);
 		return staffMapper.toResponse(staff);
 	}
 	
 	// ── Stats ─────────────────────────────────────────────────────────────────
 	// Count of staff per role in a school — useful for admin dashboard
-	public long countBySchoolAndRole(Long schoolId, StaffRole staffRole) {
-		return staffRepository.countBySchoolIdAndRole(schoolId, staffRole);
+	public long countBySchoolAndStaffRole(Long schoolId, StaffRole staffRole) {
+		
+		return staffRepository.countBySchoolIdAndStaffRole(schoolId, staffRole);
 	}
 	
 }

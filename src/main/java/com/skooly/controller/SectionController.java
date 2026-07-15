@@ -6,6 +6,7 @@ import com.skooly.mapper.SectionMapper;
 import com.skooly.service.SectionService;
 import com.skooly.wrapper.ApiResponse;
 import com.skooly.wrapper.PageResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/v1/sections")
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
+@Tag(name = "Section Management", description = "Endpoints for managing sections")
 public class SectionController {
 	
 	private final SectionService sectionService;

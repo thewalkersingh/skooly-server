@@ -31,7 +31,7 @@ public class Subject {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)
-	private SubjectStatus status;   // ACTIVE, INACTIVE, ELECTIVE, etc. 
+	private SubjectStatus subjectStatus;   // ACTIVE, INACTIVE, ELECTIVE, etc.
 	
 	// Subject owns the subject_teachers join table.
 	// Teacher does NOT hold a back-reference list — removes the circular dependency.
