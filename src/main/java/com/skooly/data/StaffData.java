@@ -30,6 +30,7 @@ public class StaffData {
 	//	@Bean
 //	@Order(12)
 	public CommandLineRunner seedStaff() {
+		
 		return args -> {
 			Faker faker = new Faker();
 			
@@ -65,8 +66,7 @@ public class StaffData {
 					
 					StaffRequest request = StaffRequest.builder()
 					                                   .staffRole(config.role())
-					                                   .department(config.department())
-					                                   .status(StaffStatus.ACTIVE)
+					                                   .department(config.department()).staffStatus(StaffStatus.ACTIVE)
 					                                   .qualification(faker.educator().campus())
 					                                   .experience(faker.number().numberBetween(1, 20))
 					                                   .joiningDate(LocalDate.of(

@@ -19,7 +19,7 @@ import java.time.LocalDate;
 public class StaffRequest {
 	
 	@NotNull
-	private StaffStatus status;
+	private StaffStatus staffStatus;
 	
 	private Department department;     // role/dept is required
 	private StaffRole staffRole;

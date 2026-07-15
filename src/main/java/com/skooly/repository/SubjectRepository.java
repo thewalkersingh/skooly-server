@@ -20,9 +20,9 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 	boolean existsBySubjectCode(String subjectCode);
 	
 	// ── By Status ─────────────────────────────────────────────────────────────
-	Page<Subject> findByStatus(SubjectStatus status, Pageable pageable);
+	Page<Subject> findBySubjectStatus(SubjectStatus subjectStatus, Pageable pageable);
 	
-	List<Subject> findByStatus(SubjectStatus status);
+	List<Subject> findBySubjectStatus(SubjectStatus subjectStatus);
 	
 	// ── Subjects assigned to a section (via section_subjects join table) ──────
 	@Query("SELECT subj FROM Section sec JOIN sec.subjects subj WHERE sec.id = :sectionId")
@@ -36,16 +36,16 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 	@Query("""
 		     SELECT s FROM Subject s
 		     WHERE s.id NOT IN (SELECT subj.id FROM Section sec JOIN sec.subjects subj WHERE sec.id = :sectionId)
-		 		AND s.status = 'ACTIVE'
-		 """)
+				AND s.subjectStatus = 'ACTIVE'
+		""")
 	List<Subject> findSubjectsNotInSection(@Param("sectionId") Long sectionId);
 	
 	// ── Subjects NOT yet assigned to a teacher ────────────────────────────────
 	@Query("""
 		 SELECT s FROM Subject s
 		 WHERE s.id NOT IN (SELECT sub.id FROM Subject sub JOIN sub.teachers t WHERE t.id = :teacherId)
-		 AND s.status = 'ACTIVE'
-		 """)
+		AND s.subjectStatus = 'ACTIVE'
+		""")
 	List<Subject> findSubjectsNotAssignedToTeacher(@Param("teacherId") Long teacherId);
 	
 	// ── Search by name ────────────────────────────────────────────────────────

@@ -22,7 +22,7 @@ public class ParentRequest {
 	private AddressRequest address;   // embedded DTO
 	
 	@NotNull
-	private ParentStatus status;
+	private ParentStatus parentStatus;
 	
 	@NotNull
 	private UserIdentityRequest identity;  // nested DTO

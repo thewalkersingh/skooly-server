@@ -35,7 +35,7 @@ public interface StudentService {
 	
 	PageResponse<StudentResponse> getStudentsBySection(Long sectionId, Pageable pageable);
 	
-	PageResponse<StudentResponse> getStudentsBySectionAndStatus(Long sectionId, StudentStatus status,
+	PageResponse<StudentResponse> getStudentsBySectionAndStatus(Long sectionId, StudentStatus studentStatus,
 		Pageable pageable);
 	
 	PageResponse<StudentResponse> getStudentsByClassroom(Long classroomId, Pageable pageable);
@@ -49,7 +49,7 @@ public interface StudentService {
 	PageResponse<StudentResponse> searchStudentsByName(Long schoolId, String name, Pageable pageable);
 	
 	// ── Status management ─────────────────────────────────────────────────────
-	StudentResponse updateStatus(Long studentId, StudentStatus status);
+	StudentResponse updateStatus(Long studentId, StudentStatus studentStatus);
 	
 	// ── Section transfer ──────────────────────────────────────────────────────
 	// Moves a student from their current section to a new one

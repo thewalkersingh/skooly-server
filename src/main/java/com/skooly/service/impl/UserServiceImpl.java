@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly = true)
 	public UserResponse getUser(Long userId) {
+		
 		return userRepository.findById(userId)
 		                     .map(this::toResponse)
 		                     .orElseThrow(() -> new ResourceNotFoundException("User", userId));
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly = true)
 	public UserResponse getUserByPhone(String phone) {
+		
 		return userRepository.findByIdentityPhone(phone)
 		                     .map(this::toResponse)
 		                     .orElseThrow(() -> new ResourceNotFoundException("User", "phone", phone));
@@ -43,6 +45,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly = true)
 	public UserResponse getUserByEmail(String email) {
+		
 		return userRepository.findByIdentityEmail(email)
 		                     .map(this::toResponse)
 		                     .orElseThrow(() -> new ResourceNotFoundException("User", "email", email));
@@ -52,6 +55,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly = true)
 	public PageResponse<UserResponse> getAllUsers(Pageable pageable) {
+		
 		Page<User> page = userRepository.findAll(pageable);
 		return toPageResponse(page);
 	}
@@ -59,14 +63,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly = true)
 	public PageResponse<UserResponse> getUsersByRole(UserRole role, Pageable pageable) {
-		Page<User> page = userRepository.findByRole(role, pageable);
+		
+		Page<User> page = userRepository.findByUserRole(role, pageable);
 		return toPageResponse(page);
 	}
 	
 	@Override
 	@Transactional(readOnly = true)
 	public PageResponse<UserResponse> getUsersByStatus(UserStatus status, Pageable pageable) {
-		Page<User> page = userRepository.findByStatus(status, pageable);
+		
+		Page<User> page = userRepository.findByUserStatus(status, pageable);
 		return toPageResponse(page);
 	}
 	
@@ -74,6 +80,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserResponse> getPendingApprovals() {
+		
 		return userRepository.findAllPendingApprovals()
 		                     .stream()
 		                     .map(this::toResponse)
@@ -83,9 +90,10 @@ public class UserServiceImpl implements UserService {
 	// ── Status management ─────────────────────────────────────────────────────
 	@Override
 	public UserResponse updateStatus(Long userId, UserStatus status) {
+		
 		User user = userRepository.findById(userId)
 		                          .orElseThrow(() -> new ResourceNotFoundException("User", userId));
-		user.setStatus(status);
+		user.setUserStatus(status);
 		User saved = userRepository.save(user);
 		return toResponse(saved);
 	}
@@ -93,9 +101,10 @@ public class UserServiceImpl implements UserService {
 	// ── Soft delete ───────────────────────────────────────────────────────────
 	@Override
 	public void deleteUser(Long userId) {
+		
 		User user = userRepository.findById(userId)
 		                          .orElseThrow(() -> new ResourceNotFoundException("User", userId));
-		user.setStatus(UserStatus.DELETED);
+		user.setUserStatus(UserStatus.DELETED);
 		userRepository.save(user);
 	}
 	
@@ -103,14 +112,14 @@ public class UserServiceImpl implements UserService {
 	// No mapper needed — UserResponse is simple enough to map manually
 	// Avoids creating a UserMapper that would need UserIdentityMapper dependency
 	private UserResponse toResponse(User user) {
+		
 		return UserResponse.builder()
 		                   .id(user.getId())
 		                   .firstName(user.getIdentity().getFirstName())
 		                   .lastName(user.getIdentity().getLastName())
 		                   .email(user.getIdentity().getEmail())
-		                   .phone(user.getIdentity().getPhone())
-		                   .role(user.getRole())
-		                   .status(user.getStatus())
+		                   .phone(user.getIdentity().getPhone()).userRole(user.getUserRole())
+		                   .userStatus(user.getUserStatus())
 		                   .roleEntityId(user.getRoleEntityId())
 		                   .firstLogin(user.isFirstLogin())
 		                   .lastLoginAt(user.getLastLoginAt())
@@ -120,6 +129,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	private PageResponse<UserResponse> toPageResponse(Page<User> page) {
+		
 		return PageResponse.<UserResponse>builder()
 		                   .data(page.getContent().stream().map(this::toResponse).toList())
 		                   .page(page.getNumber())

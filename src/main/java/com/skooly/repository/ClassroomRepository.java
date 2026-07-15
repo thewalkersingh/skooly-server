@@ -13,12 +13,12 @@ import java.util.Optional;
 
 public interface ClassroomRepository extends JpaRepository<Classroom, Long> {
 	
-	// ── By School ─────────────────────────────────────────────────────────────
+	// ── By School ─────────────────────────────────────────────────────────────f
 	Page<Classroom> findBySchoolId(Long schoolId, Pageable pageable);
 	
 	List<Classroom> findBySchoolId(Long schoolId);
 	
-	Page<Classroom> findBySchoolIdAndStatus(Long schoolId, ClassroomStatus status, Pageable pageable);
+	Page<Classroom> findBySchoolIdAndClassroomStatus(Long schoolId, ClassroomStatus classroomStatus, Pageable pageable);
 	
 	// ── Lookup ────────────────────────────────────────────────────────────────
 	Optional<Classroom> findByClassroomCode(String classroomCode);
@@ -31,14 +31,14 @@ public interface ClassroomRepository extends JpaRepository<Classroom, Long> {
 	boolean existsBySchoolIdAndClassroomCode(Long schoolId, String classroomCode);
 	
 	// ── Status filter ─────────────────────────────────────────────────────────
-	Page<Classroom> findByStatus(ClassroomStatus status, Pageable pageable);
+	Page<Classroom> findByClassroomStatus(ClassroomStatus classroomStatus, Pageable pageable);
 	
 	// ── With section count (avoids loading section list) ─────────────────────
 	@Query("""
-		 SELECT c, COUNT(s.id) FROM Classroom c
-		 LEFT JOIN Section s ON s.classroom.id = c.id
-		 WHERE c.school.id = :schoolId GROUP BY c.id
-		 """)
+		SELECT c, COUNT(s.id) FROM Classroom c
+		LEFT JOIN Section s ON s.classroom.id = c.id
+		WHERE c.school.id = :schoolId GROUP BY c.id
+		""")
 	List<Object[]> findClassroomsWithSectionCountBySchoolId(@Param("schoolId") Long schoolId);
 	
 }

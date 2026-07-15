@@ -32,7 +32,7 @@ public class Parent {
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 20)
-	private ParentStatus status;
+	private ParentStatus parentStatus;
 	
 	@OneToOne(optional = false, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "identity_id", nullable = false)

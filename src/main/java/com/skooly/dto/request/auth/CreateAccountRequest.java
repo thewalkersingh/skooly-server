@@ -35,7 +35,7 @@ public class CreateAccountRequest {
 	private Gender gender;
 	
 	@NotNull
-	private UserRole role;
+	private UserRole userRole;
 	
 	@NotNull
 	private Long schoolId;

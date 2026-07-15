@@ -35,9 +35,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 	List<Student> findByParentId(Long parentId);
 	
 	// ── By Status ─────────────────────────────────────────────────────────────
-	Page<Student> findByStudentStatus(StudentStatus status, Pageable pageable);
+	Page<Student> findByStudentStatus(StudentStatus studentStatus, Pageable pageable);
 	
-	Page<Student> findBySectionIdAndStudentStatus(Long sectionId, StudentStatus status, Pageable pageable);
+	Page<Student> findBySectionIdAndStudentStatus(Long sectionId, StudentStatus studentStatus, Pageable pageable);
 	
 	// ── Lookup via UserIdentity ───────────────────────────────────────────────
 	Optional<Student> findByIdentityId(Long identityId);

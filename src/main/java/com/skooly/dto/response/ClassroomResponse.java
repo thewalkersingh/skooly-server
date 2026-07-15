@@ -17,8 +17,8 @@ public class ClassroomResponse {
 	private Long id;
 	private String classroomName;
 	private String classroomCode;
-	private ClassroomStatus status;
-	private Long schoolId;   // ✅ reference back to School
+	private ClassroomStatus classroomStatus;
+	private Long schoolId;   // reference back to School
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	

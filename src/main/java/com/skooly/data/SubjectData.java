@@ -28,6 +28,7 @@ public class SubjectData {
 	//	@Bean
 //	@Order(5)
 	public CommandLineRunner seedSubjects() {
+		
 		return args -> {
 			
 			// code, name, status
@@ -60,7 +61,7 @@ public class SubjectData {
 					                             .builder()
 					                             .subjectCode(s[0])
 					                             .subjectName(s[1])
-					                             .status(SubjectStatus.valueOf(s[2]))
+					                             .subjectStatus(SubjectStatus.valueOf(s[2]))
 					                             .build());
 			}
 		};
@@ -69,6 +70,7 @@ public class SubjectData {
 	//	@Bean
 //	@Order(5)
 	public CommandLineRunner seedSectionSubjectsData() {
+		
 		return args -> {
 			
 			// Core subject codes per grade group
@@ -85,8 +87,9 @@ public class SubjectData {
 			
 			// Load all subjects into a map for O(1) lookup by code
 			Map<String, Subject> subjectMap = subjectRepository.findAll()
-				                                  .stream()
-				                                  .collect(Collectors.toMap(Subject::getSubjectCode, s -> s));
+			                                                   .stream()
+			                                                   .collect(Collectors.toMap(Subject::getSubjectCode,
+				                                                   s -> s));
 			
 			List<Section> sections = sectionRepository.findAllWithSubjectsAndClassroom();
 			if (sections.isEmpty()) throw new RuntimeException("No sections found");
@@ -108,9 +111,9 @@ public class SubjectData {
 				// Collect core subjects
 				List<Subject> assigned = new ArrayList<>(
 					coreCodes.stream()
-						.map(subjectMap::get)
-						.filter(Objects::nonNull)
-						.toList()
+					         .map(subjectMap::get)
+					         .filter(Objects::nonNull)
+					         .toList()
 				);
 				
 				// Add elective based on section name (A/B/C)

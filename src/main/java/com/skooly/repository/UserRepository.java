@@ -28,7 +28,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	Optional<User> findByIdentityPhone(String phone);
 	
-	Optional<User> findByRoleEntityIdAndRole(Long roleEntityId, UserRole role);
+	Optional<User> findByRoleEntityIdAndUserRole(Long roleEntityId, UserRole userRole);
 	
 	// ── Existence checks ──────────────────────────────────────────────────────
 	boolean existsByIdentityEmail(String email);
@@ -36,16 +36,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	boolean existsByIdentityPhone(String phone);
 	
 	// ── By Status — for admin management ─────────────────────────────────────
-	Page<User> findByStatus(UserStatus status, Pageable pageable);
+	Page<User> findByUserStatus(UserStatus userStatus, Pageable pageable);
 	
-	List<User> findByStatus(UserStatus status);
+	List<User> findByUserStatus(UserStatus userStatus);
 	
 	// ── Pending approvals — ADMIN dashboard ───────────────────────────────────
-	@Query("SELECT u FROM User u WHERE u.status = 'PENDING' ORDER BY u.createdAt ASC")
+	@Query("SELECT u FROM User u WHERE u.userStatus = 'PENDING' ORDER BY u.createdAt ASC")
 	List<User> findAllPendingApprovals();
 	
 	// ── By Role ───────────────────────────────────────────────────────────────
-	Page<User> findByRole(UserRole role, Pageable pageable);
+	Page<User> findByUserRole(UserRole userRole, Pageable pageable);
 	
 	// ── By User ID ───────────────────────────────────────────────────────────────
 	@Query("SELECT u FROM User u JOIN FETCH u.identity WHERE u.id = :id")

@@ -57,7 +57,7 @@ public class ParentData {
 						                                    .profession())
 					                        .relation(faker.options()
 						                                  .option("Father", "Mother", "Guardian"))
-					                        .status(ParentStatus.ACTIVE)
+					                                  .parentStatus(ParentStatus.ACTIVE)
 					                        .address(AddressRequest.builder()
 						                                 .houseNumber(faker.address()
 							                                              .buildingNumber())

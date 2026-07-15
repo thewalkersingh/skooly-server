@@ -34,7 +34,7 @@ public class RegisterRequest {
 	private Gender gender;
 	
 	@NotNull
-	private UserRole role;          // TEACHER, STUDENT, PARENT, STAFF
+	private UserRole userRole;          // TEACHER, STUDENT, PARENT, STAFF
 	
 	@NotNull
 	private Long schoolId;          // which school they belong to

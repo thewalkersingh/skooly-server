@@ -21,9 +21,9 @@ public class MeResponse {
 	private String lastName;
 	private String email;
 	private String phone;
-	private UserRole role;
-	private UserStatus status;
+	private UserRole userRole;
+	private UserStatus userStatus;
 	private Long roleEntityId;
-	private Long schoolId;             // resolved from roleEntityId based on role
+	private Long schoolId;             // resolved from roleEntityId based on userRole
 	
 }

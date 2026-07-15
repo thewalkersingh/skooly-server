@@ -24,7 +24,7 @@ public class TeacherResponse {
 	private LocalDate dob;
 	private LocalDate joiningDate;
 	private AddressResponse address;   // embedded DTO
-	private TeacherStatus status;
+	private TeacherStatus teacherStatus;
 	private Long schoolId;
 	private String schoolName;
 	private UserIdentityResponse identity;  // nested DTO

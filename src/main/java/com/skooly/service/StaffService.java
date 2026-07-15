@@ -31,10 +31,11 @@ public interface StaffService {
 	
 	PageResponse<StaffResponse> getStaffBySchool(Long schoolId, Pageable pageable);
 	
-	PageResponse<StaffResponse> getStaffBySchoolAndStatus(Long schoolId, StaffStatus status, Pageable pageable);
+	PageResponse<StaffResponse> getStaffBySchoolAndStaffStatus(Long schoolId, StaffStatus staffStatus,
+		Pageable pageable);
 	
 	// Filter by role — e.g. all LIBRARIAN staff in a school
-	List<StaffResponse> getStaffByRole(Long schoolId, StaffRole staffRole);
+	List<StaffResponse> getStaffByStaffRole(Long schoolId, StaffRole staffRole);
 	
 	// Filter by department — e.g. all FINANCE department staff
 	List<StaffResponse> getStaffByDepartment(Long schoolId, Department department);
@@ -43,10 +44,10 @@ public interface StaffService {
 	PageResponse<StaffResponse> searchStaffByName(Long schoolId, String name, Pageable pageable);
 	
 	// ── Status management ─────────────────────────────────────────────────────
-	StaffResponse updateStatus(Long staffId, StaffStatus status);
+	StaffResponse updateStatus(Long staffId, StaffStatus staffStatus);
 	
 	// ── Stats ─────────────────────────────────────────────────────────────────
 	// Count of staff per role in a school — useful for admin dashboard
-	long countBySchoolAndRole(Long schoolId, StaffRole staffRole);
+	long countBySchoolAndStaffRole(Long schoolId, StaffRole staffRole);
 	
 }

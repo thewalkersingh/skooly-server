@@ -37,10 +37,10 @@ public class JwtUtil {
 	public String generateAccessToken(User user) {
 		
 		Map<String, Object> claims = new HashMap<>();
-		claims.put("role", user.getRole().name());
+		claims.put("role", user.getUserRole().name());
 		claims.put("roleEntityId", user.getRoleEntityId());
 		claims.put("userId", user.getId());
-		claims.put("status", user.getStatus().name());
+		claims.put("status", user.getUserStatus().name());
 		log.debug("Generating token with secret length: {}", secret.length());
 		return Jwts.builder()
 		           .claims(claims)

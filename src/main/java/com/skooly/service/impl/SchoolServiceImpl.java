@@ -28,32 +28,37 @@ public class SchoolServiceImpl implements SchoolService {
 	
 	@Override
 	public SchoolResponse createSchool(SchoolRequest request) {
+		
 		School school = schoolMapper.toEntity(request);
 		school = schoolRepository.save(school);
 		return schoolMapper.toResponse(school);
 	}
 	
 	public SchoolResponse updateSchool(Long schoolId, SchoolRequest request) {
+		
 		schoolRepository.findById(schoolId)
-			.orElseThrow(() -> new ResourceNotFoundException("School not found"));
+		                .orElseThrow(() -> new ResourceNotFoundException("School not found"));
 		School school = schoolMapper.toEntity(request);
 		School response = schoolRepository.save(school);
 		return schoolMapper.toResponse(response);
 	}
 	
 	public void deleteSchool(Long schoolId) {
+		
 		schoolRepository.findById(schoolId)
-			.ifPresent(school -> school.setStatus(SchoolStatus.DELETED));
+		                .ifPresent(school -> school.setSchoolStatus(SchoolStatus.DELETED));
 	}
 	
 	@Override
 	public SchoolResponse getSchool(Long id) {
+		
 		return schoolRepository.findById(id)
-			       .map(schoolMapper::toResponse)
-			       .orElseThrow(() -> new RuntimeException("School not found"));
+		                       .map(schoolMapper::toResponse)
+		                       .orElseThrow(() -> new RuntimeException("School not found"));
 	}
 	
 	public SchoolResponse getSchoolByCode(String schoolCode) {
+		
 		Optional<School> school = schoolRepository.findBySchoolCode(schoolCode);
 		return school
 			       .map(schoolMapper::toResponse)
@@ -61,6 +66,7 @@ public class SchoolServiceImpl implements SchoolService {
 	}
 	
 	public SchoolResponse getSchoolByEmail(String email) {
+		
 		Optional<School> schoolByEmail = schoolRepository.findByEmail(email);
 		return schoolByEmail
 			       .map(schoolMapper::toResponse)
@@ -68,66 +74,88 @@ public class SchoolServiceImpl implements SchoolService {
 	}
 	
 	public SchoolResponse getSchoolByPhone(String phone) {
+		
 		Optional<School> schoolByPhone = schoolRepository.findByPhone(phone);
 		return schoolByPhone.map(schoolMapper::toResponse)
-			       .orElseThrow(() -> new ResourceNotFoundException("School not found"));
+		                    .orElseThrow(() -> new ResourceNotFoundException("School not found"));
+	}
+	
+	public PageResponse<SchoolResponse> getPublicSchools(Pageable pageable) {
+		
+		Page<School> page = schoolRepository.findBySchoolStatus(SchoolStatus.ACTIVE, pageable);
+		List<SchoolResponse> data = page.getContent().stream().map(schoolMapper::toResponse).toList();
+		return PageResponse.<SchoolResponse>builder()
+		                   .data(data)
+		                   .page(page.getNumber())
+		                   .size(page.getSize())
+		                   .totalElements(page.getTotalElements())
+		                   .totalPages(page.getTotalPages())
+		                   .hasNext(page.hasNext())
+		                   .hasPrevious(page.hasPrevious())
+		                   .build();
 	}
 	
 	public PageResponse<SchoolResponse> getAllSchools(Pageable pageable) {
+		
 		Page<School> page = schoolRepository.findAll(pageable);
 		List<SchoolResponse> data = page.getContent().stream().map(schoolMapper::toResponse).toList();
 		return PageResponse.<SchoolResponse>builder()
-			       .data(data)
-			       .page(page.getNumber())
-			       .size(page.getSize())
-			       .totalElements(page.getTotalElements())
-			       .totalPages(page.getTotalPages())
-			       .hasNext(page.hasNext())
-			       .hasPrevious(page.hasPrevious())
-			       .build();
+		                   .data(data)
+		                   .page(page.getNumber())
+		                   .size(page.getSize())
+		                   .totalElements(page.getTotalElements())
+		                   .totalPages(page.getTotalPages())
+		                   .hasNext(page.hasNext())
+		                   .hasPrevious(page.hasPrevious())
+		                   .build();
 	}
 	
-	public PageResponse<SchoolResponse> getSchoolsByStatus(SchoolStatus status, Pageable pageable) {
-		Page<School> page = schoolRepository.findByStatus(status, pageable);
+	public PageResponse<SchoolResponse> getSchoolsBySchoolStatus(SchoolStatus schoolStatus, Pageable pageable) {
+		
+		Page<School> page = schoolRepository.findBySchoolStatus(schoolStatus, pageable);
 		List<SchoolResponse> data = page.getContent().stream().map(schoolMapper::toResponse).toList();
 		return PageResponse.<SchoolResponse>builder()
-			       .data(data)
-			       .page(page.getNumber())
-			       .size(page.getSize())
-			       .totalElements(page.getTotalElements())
-			       .totalPages(page.getTotalPages())
-			       .hasNext(page.hasNext())
-			       .hasPrevious(page.hasPrevious())
-			       .build();
+		                   .data(data)
+		                   .page(page.getNumber())
+		                   .size(page.getSize())
+		                   .totalElements(page.getTotalElements())
+		                   .totalPages(page.getTotalPages())
+		                   .hasNext(page.hasNext())
+		                   .hasPrevious(page.hasPrevious())
+		                   .build();
 	}
 	
 	public PageResponse<SchoolResponse> searchSchoolsByName(String name, Pageable pageable) {
+		
 		Page<School> page = schoolRepository.findBySchoolNameContainingIgnoreCase(name, pageable);
 		List<SchoolResponse> data = page.getContent().stream().map(schoolMapper::toResponse).toList();
 		return PageResponse.<SchoolResponse>builder()
-			       .data(data)
-			       .page(page.getNumber())
-			       .size(page.getSize())
-			       .totalElements(page.getTotalElements())
-			       .totalPages(page.getTotalPages())
-			       .hasNext(page.hasNext())
-			       .hasPrevious(page.hasPrevious())
-			       .build();
+		                   .data(data)
+		                   .page(page.getNumber())
+		                   .size(page.getSize())
+		                   .totalElements(page.getTotalElements())
+		                   .totalPages(page.getTotalPages())
+		                   .hasNext(page.hasNext())
+		                   .hasPrevious(page.hasPrevious())
+		                   .build();
 	}
 	
 	public SchoolResponse updateStatus(Long schoolId, SchoolStatus status) {
+		
 		School school = schoolRepository.findById(schoolId)
-			                .orElseThrow(() -> new ResourceNotFoundException("School not found"));
-		school.setStatus(status);
+		                                .orElseThrow(() -> new ResourceNotFoundException("School not found"));
+		school.setSchoolStatus(status);
 		School savedSchool = schoolRepository.save(school);
 		return schoolMapper.toResponse(savedSchool);
 	}
 	
 	public boolean existsByCode(String schoolCode) {
+		
 		return schoolRepository.existsBySchoolCode(schoolCode);
 	}
 	
 	public boolean existsByEmail(String email) {
+		
 		return schoolRepository.existsByEmail(email);
 	}
 	

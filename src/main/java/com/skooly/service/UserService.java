@@ -20,15 +20,15 @@ public interface UserService {
 	// ── Lists ─────────────────────────────────────────────────────────────────
 	PageResponse<UserResponse> getAllUsers(Pageable pageable);
 	
-	PageResponse<UserResponse> getUsersByRole(UserRole role, Pageable pageable);
+	PageResponse<UserResponse> getUsersByRole(UserRole userRole, Pageable pageable);
 	
-	PageResponse<UserResponse> getUsersByStatus(UserStatus status, Pageable pageable);
+	PageResponse<UserResponse> getUsersByStatus(UserStatus userStatus, Pageable pageable);
 	
 	// ── Pending approvals — admin dashboard ───────────────────────────────────
 	List<UserResponse> getPendingApprovals();
 	
 	// ── Status management ─────────────────────────────────────────────────────
-	UserResponse updateStatus(Long userId, UserStatus status);
+	UserResponse updateStatus(Long userId, UserStatus userStatus);
 	
 	// ── Delete ────────────────────────────────────────────────────────────────
 	void deleteUser(Long userId);   // soft delete → DELETED status

@@ -19,7 +19,7 @@ public interface ParentService {
 	void deleteParent(Long parentId);
 	
 	// Status management — for soft delete
-	ParentResponse updateStatus(Long parentId, ParentStatus status);
+	ParentResponse updateStatus(Long parentId, ParentStatus parentStatus);
 	
 	// ── Single fetch ──────────────────────────────────────────────────────────
 	ParentResponse getParent(Long parentId);
