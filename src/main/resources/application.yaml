@@ -1,9 +1,3 @@
-spring:
-  application:
-    name: skooly
-  profiles:
-    active: dev
-
 server:
   port: 8080
   servlet:
@@ -13,6 +7,11 @@ server:
     max-file-size: 5MB
     max-request-size: 10MB
 
+spring:
+  application:
+    name: skooly
+  profiles:
+    active: prod
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
