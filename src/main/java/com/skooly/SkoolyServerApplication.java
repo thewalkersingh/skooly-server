@@ -12,18 +12,12 @@ public class SkoolyServerApplication {
 	}
 	
 	private static void start() {
-		System.out.println("===================================================================");
-		System.out.println("||                                                               ||");
-		System.out.println("||    ████████╗██╗  ██╗███████╗██╗    ██╗ █████╗                 ||");
-		System.out.println("||    ╚══██╔══╝██║  ██║██╔════╝██║    ██║██╔══██╗                ||");
-		System.out.println("||       ██║   ███████║█████╗  ██║ █╗ ██║███████║                ||");
-		System.out.println("||       ██║   ██╔══██║██╔══╝  ██║███╗██║██╔══██║                ||");
-		System.out.println("||       ██║   ██║  ██║███████╗╚███╔███╔╝██║  ██║                ||");
-		System.out.println("||       ╚═╝   ╚═╝  ╚═╝╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝                ||");
-		System.out.println("||                                                               ||");
-		System.out.println("||                 Spring Boot App Started                       ||");
-		System.out.println("||                                                               ||");
-		System.out.println("===================================================================");
+		System.out.println("***************************************************************");
+		System.out.println("*****************-------------------------*********************");
+		System.out.println("****************| Spring Boot App Started |********************");
+		System.out.println("*****************-------------------------*********************");
+		System.out.println("***************************************************************");
+		
 	}
 	
 }

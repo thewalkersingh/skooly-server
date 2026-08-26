@@ -44,47 +44,48 @@ public class SecurityConfig {
 			.csrf(AbstractHttpConfigurer::disable)
 			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
 			.sessionManagement(session ->
-				                   session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+										 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			
 			.authorizeHttpRequests(auth -> auth
-				                               
-				                               // ── Swagger ──────────────────────────────────────────────────
+														 
+														 // ── Swagger ──────────────────────────────────────────────────
 				                               .requestMatchers(
-					                               "/swagger-ui/**",
-					                               
-					                               "/swagger-ui.html",
-					                               "/swagger-ui/index.html",
-					                               "/api-docs/**",
-					                               "/v3/api-docs/**",
-					                               "/v3/api-docs",
-					                               "/swagger-resources/**",
-					                               "/webjars/**"
-				                               ).permitAll()
+															 "/swagger-ui/**",
+															 
+															 "/swagger-ui.html",
+															 "/swagger-ui/index.html",
+															 "/api-docs/**",
+															 "/v3/api-docs/**",
+															 "/v3/api-docs",
+															 "/swagger-resources/**",
+															 "/webjars/**"
+														 ).permitAll()
 				                               
 				                               // ── Public auth endpoints (no token needed) ──────────────────
 				                               .requestMatchers(
-					                               "/v1/auth/login",
-					                               "/v1/auth/register",
-					                               "/v1/auth/refresh",
-					                               "/v1/auth/forgot-password",
-					                               "/v1/auth/verify-otp",
-					                               "/v1/auth/resend-otp",
-					                               "/v1/auth/reset-password"
-				                               ).permitAll()
+															 "/v1/",
+															 "/v1/auth/login",
+															 "/v1/auth/register",
+															 "/v1/auth/refresh",
+															 "/v1/auth/forgot-password",
+															 "/v1/auth/verify-otp",
+															 "/v1/auth/resend-otp",
+															 "/v1/auth/reset-password"
+														 ).permitAll()
 				                               
 				                               // ── Authenticated auth endpoints ──────────────────────────────
 				                               .requestMatchers(
-					                               "/v1/auth/me",
-					                               "/v1/auth/logout"
-				                               ).authenticated()
+															 "/v1/auth/me",
+															 "/v1/auth/logout"
+														 ).authenticated()
 				                               
 				                               // ── Admin-only auth actions ───────────────────────────────────
 				                               .requestMatchers(
-					                               "/v1/auth/create-account",
-					                               "/v1/auth/approve/**",
-					                               "/v1/auth/reject/**",
-					                               "/v1/auth/pending/**"
-				                               ).hasRole("ADMIN")
+															 "/v1/auth/create-account",
+															 "/v1/auth/approve/**",
+															 "/v1/auth/reject/**",
+															 "/v1/auth/pending/**"
+														 ).hasRole("ADMIN")
 				                               
 				                               // ── School management ─────────────────────────────────────────
 				                               .requestMatchers(HttpMethod.GET, "/schools/public").permitAll()
@@ -99,7 +100,8 @@ public class SecurityConfig {
 				                               .requestMatchers(HttpMethod.POST, "/v1/classrooms/**").hasRole("ADMIN")
 				                               .requestMatchers(HttpMethod.PUT, "/v1/classrooms/**").hasRole("ADMIN")
 				                               .requestMatchers(HttpMethod.PATCH, "/v1/classrooms/**").hasRole("ADMIN")
-				                               .requestMatchers(HttpMethod.DELETE, "/v1/classrooms/**").hasRole("ADMIN")
+				                               .requestMatchers(HttpMethod.DELETE, "/v1/classrooms/**").hasRole(
+					"ADMIN")
 				                               
 				                               // ── Section management ────────────────────────────────────────
 				                               .requestMatchers(HttpMethod.GET, "/v1/sections/**").authenticated()
@@ -159,7 +161,6 @@ public class SecurityConfig {
 	// ── CORS ──────────────────────────────────────────────────────────────────
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
-		
 		CorsConfiguration config = new CorsConfiguration();
 		
 		// Split by comma — supports multiple origins
@@ -179,7 +180,6 @@ public class SecurityConfig {
 	// ── Authentication Provider ───────────────────────────────────────────────
 	@Bean
 	public AuthenticationProvider authenticationProvider() {
-		
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
 		provider.setPasswordEncoder(passwordEncoder());
 		return provider;
@@ -188,7 +188,6 @@ public class SecurityConfig {
 	// ── Password Encoder ──────────────────────────────────────────────────────
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		
 		return new BCryptPasswordEncoder();
 	}
 	
@@ -197,7 +196,6 @@ public class SecurityConfig {
 	@Bean
 	public AuthenticationManager authenticationManager(
 		AuthenticationConfiguration config) throws Exception {
-		
 		return config.getAuthenticationManager();
 	}
 	
