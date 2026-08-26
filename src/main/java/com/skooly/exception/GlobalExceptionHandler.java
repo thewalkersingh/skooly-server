@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice //find the meaning
 public class GlobalExceptionHandler {
 	
 	// ── Validation errors (@Valid failures) ───────────────────────────────────

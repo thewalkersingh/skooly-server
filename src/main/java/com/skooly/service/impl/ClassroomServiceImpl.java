@@ -32,8 +32,8 @@ public class ClassroomServiceImpl implements ClassroomService {
 		
 		Classroom classroom = classroomMapper.toEntity(request);
 		School school = schoolRepository
-			                .findById(schoolId)
-			                .orElseThrow(() -> new RuntimeException("School not found"));
+								 .findById(schoolId)
+								 .orElseThrow(() -> new RuntimeException("School not found"));
 		classroom.setSchool(school);
 		classroom = classroomRepository.save(classroom);
 		return classroomMapper.toResponse(classroom);
@@ -42,7 +42,7 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public ClassroomResponse updateClassroom(Long classroomId, ClassroomRequest request) {
 		
 		classroomRepository.findById(classroomId)
-		                   .orElseThrow(() -> new ResourceNotFoundException("Classroom not found"));
+								 .orElseThrow(() -> new ResourceNotFoundException("Classroom not found"));
 		Classroom classroom = classroomMapper.toEntity(request);
 		Classroom response = classroomRepository.save(classroom);
 		return classroomMapper.toResponse(response);
@@ -57,15 +57,15 @@ public class ClassroomServiceImpl implements ClassroomService {
 	public ClassroomResponse getClassroom(Long id) {
 		
 		return classroomRepository.findById(id)
-		                          .map(classroomMapper::toResponse)
-		                          .orElseThrow(() -> new RuntimeException("Classroom not found"));
+										  .map(classroomMapper::toResponse)
+										  .orElseThrow(() -> new RuntimeException("Classroom not found"));
 	}
 	
 	public ClassroomResponse getClassroomByCode(String classroomCode) {
 		
 		Classroom classroom = classroomRepository
-			                      .findByClassroomCode(classroomCode)
-			                      .orElseThrow(() -> new ResourceNotFoundException("Classroom not found"));
+										 .findByClassroomCode(classroomCode)
+										 .orElseThrow(() -> new ResourceNotFoundException("Classroom not found"));
 		return classroomMapper.toResponse(classroom);
 		
 	}
@@ -75,14 +75,14 @@ public class ClassroomServiceImpl implements ClassroomService {
 		Page<Classroom> page = classroomRepository.findAll(pageable);
 		List<ClassroomResponse> data = page.getContent().stream().map(classroomMapper::toResponse).toList();
 		return PageResponse.<ClassroomResponse>builder()
-		                   .data(data)
-		                   .page(page.getNumber())
-		                   .size(page.getSize())
-		                   .totalElements(page.getTotalElements())
-		                   .totalPages(page.getTotalPages())
-		                   .hasNext(page.hasNext())
-		                   .hasPrevious(page.hasPrevious())
-		                   .build();
+								 .data(data)
+								 .page(page.getNumber())
+								 .size(page.getSize())
+								 .totalElements(page.getTotalElements())
+								 .totalPages(page.getTotalPages())
+								 .hasNext(page.hasNext())
+								 .hasPrevious(page.hasPrevious())
+								 .build();
 	}
 	
 	public PageResponse<ClassroomResponse> getClassroomsBySchool(Long schoolId, Pageable pageable) {
@@ -90,14 +90,14 @@ public class ClassroomServiceImpl implements ClassroomService {
 		Page<Classroom> page = classroomRepository.findBySchoolId(schoolId, pageable);
 		List<ClassroomResponse> data = page.getContent().stream().map(classroomMapper::toResponse).toList();
 		return PageResponse.<ClassroomResponse>builder()
-		                   .data(data)
-		                   .page(page.getNumber())
-		                   .size(page.getSize())
-		                   .totalElements(page.getTotalElements())
-		                   .totalPages(page.getTotalPages())
-		                   .hasNext(page.hasNext())
-		                   .hasPrevious(page.hasPrevious())
-		                   .build();
+								 .data(data)
+								 .page(page.getNumber())
+								 .size(page.getSize())
+								 .totalElements(page.getTotalElements())
+								 .totalPages(page.getTotalPages())
+								 .hasNext(page.hasNext())
+								 .hasPrevious(page.hasPrevious())
+								 .build();
 	}
 	
 	public PageResponse<ClassroomResponse> getClassroomsBySchoolAndStatus(Long schoolId, ClassroomStatus status,
@@ -106,22 +106,22 @@ public class ClassroomServiceImpl implements ClassroomService {
 		Page<Classroom> page = classroomRepository.findBySchoolIdAndClassroomStatus(schoolId, status, pageable);
 		List<ClassroomResponse> data = page.getContent().stream().map(classroomMapper::toResponse).toList();
 		return PageResponse.<ClassroomResponse>builder()
-		                   .data(data)
-		                   .page(page.getNumber())
-		                   .size(page.getSize())
-		                   .totalElements(page.getTotalElements())
-		                   .totalPages(page.getTotalPages())
-		                   .hasNext(page.hasNext())
-		                   .hasPrevious(page.hasPrevious())
-		                   .build();
+								 .data(data)
+								 .page(page.getNumber())
+								 .size(page.getSize())
+								 .totalElements(page.getTotalElements())
+								 .totalPages(page.getTotalPages())
+								 .hasNext(page.hasNext())
+								 .hasPrevious(page.hasPrevious())
+								 .build();
 	}
 	
 	// ── Status management ─────────────────────────────────────────────────────
 	public ClassroomResponse updateStatus(Long classroomId, ClassroomStatus status) {
 		
 		Classroom classroom = classroomRepository.findById(classroomId)
-		                                         .orElseThrow(() -> new ResourceNotFoundException("Classroom not " +
-			                                                                                          "found"));
+															  .orElseThrow(() -> new ResourceNotFoundException("Classroom not " +
+																																	"found"));
 		classroom.setClassroomStatus(status);
 		classroom = classroomRepository.save(classroom);
 		return classroomMapper.toResponse(classroom);

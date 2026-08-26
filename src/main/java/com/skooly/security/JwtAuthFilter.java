@@ -45,23 +45,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		try {
 			// ── Extract userId from token claims
 			Long userId = jwtUtil.extractUserId(token);
-			
 			log.debug("Extracted userId: {}", userId);
 			
 			// ── Only process if not already authenticated
 			if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-				
 				User user = userRepository.findByIdWithIdentity(userId).orElse(null);
 				
 				if (user != null && jwtUtil.isTokenValid(token, user)) {
-					
 					CustomUserDetails userDetails = new CustomUserDetails(user);
 					log.debug("Authorities: {}", userDetails.getAuthorities());
 					
 					// ── Build authentication token
-					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
-						null,                           // no credentials needed post-auth
-						userDetails.getAuthorities());
+					UsernamePasswordAuthenticationToken authToken =
+						new UsernamePasswordAuthenticationToken(userDetails,
+							null,                           // no credentials needed post-auth
+							userDetails.getAuthorities());
 					
 					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					

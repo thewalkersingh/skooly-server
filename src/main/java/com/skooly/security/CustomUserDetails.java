@@ -13,17 +13,14 @@ public class CustomUserDetails implements UserDetails {
 	private final User user;
 	
 	public CustomUserDetails(User user) {
-		
 		this.user = user;
 	}
 	
 	public Long getUserId() {
-		
 		return user.getId();
 	}
 	
 	public Long getRoleEntityId() {
-		
 		return user.getRoleEntityId();
 	}
 	
@@ -37,7 +34,6 @@ public class CustomUserDetails implements UserDetails {
 	
 	@Override
 	public String getPassword() {
-		
 		return user.getPassword();
 	}
 	
@@ -50,7 +46,6 @@ public class CustomUserDetails implements UserDetails {
 	// ── Account state checks ──────────────────────────────────────────────────
 	@Override
 	public boolean isAccountNonExpired() {
-		
 		return true;   // we handle expiry via UserStatus, not Spring's mechanism
 	}
 	
@@ -65,13 +60,11 @@ public class CustomUserDetails implements UserDetails {
 	
 	@Override
 	public boolean isCredentialsNonExpired() {
-		
 		return true;   // we handle this via firstLogin flag + OTP flow
 	}
 	
 	@Override
 	public boolean isEnabled() {
-		
 		return user.getUserStatus() == UserStatus.ACTIVE;
 	}
 	
