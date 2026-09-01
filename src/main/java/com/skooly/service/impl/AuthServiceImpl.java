@@ -15,6 +15,7 @@ import com.skooly.repository.UserRepository;
 import com.skooly.security.JwtUtil;
 import com.skooly.service.AuthService;
 import com.skooly.service.NotificationService;
+import com.skooly.service.SchoolService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
 	private final JwtUtil jwtUtil;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
+	private final SchoolService schoolService;
 	
 	@Value("${jwt.refresh-token-expiry}")
 	private long refreshTokenExpiry;
@@ -58,31 +60,31 @@ public class AuthServiceImpl implements AuthService {
 		
 		// Create UserIdentity
 		UserIdentity identity = UserIdentity.builder()
-		                                    .firstName(request.getFirstName())
-		                                    .lastName(request.getLastName())
-		                                    .phone(request.getPhone())
-		                                    .email(request.getEmail())
-		                                    .gender(request.getGender())
-		                                    .build();
+														.firstName(request.getFirstName())
+														.lastName(request.getLastName())
+														.phone(request.getPhone())
+														.email(request.getEmail())
+														.gender(request.getGender())
+														.build();
 		
 		// Create User with PENDING status
 		User user = User.builder()
-		                .identity(identity)
-		                .password(passwordEncoder.encode(UUID.randomUUID().toString())) // temp random password
-		                .userRole(request.getUserRole())
-		                .roleEntityId(request.getRoleEntityId()).userStatus(UserStatus.PENDING)
-		                .firstLogin(true)
-		                .build();
+							 .identity(identity)
+							 .password(passwordEncoder.encode(UUID.randomUUID().toString())) // temp random password
+							 .userRole(request.getUserRole())
+							 .roleEntityId(request.getRoleEntityId()).userStatus(UserStatus.PENDING)
+							 .firstLogin(true)
+							 .build();
 		
 		userRepository.save(user);
 		
 		// Notify all ADMIN users about the pending request
 		userRepository.findByUserRole(UserRole.ADMIN, Pageable.unpaged())
-		              .forEach(admin -> notificationService.sendPendingApprovalToAdmin(
-			              admin.getIdentity().getEmail(),
-			              admin.getIdentity().getPhone(),
-			              request.getFirstName() + " " + request.getLastName(), request.getUserRole().name()
-		              ));
+						  .forEach(admin -> notificationService.sendPendingApprovalToAdmin(
+							  admin.getIdentity().getEmail(),
+							  admin.getIdentity().getPhone(),
+							  request.getFirstName() + " " + request.getLastName(), request.getUserRole().name()
+						  ));
 		
 		// In-app notification record
 		notificationService.send(
@@ -94,9 +96,9 @@ public class AuthServiceImpl implements AuthService {
 		);
 		
 		return AuthMessageResponse.builder()
-		                          .success(true)
-		                          .message("Registration successful. Your account is pending admin approval.")
-		                          .build();
+										  .success(true)
+										  .message("Registration successful. Your account is pending admin approval.")
+										  .build();
 	}
 	
 	// ── Admin Creates Account ─────────────────────────────────────────────────
@@ -109,19 +111,19 @@ public class AuthServiceImpl implements AuthService {
 		String tempPassword = generateTempPassword();
 		
 		UserIdentity identity = UserIdentity.builder()
-		                                    .firstName(request.getFirstName())
-		                                    .lastName(request.getLastName())
-		                                    .phone(request.getPhone())
-		                                    .email(request.getEmail())
-		                                    .gender(request.getGender())
-		                                    .build();
+														.firstName(request.getFirstName())
+														.lastName(request.getLastName())
+														.phone(request.getPhone())
+														.email(request.getEmail())
+														.gender(request.getGender())
+														.build();
 		
 		User user = User.builder()
-		                .identity(identity)
-		                .password(passwordEncoder.encode(tempPassword)).userRole(request.getUserRole())
-		                .roleEntityId(request.getRoleEntityId()).userStatus(UserStatus.ACTIVE)
-		                .firstLogin(true)       // force password change on first login
-		                .build();
+							 .identity(identity)
+							 .password(passwordEncoder.encode(tempPassword)).userRole(request.getUserRole())
+							 .roleEntityId(request.getRoleEntityId()).userStatus(UserStatus.ACTIVE)
+							 .firstLogin(true)       // force password change on first login
+							 .build();
 		
 		userRepository.save(user);
 		
@@ -142,16 +144,16 @@ public class AuthServiceImpl implements AuthService {
 		);
 		
 		return AuthMessageResponse.builder()
-		                          .success(true)
-		                          .message("Account created successfully. Credentials sent to user.")
-		                          .build();
+										  .success(true)
+										  .message("Account created successfully. Credentials sent to user.")
+										  .build();
 	}
 	
 	// ── Admin Approve / Reject ────────────────────────────────────────────────
 	public AuthMessageResponse approveAccount(Long userId) {
 		
 		User user = userRepository.findById(userId)
-		                          .orElseThrow(() -> new RuntimeException("User not found"));
+										  .orElseThrow(() -> new RuntimeException("User not found"));
 		
 		if (user.getUserStatus() != UserStatus.PENDING) {
 			throw new IllegalStateException("Only PENDING accounts can be approved");
@@ -178,16 +180,16 @@ public class AuthServiceImpl implements AuthService {
 		);
 		
 		return AuthMessageResponse.builder()
-		                          .success(true)
-		                          .message("Account approved successfully.")
-		                          .build();
+										  .success(true)
+										  .message("Account approved successfully.")
+										  .build();
 	}
 	
 	@Override
 	public AuthMessageResponse rejectAccount(Long userId, String reason) {
 		
 		User user = userRepository.findById(userId)
-		                          .orElseThrow(() -> new RuntimeException("User not found"));
+										  .orElseThrow(() -> new RuntimeException("User not found"));
 		
 		if (user.getUserStatus() != UserStatus.PENDING) {
 			throw new IllegalStateException("Only PENDING accounts can be rejected");
@@ -212,9 +214,9 @@ public class AuthServiceImpl implements AuthService {
 		);
 		
 		return AuthMessageResponse.builder()
-		                          .success(true)
-		                          .message("Account rejected.")
-		                          .build();
+										  .success(true)
+										  .message("Account rejected.")
+										  .build();
 	}
 	
 	// ── Login ─────────────────────────────────────────────────────────────────
@@ -231,8 +233,8 @@ public class AuthServiceImpl implements AuthService {
 		
 		// Load user
 		User user = userRepository
-			            .findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
-			            .orElseThrow(() -> new RuntimeException("User not found"));
+							.findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
+							.orElseThrow(() -> new RuntimeException("User not found"));
 		
 		// Check status
 		if (user.getUserStatus() != UserStatus.ACTIVE) {
@@ -243,23 +245,23 @@ public class AuthServiceImpl implements AuthService {
 		if (user.isFirstLogin()) {
 			generateAndSendOtp(user, OtpPurpose.FIRST_LOGIN);
 			return LoginResponse.builder()
-			                    .firstLogin(true)
-			                    .userId(user.getId()).userRole(user.getUserRole())
-			                    .message("First login detected. OTP sent to your email and phone.")
-			                    .build();
+									  .firstLogin(true)
+									  .userId(user.getId()).userRole(user.getUserRole())
+									  .message("First login detected. OTP sent to your email and phone.")
+									  .build();
 		}
 		
 		// New device detection
 		boolean isNewDevice = request.getDeviceFingerprint() != null
-			                      && !request.getDeviceFingerprint().equals(user.getLastLoginDevice());
+										 && !request.getDeviceFingerprint().equals(user.getLastLoginDevice());
 		
 		if (isNewDevice) {
 			generateAndSendOtp(user, OtpPurpose.NEW_DEVICE_LOGIN);
 			return LoginResponse.builder()
-			                    .firstLogin(false)
-			                    .userId(user.getId()).userRole(user.getUserRole())
-			                    .message("New device detected. OTP sent to your email and phone.")
-			                    .build();
+									  .firstLogin(false)
+									  .userId(user.getId()).userRole(user.getUserRole())
+									  .message("New device detected. OTP sent to your email and phone.")
+									  .build();
 		}
 		
 		// Normal login → issue tokens
@@ -271,12 +273,12 @@ public class AuthServiceImpl implements AuthService {
 	public AuthMessageResponse verifyOtp(VerifyOtpRequest request) {
 		
 		User user = userRepository
-			            .findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
-			            .orElseThrow(() -> new RuntimeException("User not found"));
+							.findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
+							.orElseThrow(() -> new RuntimeException("User not found"));
 		
 		OtpRecord otpRecord = otpRecordRepository
-			                      .findLatestValidOtp(user.getId(), request.getPurpose())
-			                      .orElseThrow(() -> new RuntimeException("OTP not found or expired"));
+										 .findLatestValidOtp(user.getId(), request.getPurpose())
+										 .orElseThrow(() -> new RuntimeException("OTP not found or expired"));
 		
 		if (!otpRecord.getOtp().equals(request.getOtp())) {
 			throw new IllegalStateException("Invalid OTP");
@@ -287,9 +289,9 @@ public class AuthServiceImpl implements AuthService {
 		otpRecordRepository.save(otpRecord);
 		
 		return AuthMessageResponse.builder()
-		                          .success(true)
-		                          .message("OTP verified successfully.")
-		                          .build();
+										  .success(true)
+										  .message("OTP verified successfully.")
+										  .build();
 	}
 	
 	// ── Resend OTP ────────────────────────────────────────────────────────────
@@ -297,15 +299,15 @@ public class AuthServiceImpl implements AuthService {
 	public AuthMessageResponse resendOtp(ResendOtpRequest request) {
 		
 		User user = userRepository
-			            .findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
-			            .orElseThrow(() -> new RuntimeException("User not found"));
+							.findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
+							.orElseThrow(() -> new RuntimeException("User not found"));
 		
 		generateAndSendOtp(user, request.getPurpose());
 		
 		return AuthMessageResponse.builder()
-		                          .success(true)
-		                          .message("OTP resent successfully.")
-		                          .build();
+										  .success(true)
+										  .message("OTP resent successfully.")
+										  .build();
 	}
 	
 	// ── Set Password (first login) ────────────────────────────────────────────
@@ -317,13 +319,13 @@ public class AuthServiceImpl implements AuthService {
 		}
 		
 		User user = userRepository
-			            .findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
-			            .orElseThrow(() -> new RuntimeException("User not found"));
+							.findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
+							.orElseThrow(() -> new RuntimeException("User not found"));
 		
 		// Verify OTP first
 		OtpRecord otpRecord = otpRecordRepository
-			                      .findLatestValidOtp(user.getId(), OtpPurpose.FIRST_LOGIN)
-			                      .orElseThrow(() -> new RuntimeException("OTP not found or expired"));
+										 .findLatestValidOtp(user.getId(), OtpPurpose.FIRST_LOGIN)
+										 .orElseThrow(() -> new RuntimeException("OTP not found or expired"));
 		
 		if (!otpRecord.getOtp().equals(request.getOtp())) {
 			throw new IllegalStateException("Invalid OTP");
@@ -352,15 +354,15 @@ public class AuthServiceImpl implements AuthService {
 	public AuthMessageResponse forgotPassword(ForgotPasswordRequest request) {
 		
 		User user = userRepository
-			            .findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
-			            .orElseThrow(() -> new RuntimeException("User not found"));
+							.findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
+							.orElseThrow(() -> new RuntimeException("User not found"));
 		
 		generateAndSendOtp(user, OtpPurpose.PASSWORD_RESET);
 		
 		return AuthMessageResponse.builder()
-		                          .success(true)
-		                          .message("OTP sent to your registered email and phone.")
-		                          .build();
+										  .success(true)
+										  .message("OTP sent to your registered email and phone.")
+										  .build();
 	}
 	
 	// ── Reset Password ────────────────────────────────────────────────────────
@@ -372,12 +374,12 @@ public class AuthServiceImpl implements AuthService {
 		}
 		
 		User user = userRepository
-			            .findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
-			            .orElseThrow(() -> new RuntimeException("User not found"));
+							.findByIdentityEmailOrIdentityPhone(request.getIdentifier(), request.getIdentifier())
+							.orElseThrow(() -> new RuntimeException("User not found"));
 		
 		OtpRecord otpRecord = otpRecordRepository
-			                      .findLatestValidOtp(user.getId(), OtpPurpose.PASSWORD_RESET)
-			                      .orElseThrow(() -> new RuntimeException("OTP not found or expired"));
+										 .findLatestValidOtp(user.getId(), OtpPurpose.PASSWORD_RESET)
+										 .orElseThrow(() -> new RuntimeException("OTP not found or expired"));
 		
 		if (!otpRecord.getOtp().equals(request.getOtp())) {
 			throw new IllegalStateException("Invalid OTP");
@@ -399,9 +401,9 @@ public class AuthServiceImpl implements AuthService {
 		);
 		
 		return AuthMessageResponse.builder()
-		                          .success(true)
-		                          .message("Password reset successfully. Please log in with your new password.")
-		                          .build();
+										  .success(true)
+										  .message("Password reset successfully. Please log in with your new password.")
+										  .build();
 	}
 	
 	// ── Refresh Token ─────────────────────────────────────────────────────────
@@ -409,7 +411,7 @@ public class AuthServiceImpl implements AuthService {
 	public LoginResponse refreshToken(String refreshToken) {
 		
 		RefreshToken stored = refreshTokenRepository.findByToken(refreshToken)
-		                                            .orElseThrow(() -> new RuntimeException("Refresh token not found"));
+																  .orElseThrow(() -> new RuntimeException("Refresh token not found"));
 		
 		if (stored.isRevoked()) {
 			throw new IllegalStateException("Refresh token has been revoked");
@@ -437,15 +439,15 @@ public class AuthServiceImpl implements AuthService {
 	public AuthMessageResponse logout(String refreshToken) {
 		
 		refreshTokenRepository.findByToken(refreshToken)
-		                      .ifPresent(token -> {
-			                      token.setRevoked(true);
-			                      refreshTokenRepository.save(token);
-		                      });
+									 .ifPresent(token -> {
+										 token.setRevoked(true);
+										 refreshTokenRepository.save(token);
+									 });
 		
 		return AuthMessageResponse.builder()
-		                          .success(true)
-		                          .message("Logged out successfully.")
-		                          .build();
+										  .success(true)
+										  .message("Logged out successfully.")
+										  .build();
 	}
 	
 	// ── Get Me ────────────────────────────────────────────────────────────────
@@ -454,17 +456,20 @@ public class AuthServiceImpl implements AuthService {
 	public MeResponse getMe(Long userId) {
 		
 		User user = userRepository.findById(userId)
-		                          .orElseThrow(() -> new RuntimeException("User not found"));
-		
+										  .orElseThrow(() -> new RuntimeException("User not found"));
+		long role = user.getUserRole().ordinal() + 1L; // Convert enum to long
+		StaffRole staffRole = StaffRole.fromOrdinal(role);
+		Long schoolId = schoolService.resolveSchoolId(staffRole, user.getRoleEntityId());
 		return MeResponse.builder()
-		                 .userId(user.getId())
-		                 .firstName(user.getIdentity().getFirstName())
-		                 .lastName(user.getIdentity().getLastName())
-		                 .email(user.getIdentity().getEmail())
-		                 .phone(user.getIdentity().getPhone()).userRole(user.getUserRole())
-		                 .userStatus(user.getUserStatus())
-		                 .roleEntityId(user.getRoleEntityId())
-		                 .build();
+							  .userId(user.getId())
+							  .firstName(user.getIdentity().getFirstName())
+							  .lastName(user.getIdentity().getLastName())
+							  .email(user.getIdentity().getEmail())
+							  .phone(user.getIdentity().getPhone()).userRole(user.getUserRole())
+							  .userStatus(user.getUserStatus())
+							  .roleEntityId(user.getRoleEntityId())
+							  .schoolId(schoolId)
+							  .build();
 	}
 	
 	// ── Private Helpers ───────────────────────────────────────────────────────
@@ -475,11 +480,11 @@ public class AuthServiceImpl implements AuthService {
 		
 		// Save refresh token to DB
 		RefreshToken token = RefreshToken.builder()
-		                                 .token(refreshToken)
-		                                 .user(user)
-		                                 .expiresAt(LocalDateTime.now().plusSeconds(refreshTokenExpiry / 1000))
-		                                 .revoked(false)
-		                                 .build();
+													.token(refreshToken)
+													.user(user)
+													.expiresAt(LocalDateTime.now().plusSeconds(refreshTokenExpiry / 1000))
+													.revoked(false)
+													.build();
 		refreshTokenRepository.save(token);
 		
 		// Update last login info
@@ -490,17 +495,17 @@ public class AuthServiceImpl implements AuthService {
 		userRepository.save(user);
 		
 		return LoginResponse.builder()
-		                    .accessToken(accessToken)
-		                    .refreshToken(refreshToken)
-		                    .tokenType("Bearer")
-		                    .accessTokenExpiresIn(refreshTokenExpiry)
-		                    .userId(user.getId())
-		                    .firstName(user.getIdentity().getFirstName())
-		                    .lastName(user.getIdentity().getLastName()).userRole(user.getUserRole())
-		                    .userStatus(user.getUserStatus())
-		                    .roleEntityId(user.getRoleEntityId())
-		                    .firstLogin(user.isFirstLogin())
-		                    .build();
+								  .accessToken(accessToken)
+								  .refreshToken(refreshToken)
+								  .tokenType("Bearer")
+								  .accessTokenExpiresIn(refreshTokenExpiry)
+								  .userId(user.getId())
+								  .firstName(user.getIdentity().getFirstName())
+								  .lastName(user.getIdentity().getLastName()).userRole(user.getUserRole())
+								  .userStatus(user.getUserStatus())
+								  .roleEntityId(user.getRoleEntityId())
+								  .firstLogin(user.isFirstLogin())
+								  .build();
 	}
 	
 	private void generateAndSendOtp(User user, OtpPurpose purpose) {
@@ -512,11 +517,11 @@ public class AuthServiceImpl implements AuthService {
 		
 		// Save OTP record
 		OtpRecord record = OtpRecord.builder()
-		                            .user(user)
-		                            .otp(otp)
-		                            .purpose(purpose)
-		                            .used(false)
-		                            .build();
+											 .user(user)
+											 .otp(otp)
+											 .purpose(purpose)
+											 .used(false)
+											 .build();
 		otpRecordRepository.save(record);
 		
 		// Send via both channels

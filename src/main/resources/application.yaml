@@ -1,39 +1,42 @@
-spring:
-  application:
-    name: skooly
-  profiles:
-    active: dev
+# =============================================================================
+# application.yaml  —  SHARED DEFAULTS (loaded for all profiles)
+# =============================================================================
+# Only put settings here that are truly universal. Profile-specific overrides
+# live in application-{dev,prod}.yaml.
+# =============================================================================
 
 server:
   port: 8080
   servlet:
     context-path: /api
-  multipart:
-    enabled: true
-    max-file-size: 5MB
-    max-request-size: 10MB
+
+spring:
+  application:
+    name: skooly
+  profiles:
+    # Default to 'dev' so local runs never accidentally start in prod mode.
+    # Override on deploy:  java -jar app.jar --spring.profiles.active=prod
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: mappings
+  jackson:
+    # Omit null fields in JSON responses (cleaner API payloads)
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: UTC
 
-
-# ── JWT ───────────────────────────────────────────────────────────────────────
+# ── JWT ──────────────────────────────────────────────────────────────────────
 jwt:
-  access-token-expiry: 36000000        # default 15 minutes
-  refresh-token-expiry: 604800000    # default 7 days
+  access-token-expiry: 900000       # 15 minutes (ms)
+  refresh-token-expiry: 604800000   # 7 days (ms)
 
-# ── OTP ───────────────────────────────────────────────────────────────────────
+# ── OTP ──────────────────────────────────────────────────────────────────────
 otp:
   expiry-minutes: 5
   length: 6
-
-# ── CORS ─────────────────────────────────────────────────────────────────────
-cors:
-  allowed-origins: http://localhost:5173,https://your-app.vercel.app
