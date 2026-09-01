@@ -2,9 +2,16 @@ package com.skooly.enums;
 
 public enum StaffRole {
 	ADMIN,
-	ACCOUNTANT,
+	STUDENT,
+	TEACHER,
 	LIBRARIAN,
+	HELPER,
+	ACCOUNTANT,
 	LAB_ASSISTANT,
 	DRIVER,
-	SECURITY_GUARD
+	SECURITY_GUARD;
+	
+	public static StaffRole fromOrdinal(long role) {
+		return StaffRole.values()[(int) role - 1];
+	}
 }

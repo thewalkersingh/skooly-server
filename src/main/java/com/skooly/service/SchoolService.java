@@ -3,6 +3,7 @@ package com.skooly.service;
 import com.skooly.dto.request.SchoolRequest;
 import com.skooly.dto.response.SchoolResponse;
 import com.skooly.enums.SchoolStatus;
+import com.skooly.enums.StaffRole;
 import com.skooly.wrapper.PageResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -41,4 +42,6 @@ public interface SchoolService {
 	
 	boolean existsByEmail(String email);
 	
+	// ── Other utility methods ─────────────────────────────────────────────────
+	Long resolveSchoolId(StaffRole role, Long roleEntityId);
 }

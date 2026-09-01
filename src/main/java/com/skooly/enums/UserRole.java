@@ -1,12 +1,8 @@
 package com.skooly.enums;
 
 public enum UserRole {
-	PARENT,
 	ADMIN,
+	PARENT,
 	USER,
-	STUDENT,
-	TEACHER,
-	LIBRARIAN,
-	HELPER,
 	SUPER_ADMIN,
 }

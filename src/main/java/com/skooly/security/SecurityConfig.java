@@ -26,7 +26,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity          // enables @PreAuthorize on controllers
+@EnableMethodSecurity          // enables @PreAuthorize on controllers if needed
 @RequiredArgsConstructor
 public class SecurityConfig {
 	
@@ -51,7 +51,6 @@ public class SecurityConfig {
 														 // ── Swagger ──────────────────────────────────────────────────
 				                               .requestMatchers(
 															 "/swagger-ui/**",
-															 
 															 "/swagger-ui.html",
 															 "/swagger-ui/index.html",
 															 "/api-docs/**",
